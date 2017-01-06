@@ -1,0 +1,35 @@
+{
+  "name": "block-templates-parse",
+  "version": "1.0.0",
+  "description": "Helper modules for parsing of blocs from json and handlebars files into html",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "author": "Phil Whittaker",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.5.2",
+    "chalk": "^1.0.0",
+    "dateformat": "^1.0.11",
+    "gulp-util": "^3.0.4",
+    "handlebars": "^3.0.3",
+    "jsonschema": "^1.0.2",
+    "lodash": "^3.10.1",
+    "mocha": "^2.3.3",
+    "rewire": "^2.3.4",
+    "should": "^7.1.0",
+    "string": "^3.3.1",
+    "through2": "^2.0.0",
+    "util-extend": "^1.0.1"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hifi-phil/block-templates-parse.git"
+  },
+  "homepage": "https://github.com/hifi-phil/block-templates-parse.git#readme"
+}
