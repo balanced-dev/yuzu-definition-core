@@ -1,0 +1,96 @@
+{
+    "base": {
+        "id": "/SimplePerson",
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"}
+        },
+        "additionalProperties": false	
+    },	
+    "address" : {
+        "id": "/SimpleAddress",
+        "type": "object",
+        "properties": {
+            "lines": {
+                "type": "array",
+                "items": {"type": "string"}
+            },
+            "zip": {"type": "string"},
+            "city": {"type": "string"},
+            "country": {"type": "string"}												
+        },
+        "additionalProperties": false	
+    },
+
+    "baseRefAddress" : {
+        "id": "/SimplePerson",
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "address": { "$ref": "/SimpleAddress" }
+        },
+        "additionalProperties": false	
+    },
+
+    "addressRefSub" : {
+        "id": "/SimpleAddress",
+        "type": "object",
+        "properties": {
+            "lines": {
+                "type": "array",
+                "items": {"type": "string"}
+            },
+            "zip": {"type": "string"},
+            "city": {"type": "string"},
+            "country": {"type": "string"},	
+            "sub": { "$ref": "/SubItem" }											
+        },
+        "additionalProperties": false	
+    },
+
+    "sub" : {
+        "id": "/SubItem",
+        "type": "object",
+        "properties": {
+            "child": {"type": "string"}											
+        },
+        "additionalProperties": false	
+    },
+
+    "variableArrayRefSub": {
+        "id": "/Array",
+        "type": "object",
+        "properties": {
+            "array": {
+                "type": "array",
+                "items": {
+                    "name": {"type": "string"},
+                    "sub": { "$ref": "/SubItem" }
+                }
+            }										
+        },										
+        "additionalProperties": false	
+    },
+
+    "subArrayRefSub" : {
+        "id": "/SubArraySubRef",
+        "type": "array",
+        "items": {
+            "child": {"type": "string"},
+            "sub": { "$ref": "/SubItem" }
+        },                                            
+        "additionalProperties": false    
+    },
+
+    "variableSubArrayRefSub" : {
+        "id": "/VariableSubArrayRefSub",
+        "type": "object",
+        "properties": {
+            "array": {
+                "type": "array",
+                "items": { "$ref": "/SubItem" }
+            }										
+        },										
+        "additionalProperties": false	
+    }     
+}

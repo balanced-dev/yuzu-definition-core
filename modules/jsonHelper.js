@@ -52,8 +52,11 @@ function resolve_CycleProperties(path, data, externalDatas, results) {
 		{
 			var count = 0;
 			data[key].forEach(function(id) {
-				if(_.isPlainObject(id)) {
+				if(id['$ref']) {
 					resolve_Ref(path, id['$ref'], data[key], count, externalDatas, results);					
+				}
+				else {
+					resolve_CycleProperties(path, id, externalDatas, results);
 				}
 				count ++;
 			})

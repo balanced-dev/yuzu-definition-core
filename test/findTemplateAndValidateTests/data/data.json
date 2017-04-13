@@ -1,0 +1,68 @@
+{
+    "base" : {
+    	"name": "Test"
+    },
+    "address" : {
+        "lines": [ "1600 Pennsylvania Avenue Northwest" ],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA"
+    },
+    "baseAddress": {
+        "name": "Test",
+        "address": {
+            "lines": [ "1600 Pennsylvania Avenue Northwest" ],
+            "zip": "DC 20500",
+            "city": "Washington",
+            "country": "USA"
+        }
+    },    
+    "baseAddressSub" : {
+        "name": "Test",
+        "address": {
+            "lines": [ "1600 Pennsylvania Avenue Northwest" ],
+            "zip": "DC 20500",
+            "city": "Washington",
+            "country": "USA",
+            "sub": {
+                "child": "another sub item"
+            }
+        }
+    },
+    "baseRefAddress" : {
+        "name": "Test",
+        "address": { "$ref": "/SimpleAddress" }
+    },
+    "addressRefSub" : {
+        "lines": [ "1600 Pennsylvania Avenue Northwest" ],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA",
+        "sub": { "$ref": "/SubItem" }
+    },
+    "sub" : {
+        "child": "another sub item"
+    },
+    "variableArrayRefSub" : {
+        "array": [{
+            "name": "Test",
+            "sub": { "$ref": "/SubItem" }
+        },{
+            "name": "Test 2",
+            "sub": { "$ref": "/SubItem" }
+        }]
+    },
+    "arrayRefSub" : [{
+        "name": "Test",
+        "sub": { "$ref": "/SubItem" }
+    },{
+        "name": "Test 2",
+        "sub": { "$ref": "/SubItem" }
+    }],
+    "variableSubArrayRefSub" : {
+        "array" : [
+            {"$ref": "/SubItem"},
+            {"$ref": "/SubItem"}
+        ]
+    }                   	    	
+}

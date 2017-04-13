@@ -1,4 +1,4 @@
-var rewire = require('rewire'), should = require('should'), walkSync = rewire('../modules/walkSync');
+var rewire = require('rewire'), should = require('should'), walkSync = rewire('../../modules/walkSync');
 
 var createFsMock = function(readdirSync, statSync)
 {
