@@ -1,6 +1,6 @@
 {
   "name": "block-templates-parse",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Helper modules for parsing of blocs from json and handlebars files into html",
   "main": "index.js",
   "directories": {
