@@ -2,8 +2,9 @@ var findTemplateAndValidateFromJson = require('./modules/findTemplateAndValidate
 var findTemplateAndValidateFromLayout = require('./modules/findTemplateAndValidateFromLayout');
 var registerHandlebarsPartials = require('./modules/registerHandlebarsPartials');
 var getExternals = require('./modules/getExternals');
+var gulpSassJson = require('./modules/hifi-gulp-sass-json');
 
 module.exports.findTemplateAndValidateFromJson = findTemplateAndValidateFromJson;
 module.exports.findTemplateAndValidateFromLayout = findTemplateAndValidateFromLayout;
 module.exports.registerHandlebarsPartials = registerHandlebarsPartials;
-module.exports.getExternals = getExternals;
+module.exports.gulpSassJson = gulpSassJson;
