@@ -1,0 +1,29 @@
+/* Fonts */
+//$ffa:	'Akkurat', sans-serif;
+$ffa:	'madras', sans-serif;
+$ffb:	'Lusitana', serif;
+
+
+// font sizes
+// null value or breakpoint values
+// eg: $variable: (null: 13px/125px $ffa, $minWidth: 50px/125px $ffa, $midWidth: 60px/125px $ffa, $largeWidth: 70px/125px $ffa, $maxWidth: 80px/125px $ffa);
+
+/* Titles */
+$t1: ($minWidth: 45px / 50px $ffa, $midWidth: 75px / 85px $ffa, $largeWidth: 85px / 100px $ffa, $maxWidth: 90px / 100px $ffa); // $t1: ($minWidth: 45px / 50px $ffa, $midWidth: 90px / 100px $ffa, $largeWidth: 110px / 125px $ffa); // Changed large font sizes and brought them down, due to loss of brand font usages
+$t2: ($minWidth: 45px / 50px $ffa, $midWidth: 70px / 90px $ffa, $largeWidth: 55px / 95px $ffa, $maxWidth: 65px / 95px $ffa); // $t2: ($minWidth: 45px / 50px $ffa, $midWidth: 90px / 100px $ffa, $largeWidth: 100px / 115px $ffa);
+$t3: ($minWidth: 37px / 43px $ffa, $midWidth: 55px / 65px $ffa, $largeWidth: 60px / 65px $ffa, $maxWidth: 80px / 90px $ffa); // $t3: ($minWidth: 37px / 43px $ffa, $midWidth: 55px / 65px $ffa, $largeWidth: 85px / 100px $ffa);
+$t4: ($minWidth: 25px / 30px $ffa, $midWidth: 40px / 50px $ffa, $largeWidth: 42px / 62px $ffa, $maxWidth: 52px / 62px $ffa);
+$t5: ($minWidth: 25px / 30px $ffa, $midWidth: 35px / 45px $ffa, $largeWidth: 40px / 55px $ffa, $maxWidth: 45px / 55px $ffa);
+$t6: ($minWidth: 20px / 25px $ffa, $midWidth: 32px / 42px $ffa, $largeWidth: 32px / 42px $ffa, $maxWidth: 32px / 42px $ffa);  // Changed midWidth to match largeWidth from $midWidth: 40px / 50px
+$t7: ($minWidth: 18px / 23px $ffa, $midWidth: 23px / 34px $ffa, $largeWidth: 23px / 34px $ffa, $maxWidth: 24px / 34px $ffa);  //  Changed midWidth to match largeWidth from $midWidth: 30px / 45px | Changed mobile size to make font larger - it basically don't look like a heading was 15px / 23px
+$t8: ($minWidth: 16px / 21px $ffa, $midWidth: 18px / 25px $ffa, $largeWidth: 18px / 25px $ffa, $maxWidth: 18px / 25px $ffa);  //  New! Shiny! Similar to $b3 but bigger at mobile size, so acts more like a heading.
+
+/* Body Fonts */
+$b1: ($minWidth: 15px/23px $ffa, $midWidth: 17px/26px $ffa, $largeWidth: 17px/26px $ffa, $maxWidth: 20px/34px $ffa);
+$b2: ($minWidth: 700 15px/23px $ffa, $midWidth: 700 17px/26px $ffa, $largeWidth: 700 17px/26px $ffa, $maxWidth: 700 20px/34px $ffa); // SV Changed midWidth to match largeWidth from 24px/45px
+$b3: ($minWidth: 15px/19px $ffa, $midWidth: 16px/23px $ffa, $largeWidth: 17px/25px $ffa, $maxWidth: 18px/25px $ffa); // Increase in mobile size,  decrease in mid size $b3: ($minWidth: 13px/17px $ffa, $midWidth: 18px/25px $ffa, $largeWidth: 18px/25px $ffa);
+$b4: ($minWidth: 13px/17px $ffa, $midWidth: 15px/22px $ffa, $largeWidth: 15px/22px $ffa); // Changed mobile size from 11px/16px to 13px/17px as it's too small
+
+
+/* Other Fonts */
+$newsFont: ($minWidth: 15px/23px $ffa, $midWidth: 16px/24px $ffa, $largeWidth: 17px/25px $ffa, $maxWidth: 20px/34px $ffa);
