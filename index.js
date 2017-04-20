@@ -7,4 +7,5 @@ var gulpSassJson = require('./modules/hifi-gulp-sass-json');
 module.exports.findTemplateAndValidateFromJson = findTemplateAndValidateFromJson;
 module.exports.findTemplateAndValidateFromLayout = findTemplateAndValidateFromLayout;
 module.exports.registerHandlebarsPartials = registerHandlebarsPartials;
+module.exports.getExternals = getExternals;
 module.exports.gulpSassJson = gulpSassJson;
