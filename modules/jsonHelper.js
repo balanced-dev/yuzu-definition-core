@@ -45,7 +45,12 @@ function resolve_CycleProperties(path, data, externalDatas, results) {
 				})
 			}
 			else {
-				resolve_Ref(path, data[key]['$ref'], data, key, externalDatas, results);
+				if(data[key]['$ref']) {
+					resolve_Ref(path, data[key]['$ref'], data, key, externalDatas, results);
+				}
+				else {
+					resolve_CycleProperties(path, data[key], externalDatas, results);
+				}
 			}
 		}
 		else if(_.isArray(data[key]))

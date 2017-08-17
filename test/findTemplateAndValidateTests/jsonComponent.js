@@ -54,16 +54,36 @@ describe('findTemplateAndValidate component json', function() {
 			'/SubItem': data.sub
 		}	
 	
-		base.mockFilesAndSchema(data.baseAddressSub, schema.baseRefAddress);
+		base.mockFilesAndSchema(data.addressRefSub, schema.addressRefSub);
 		base.createThroughMock();
 		
 		base.findTemplateAndValidate(externalSchemas, externalDatas);
 		
-		base.file.validated.should.equal(true);
-        base.file.data.address.zip.should.equal(data.addressRefSub.zip, JSON.stringify(base.file.data.address));      	
-        base.file.data.address.sub.child.should.equal(data.sub.child, JSON.stringify(base.file.data.address.sub));	
+		base.file.validated.should.equal(true);   	
+        base.file.data.sub.child.should.equal(data.sub.child, JSON.stringify(base.file.data.sub));	
     })	
 	
+	it('should resolve and validate sub component as property of sub json successfully', function() {
+		
+			var externalSchemas = {
+				'/SimpleAddress': schema.addressRefSubSub,
+				'/SubItem':  schema.sub
+			}
+		
+			var externalDatas = {
+				'/SimpleAddress': data.addressRefSubSub, 
+				'/SubItem': data.sub
+			}	
+		
+			base.mockFilesAndSchema(data.addressRefSubSub, schema.addressRefSubSub);
+			base.createThroughMock();
+			
+			base.findTemplateAndValidate(externalSchemas, externalDatas);
+			
+			base.file.validated.should.equal(true);  	
+			base.file.data.sub.sub.should.equal(data.sub, JSON.stringify(base.file.data.sub.sub));	
+		})	
+
 	it('should error when sub json component not present', function() {
 	
 		var externalSchemas = {

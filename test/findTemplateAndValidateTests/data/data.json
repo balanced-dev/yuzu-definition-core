@@ -29,6 +29,20 @@
             }
         }
     },
+    "baseAddressSubSub" : {
+        "name": "Test",
+        "address": {
+            "lines": [ "1600 Pennsylvania Avenue Northwest" ],
+            "zip": "DC 20500",
+            "city": "Washington",
+            "country": "USA",
+            "sub": {
+                "sub": {
+                    "child": "another sub item"
+                }
+            }
+        }
+    },    
     "baseRefAddress" : {
         "name": "Test",
         "address": { "$ref": "/SimpleAddress" }
@@ -40,6 +54,15 @@
         "country": "USA",
         "sub": { "$ref": "/SubItem" }
     },
+    "addressRefSubSub" : {
+        "lines": [ "1600 Pennsylvania Avenue Northwest" ],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA",
+        "sub": { 
+            "sub": { "$ref": "/SubItem" }
+         }
+    },    
     "sub" : {
         "child": "another sub item"
     },

@@ -48,6 +48,27 @@
         "additionalProperties": false	
     },
 
+    "addressRefSubSub" : {
+        "id": "/SimpleAddress",
+        "type": "object",
+        "properties": {
+            "lines": {
+                "type": "array",
+                "items": {"type": "string"}
+            },
+            "zip": {"type": "string"},
+            "city": {"type": "string"},
+            "country": {"type": "string"},	
+            "sub": {
+                "type": "object",
+                "properties": {
+                    "sub": { "$ref": "/SubItem" }
+                }
+            }											
+        },
+        "additionalProperties": false	
+    },
+
     "sub" : {
         "id": "/SubItem",
         "type": "object",
