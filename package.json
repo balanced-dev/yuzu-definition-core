@@ -1,6 +1,6 @@
 {
   "name": "block-templates-parse",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Helper modules for parsing of blocs from json and handlebars files into html",
   "main": "index.js",
   "directories": {
@@ -13,22 +13,23 @@
   "license": "MIT",
   "devDependencies": {
     "browser-sync": "^2.5.2",
-    "chalk": "^1.0.0",
-    "dateformat": "^1.0.11",
-    "gulp-match": "^1.0.3",
-    "gulp-util": "^3.0.8",
-    "handlebars": "^3.0.3",
-    "jsonschema": "^1.0.2",
-    "lodash": "^3.10.1",
     "mocha": "^2.3.3",
-    "rewire": "^2.3.4",
     "should": "^7.1.0",
-    "string": "^3.3.1",
+    "string": "^3.3.1"
+  },
+  "dependencies": {
+    "rewire": "^2.3.4",    
+    "jsonschema": "^1.0.2",    
+    "lodash": "^3.10.1",
     "through": "^2.3.8",
     "through2": "^2.0.0",
-    "util-extend": "^1.0.1"
+    "util-extend": "^1.0.1",
+    "gulp-match": "^1.0.3",
+    "gulp-util": "^3.0.8", 
+    "chalk": "^1.0.0",
+    "dateformat": "^1.0.11",
+    "handlebars": "^3.0.3"       
   },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hifi-phil/block-templates-parse.git"
