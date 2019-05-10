@@ -13,12 +13,12 @@ describe('findTemplateAndValidate schema', function() {
 		var schemaInvalid = '{ "id": "/SimplePerson", "type":"object "properties": {"name": {"type": "string"}}, "additionalProperties": false}';	
 
 		base.mockFilesAndSchema(data.base, schemaInvalid);	
-	
-		base.mockError('Cannot parse file : Json Schema in c:\\templates\\parHeader');		
+		base.recordErrorResult();		
 		
 		base.findTemplateAndValidate();
 		
 		base.file.validated.should.equal(false);	
+		base.error.message.should.equal('Cannot parse file : Json Schema in '+ dir );
 	})		
 	
 	it('should validate using schema file', function() {
@@ -35,12 +35,13 @@ describe('findTemplateAndValidate schema', function() {
 	
 		data.base.another = 'test';
 	
-		base.mockFilesAndSchema(data.base, schema.base);	
-		base.mockError('validation on '+ dir +' : additionalProperty "another" exists in instance when not allowed for /SimplePerson');		
+		base.mockFilesAndSchema(data.base, schema.base);
+		base.recordErrorResult();			
 		
 		base.findTemplateAndValidate();
 		
 		base.file.validated.should.equal(false);	
+		base.error.message.should.equal('validation on '+ dir +' : additionalProperty "another" exists in instance when not allowed for /SimplePerson');	
 	})				
 	
 	it('should validate and resolve schema file', function() {	
@@ -66,13 +67,14 @@ describe('findTemplateAndValidate schema', function() {
 		}
 
 		base.mockFilesAndSchema(data.baseAddress, schema.baseRefAddress);
-		base.mockError('validation on '+ dir +' : additionalProperty "postcode" exists in instance when not allowed for /SimpleAddress');
+		base.recordErrorResult();	
 
 		base.findTemplateAndValidate(externalSchemas);
 		
 		data.baseAddress.address.postcode = undefined;
 		
-		base.file.validated.should.equal(false);		
+		base.file.validated.should.equal(false);	
+		base.error.message.should.equal('validation on '+ dir +' : additionalProperty "postcode" exists in instance when not allowed for /SimpleAddress');	
 	})				
 	
 	it('should validate using sub schema files', function() {
@@ -104,12 +106,13 @@ describe('findTemplateAndValidate schema', function() {
 		var externalDatas = {	}	
 	
 		base.mockFilesAndSchema(data.baseAddressSub, schema.baseRefAddress);
-		base.mockError('validation on '+ dir +' : additionalProperty "another" exists in instance when not allowed for /SubItem');
+		base.recordErrorResult();	
 		
 		base.findTemplateAndValidate(externalSchemas, externalDatas);
 		
 		data.baseAddressSub.address.sub.another = undefined;	
 		
 		base.file.validated.should.equal(false);	
+		base.error.message.should.equal('validation on '+ dir +' : additionalProperty "another" exists in instance when not allowed for /SubItem');
 	})		
 });	

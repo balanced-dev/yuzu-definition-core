@@ -34,12 +34,13 @@ describe('findTemplateAndValidate component json', function() {
 	
 		var externalDatas = {}	
 	
+		base.recordErrorResult();
 		base.mockFilesAndSchema(data.baseRefAddress, data.baseRefAddress);
-		base.mockError('Json component reference not found in '+ base.file.path +' : /SimpleAddress');
 		
 		base.findTemplateAndValidate(externalSchemas, externalDatas);
 		
 		base.file.validated.should.equal(false);			
+		base.error.message.should.equal('Json component reference not found in '+ base.file.path +' : /SimpleAddress');	
 	})	
 	
 	it('should resolve and validate sub component json successfully', function() {
@@ -95,12 +96,13 @@ describe('findTemplateAndValidate component json', function() {
 			'/SimpleAddress': data.addressRefSub
 		}	
 	
+		base.recordErrorResult();
 		base.mockFilesAndSchema(data.baseRefAddress, schema.baseRefAddress);
-		base.mockError('Json component reference not found in '+ base.file.path +'/SimpleAddress : /SubItem');
 		
 		base.findTemplateAndValidate(externalSchemas, externalDatas);
 		
-		base.file.validated.should.equal(false);	
+		base.file.validated.should.equal(false);
+		base.error.message.should.equal('Json component reference not found in '+ base.file.path +'/SimpleAddress : /SubItem');		
 	})	
 	
 	it('should resolve and validate component json component as part of property successfully', function() {	

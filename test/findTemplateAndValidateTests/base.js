@@ -4,6 +4,7 @@ S = require('string'),
 findTemplateAndValidate = rewire('../../modules/findTemplateAndValidateFromJson.js');
 
 var file = {};
+var error = {};
 var enc = "enc";
 var cb = function() {}	
 
@@ -11,6 +12,7 @@ var dir = '';
 
 var output = {
     file:  file,
+    error: error,
     findTemplateAndValidate: findTemplateAndValidate,    
     beforeEachFn: function() {
         file.isNull = function() { return false; }
@@ -42,12 +44,10 @@ var output = {
         output.createFsMock(readdirSync, readFileSync);
     },
 
-    mockError : function (errorMessage)
+    recordErrorResult: function()
     {
         var emit = function(name, error) {
-            name.should.equal('error');
-            output.fixDirSteps(error.message).should.equal(output.fixDirSteps(errorMessage));
-            error.plugin.should.equal('Find template and validate error');
+            output.error = error;
         }		
 
         output.createThroughMock(emit);

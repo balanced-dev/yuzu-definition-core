@@ -27,9 +27,11 @@ describe('findTemplateAndValidate error', function() {
 		base.file.contents = new Buffer('{name: "test"}');
 		base.file.path = 'c:/templates/parHeader/data/template_data.json';
 	
-		base.mockError('JSON Error for '+ base.file.path +', SyntaxError: Unexpected token n');	
+		base.recordErrorResult();		
 		
 		base.findTemplateAndValidate();
+
+		base.error.message.should.equal('JSON Error for '+ base.file.path +', SyntaxError: Unexpected token n in JSON at position 1');
 	})		
 	
 	it('should error when more than one handlebars file is found in parent directory', function() {
@@ -41,11 +43,12 @@ describe('findTemplateAndValidate error', function() {
 			if (dir == dir)
 				return ['template.hbs', 'template2.hbs']
 		}
-	
+
+		base.recordErrorResult();	
 		base.createFsMock(readdirSync);
-		base.mockError('More than one Handlebars file found at '+ dir);
 		
 		base.findTemplateAndValidate();
+		base.error.message.should.equal('More than one Handlebars file found at '+ dir);
 	})		
 	
 	it('should error when more than one schema file is found in parent directory', function() {
@@ -58,10 +61,11 @@ describe('findTemplateAndValidate error', function() {
 				return ['data.schema', 'data2.schema']
 		}
 	
+		base.recordErrorResult();		
 		base.createFsMock(readdirSync);
-		base.mockError('More than one Json Schema file found at '+ dir);	
 		
 		base.findTemplateAndValidate();
+		base.error.message.should.equal('More than one Json Schema file found at '+ dir);	
 	})			
 	
 	it('should error when the schema file is not present for the json', function() {
@@ -79,9 +83,10 @@ describe('findTemplateAndValidate error', function() {
 				return '<h1>Template</h1>';				
 		}		
 	
-		base.createFsMock(readdirSync, readFileSync);
-		base.mockError('Schema file not found in the parent directory for c:\\templates\\parHeader');	
+		base.recordErrorResult();
+		base.createFsMock(readdirSync, readFileSync);	
 		
 		base.findTemplateAndValidate();
+		base.error.message.should.equal('Schema file not found in the parent directory for c:\\templates\\parHeader');
 	})		
 });
