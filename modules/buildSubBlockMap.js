@@ -23,7 +23,7 @@ function buildData(externalSchemas, externalDatas) {
 			return cb();
 		}
 
-		var resolveResults = jsonHelper.resolveComponentJson(parseResults.data, { externals: externalDatas });
+		var resolveResults = jsonHelper.resolveComponentJson(file.path, parseResults.data, externalDatas);
 		if(!resolveResults.valid) {
 			this.emit('error', new gutil.PluginError('Build Data validate error', resolveResults.errors[0]));
 			return cb();

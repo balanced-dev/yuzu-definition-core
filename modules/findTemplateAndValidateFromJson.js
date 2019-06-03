@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var extend = require('util-extend');
-var jsonHelper = require('../modules/jsonHelper');
+var jsonHelper = require('../modules/jsonHelper/jsonHelper');
 
 function GetTemplateSettings(file)
 {
@@ -84,7 +84,7 @@ function findTemplateAndValidate(externalSchemas, externalDatas) {
 			return cb();
 		}
 		
-		var resolveResults = jsonHelper.resolveComponentJson(file.path, parseResults.data, externalDatas);
+		var resolveResults = jsonHelper.resolveComponentJson(parseResults.data, { external: externalDatas });
 		if(!resolveResults.valid) {
 			this.emit('error', new gutil.PluginError('Find template and validate error', resolveResults.errors[0]));
 			return cb();

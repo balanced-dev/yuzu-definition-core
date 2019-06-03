@@ -1,8 +1,8 @@
 var base = require('./base.js'),
 S = require('string'),
 should = require('should')
-schema = require('./data/schema.json'),
-data = require('./data/data.json');
+schema = require('../data/schema.json'),
+data = require('../data/data.json');
 
 
 describe('findTemplateAndValidate function', function() {	
