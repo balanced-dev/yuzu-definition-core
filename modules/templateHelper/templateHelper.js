@@ -3,9 +3,9 @@ var path = require('path');
 var _ = require('lodash');
 var jsonHelper = require('../jsonHelper/jsonHelper');
 
-function GetTemplateSettings(file)
+function GetTemplateSettings(blockPath)
 {
-	var dir = path.join(path.dirname(file.path), '/..');
+	var dir = path.join(path.dirname(blockPath), '/..');
 	
 	var files = fs.readdirSync(dir);
 	var dataObject = {};

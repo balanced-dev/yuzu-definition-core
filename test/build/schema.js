@@ -4,7 +4,7 @@ should = require('should')
 schema = require('../data/schema.json'),
 data = require('../data/data.json');
 
-describe('findTemplateAndValidate schema', function() {	
+describe('build schema', function() {	
 	
 	beforeEach(base.beforeEachFn);	
 	
@@ -15,7 +15,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.base, schemaInvalid);	
 		base.recordErrorResult();		
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.validated.should.equal(false);	
 		base.error.message.should.equal('Cannot parse file : Json Schema in '+ dir );
@@ -26,7 +26,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.base, schema.base);	
 		base.createThroughMock();
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.validated.should.equal(true);	
 	})	
@@ -38,7 +38,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.base, schema.base);
 		base.recordErrorResult();			
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.validated.should.equal(false);	
 		base.error.message.should.equal('validation on '+ dir +' : additionalProperty "another" exists in instance when not allowed for /SimplePerson');	
@@ -53,7 +53,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.baseAddress, schema.baseRefAddress);
 		base.createThroughMock();
 		
-		base.findTemplateAndValidate(externalSchemas);
+		base.svc(externalSchemas);
 		
 		base.file.validated.should.equal(true);	
 	})			
@@ -69,7 +69,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.baseAddress, schema.baseRefAddress);
 		base.recordErrorResult();	
 
-		base.findTemplateAndValidate(externalSchemas);
+		base.svc(externalSchemas);
 		
 		data.baseAddress.address.postcode = undefined;
 		
@@ -89,7 +89,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.baseAddressSub, schema.baseRefAddress);
 		base.createThroughMock();
 		
-		base.findTemplateAndValidate(externalSchemas, externalDatas);
+		base.svc(externalSchemas, externalDatas);
 		
 		base.file.validated.should.equal(true);	
 	})		
@@ -108,7 +108,7 @@ describe('findTemplateAndValidate schema', function() {
 		base.mockFilesAndSchema(data.baseAddressSub, schema.baseRefAddress);
 		base.recordErrorResult();	
 		
-		base.findTemplateAndValidate(externalSchemas, externalDatas);
+		base.svc(externalSchemas, externalDatas);
 		
 		data.baseAddressSub.address.sub.another = undefined;	
 		

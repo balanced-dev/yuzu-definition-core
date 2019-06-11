@@ -1,7 +1,7 @@
 var rewire = require('rewire'), 
 should = require('should'), 
 S = require('string'),
-findTemplateAndValidate = rewire('../../modules/findTemplateAndValidateFromJson.js');
+svc = rewire('../../modules/build.js');
 
 var file = {};
 var error = {};
@@ -13,7 +13,7 @@ var dir = '';
 var output = {
     file:  file,
     error: error,
-    findTemplateAndValidate: findTemplateAndValidate,    
+    svc: svc,    
     beforeEachFn: function() {
         file.isNull = function() { return false; }
         file.isStream = function() { return false; }	
@@ -69,7 +69,7 @@ var output = {
 
     createFsMock : function(readdirSync, readFileSync)
     {
-        findTemplateAndValidate.__set__(
+        svc.__set__(
             { renderHelper:
                 { fs:
                     { 
@@ -83,7 +83,7 @@ var output = {
 
     createThroughMock : function(emit)
     {
-        findTemplateAndValidate.__set__(
+        svc.__set__(
             { through:
                 { 
                     obj: function (obj) {
@@ -99,7 +99,7 @@ var output = {
 
     createRenderHelperMock: function(mockTemplateSettings, mockLayoutName)
     {
-        findTemplateAndValidate.__set__(
+        svc.__set__(
             { renderHelper:
                 { 
                     GetTemplateSettings: mockTemplateSettings,

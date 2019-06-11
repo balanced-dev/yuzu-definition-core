@@ -3,7 +3,7 @@ S = require('string'),
 base = require('./base.js');
 
 
-describe('findTemplateAndValidate error', function() {
+describe('build error', function() {
 	
 	beforeEach(base.beforeEachFn);
 	
@@ -19,7 +19,7 @@ describe('findTemplateAndValidate error', function() {
 		
 		base.createThroughMock(emit);		
 		
-		base.findTemplateAndValidate();
+		base.svc();
 	})		
 	
 	it('should error when the content file does not parse as json', function() {
@@ -29,7 +29,7 @@ describe('findTemplateAndValidate error', function() {
 	
 		base.recordErrorResult();		
 		
-		base.findTemplateAndValidate();
+		base.svc();
 
 		base.error.message.should.equal('JSON Error for '+ base.file.path +', SyntaxError: Unexpected token n in JSON at position 1');
 	})	
@@ -44,7 +44,7 @@ describe('findTemplateAndValidate error', function() {
 		
 		base.recordErrorResult();
 
-		base.findTemplateAndValidate();
+		base.svc();
 		base.error.message.should.equal('Schema file not found in the parent directory for path');
 	})		
 		

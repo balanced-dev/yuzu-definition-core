@@ -5,7 +5,7 @@ schema = require('../data/schema.json'),
 data = require('../data/data.json');
 
 
-describe('findTemplateAndValidate function', function() {	
+describe('build function', function() {	
 	
 	beforeEach(base.beforeEachFn);	
 	
@@ -19,7 +19,7 @@ describe('findTemplateAndValidate function', function() {
 		
 		base.recordErrorResult();
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.contents.toString().should.equal('<h1>Template</h1>');
 	})	
@@ -28,7 +28,7 @@ describe('findTemplateAndValidate function', function() {
 		
 		base.mockFilesAndSchema(data.base, schema.base);
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.path.should.equal('c:/templates/parHeader/data/template_data.hbs')
 	})		
@@ -37,7 +37,7 @@ describe('findTemplateAndValidate function', function() {
 		
 		base.mockFilesAndSchema(data.base, schema.base);
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.layout.should.equal('layout')
 	})		
@@ -46,7 +46,7 @@ describe('findTemplateAndValidate function', function() {
 		
 		base.mockFilesAndSchema(data.base, schema.base, 'c:/templates/parHeader/data/template_data.layout2.json');
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.layout.should.equal('layout2');
 	})	
@@ -55,7 +55,7 @@ describe('findTemplateAndValidate function', function() {
 		
 		base.mockFilesAndSchema(data.base, schema.base, 'c:/templates/parHeader/data.layout/template_data.layout2.json');
 		
-		base.findTemplateAndValidate();
+		base.svc();
 		
 		base.file.layout.should.equal('layout2');
 	})			

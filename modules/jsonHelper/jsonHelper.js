@@ -110,7 +110,7 @@ function resolve_Ref(path, ref, data, refMap, key, config, results)
 	}
 }
 
-function ValidateSchema(externalSchemas, parseResults, dataObject)
+function ValidateSchema(externalSchemas, data, schema)
 {
     var v = new Validator();	
     if(externalSchemas)  {
@@ -119,7 +119,7 @@ function ValidateSchema(externalSchemas, parseResults, dataObject)
         });	
     }			
     
-    return v.validate(parseResults.data, dataObject.schema);
+    return v.validate(data, schema);
 }
 
 module.exports.resolveComponentJson = Resolve_ComponentJson;
