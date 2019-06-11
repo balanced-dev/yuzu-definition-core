@@ -1,9 +1,11 @@
 var gutil = require('gulp-util');
 var through = require('through2');
 var extend = require('util-extend');
-var jsonHelper = require('../modules/jsonHelper');
+var jsonHelper = require('../modules/jsonHelper/jsonHelper');
 
-function buildData(externalSchemas, externalDatas) {
+function buildData(templatesDir) {
+
+	externals = getExternals(templatesDir);
 
 	return through.obj(function (file, enc, cb) {
 
@@ -23,7 +25,7 @@ function buildData(externalSchemas, externalDatas) {
 			return cb();
 		}
 
-		var resolveResults = jsonHelper.resolveComponentJson(parseResults.data, { externals: externalDatas });
+		var resolveResults = jsonHelper.resolveComponentJson(parseResults.data, { externals: externals.data });
 		if(!resolveResults.valid) {
 			this.emit('error', new gutil.PluginError('Build Data validate error', resolveResults.errors[0]));
 			return cb();

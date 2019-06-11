@@ -1,10 +1,12 @@
 var gutil = require('gulp-util');
 var through = require('through2');
-var extend = require('util-extend');
-var jsonHelper = require('../modules/jsonHelper');
+var jsonHelper = require('../modules/jsonHelper/jsonHelper');
 var refMapper = require('../modules/jsonHelper/services/refsAsDictionary');
+var templateHelper = require('./templateHelper/templateHelper');
 
-function buildData(externalSchemas, externalDatas) {
+function buildData(templatesDir) {
+
+	externals = getExternals(templatesDir);
 
 	return through.obj(function (file, enc, cb) {
 
@@ -24,13 +26,19 @@ function buildData(externalSchemas, externalDatas) {
 			return cb();
 		}
 
-		var resolveResults = jsonHelper.resolveComponentJson(parseResults.data, { externals: externalDatas, refMapper = refMapper, deepclone = true });
+		var dataObject = templateHelper.GetTemplateSettings(file);
+
+		var resolveResults = jsonHelper.resolveComponentJson(dataObject.schema, { external: externals.schema, refMapper: refMapper, deepclone: true });
 		if(!resolveResults.valid) {
-			this.emit('error', new gutil.PluginError('Build Data validate error', resolveResults.errors[0]));
+			var that = this;
+			resolveResults.errors.forEach(function(error) {
+				that.emit('error', new gutil.PluginError('Resolve Map Ref for '+ dataObject.schema.id, error));
+			});
 			return cb();
 		}
 
-		file.contents = new Buffer(resolveResults.refMap);
+		parseResults.data.map = JSON.stringify(resolveResults.refMap, null, 4);
+		file.contents = new Buffer(parseResults.data.map);
 
 		this.push(file);
 		cb();

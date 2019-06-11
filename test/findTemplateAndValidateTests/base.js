@@ -44,6 +44,13 @@ var output = {
         output.createFsMock(readdirSync, readFileSync);
     },
 
+    mockTemplateSettings: function(mockTemplateSettings, mockLayoutName) {
+
+         
+
+        return output.createRenderHelperMock(mockTemplateSettings, mockLayoutName);
+    },
+
     recordErrorResult: function()
     {
         var emit = function(name, error) {
@@ -63,10 +70,12 @@ var output = {
     createFsMock : function(readdirSync, readFileSync)
     {
         findTemplateAndValidate.__set__(
-            { fs:
-                { 
-                    readdirSync: readdirSync,
-                    readFileSync: readFileSync,
+            { renderHelper:
+                { fs:
+                    { 
+                        readdirSync: readdirSync,
+                        readFileSync: readFileSync,
+                    }
                 }
             }
         );
@@ -86,7 +95,19 @@ var output = {
                 }
             }
         );
-    }	
+    },	
+
+    createRenderHelperMock: function(mockTemplateSettings, mockLayoutName)
+    {
+        findTemplateAndValidate.__set__(
+            { renderHelper:
+                { 
+                    GetTemplateSettings: mockTemplateSettings,
+                    GetLayoutName: mockLayoutName
+                }
+            }
+        );
+    }
 }
 
 module.exports = output;

@@ -11,7 +11,13 @@ describe('findTemplateAndValidate function', function() {
 	
 	it('should swap out the data content for the template content from the parent directory', function() {
 		
-		base.mockFilesAndSchema(data.base, schema.base);
+		base.mockTemplateSettings(() => {
+			return {
+				schema: {}
+			}
+		}, () => {});
+		
+		base.recordErrorResult();
 		
 		base.findTemplateAndValidate();
 		

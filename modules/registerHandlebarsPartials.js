@@ -1,17 +1,11 @@
-var Hbs = require('handlebars');
 var walkSync = require('../modules/walkSync');
 var fs = require('fs');
 var path = require('path');
+var handlebars = require('handlebars');
 
-function getName(str) {
-	return str.split('\\').pop().split('/').pop();
-}
-
-var getPartials = function(files)
+var setPartials = function(partialsDir)
 {
-	var partialsDir = files.templatePartials,
-	filenames = [],
-	batchMatches = [];
+	filenames = [];
 	
 	walkSync(partialsDir, function(dir, filename) { 
 		if(path.extname(filename) == ".hbs") 
@@ -20,24 +14,22 @@ var getPartials = function(files)
 	
 	filenames.forEach(function(filename) {
 
-		var matches = /.hbs$/.exec(filename);
-		
-		var templateName = matches['input'],
-			path = templateName.substring(0, templateName.lastIndexOf("/")),
-			name = filename.substring(0, filename.lastIndexOf(".")),
-			template = fs.readFileSync(templateName, 'utf8');
+		var templateName = path.basename(filename, '.hbs');
+		var template = fs.readFileSync(filename, 'utf8');
 
-		batchMatches.push(path)
-
-		/*		console.log('templateName', templateName)
-				console.log('path', path)
-				console.log('name', name)
-				console.log('template', template)*/
-
-		Hbs.registerPartial(name, template);
+		handlebars.registerPartial(templateName, template);
 	});	
-	
-	return batchMatches;
 }
 
-module.exports = getPartials;
+var setHelpers = function(helpers)
+{
+	
+	Object.keys(helpers).forEach(function(key) {
+		handlebars.registerHelper(key, helpers[key])
+	});
+
+}
+
+module.exports.register = {};
+module.exports.register.partials = setPartials;
+module.exports.register.helpers = setHelpers;

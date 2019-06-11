@@ -13,22 +13,24 @@
   "license": "MIT",
   "devDependencies": {
     "browser-sync": "^2.5.2",
+    "extend": "^3.0.2",
     "mocha": "^2.3.3",
+    "nyc": "^14.1.1",
     "should": "^7.1.0",
     "string": "^3.3.1"
   },
   "dependencies": {
-    "rewire": "^2.3.4",    
-    "jsonschema": "^1.0.2",    
-    "lodash": "^3.10.1",
-    "through": "^2.3.8",
-    "through2": "^2.0.0",
-    "util-extend": "^1.0.1",
-    "gulp-match": "^1.0.3",
-    "gulp-util": "^3.0.8", 
     "chalk": "^1.0.0",
     "dateformat": "^1.0.11",
-    "handlebars": "^3.0.3"       
+    "gulp-match": "^1.0.3",
+    "gulp-util": "^3.0.8",
+    "handlebars": "^3.0.3",
+    "jsonschema": "^1.0.2",
+    "lodash": "^3.10.1",
+    "rewire": "^2.3.4",
+    "through": "^2.3.8",
+    "through2": "^2.0.0",
+    "util-extend": "^1.0.1"
   },
   "repository": {
     "type": "git",

@@ -6,9 +6,8 @@ function getName(str) {
 	return str.split('\\').pop().split('/').pop();
 }
 
-var getExternals = function(files)
+var getExternals = function(partialsDir)
 {
-	var partialsDir = files.templatePartials,
 	externalSchemas = {}, externalDatas = {};
 	
 	walkSync(partialsDir, function(dir, filename) { 

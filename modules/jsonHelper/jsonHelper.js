@@ -91,9 +91,9 @@ function resolve_Ref(path, ref, data, refMap, key, config, results)
 
 		var newPath = path +'/'+ key;
 
-		if(!config.external[ref]) {
+		if(!config.external.hasOwnProperty(ref)) {
 			results.valid = false;
-			results.errors.push('Json component reference not found in '+ newPath);
+			results.errors.push('Json component reference not found in '+ newPath +' for schema '+ ref);
 		}
 		else {
 
