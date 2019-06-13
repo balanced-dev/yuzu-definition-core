@@ -1,9 +1,7 @@
 var gulpBuild = require('./modules/gulp-yuzu-def-render');
+var gulpData = require('./modules/gulp-yuzu-def-data');
 var build = require('./modules/build');
-var buildData = require('./modules/buildData');
-var buildRefMap = require('./modules/buildRefMap');
 
 module.exports.gulpBuild = gulpBuild;
+module.exports.gulpData = gulpData;
 module.exports.build = build;
-module.exports.buildData = buildData;
-module.exports.buildRefMap = buildRefMap;

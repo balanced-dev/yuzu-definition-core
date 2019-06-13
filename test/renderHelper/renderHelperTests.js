@@ -137,7 +137,7 @@ describe('renderHelper error', function() {
 
         svc.__set__(
             {
-                templateHelper: {
+                layoutHelper: {
                     GetLayout: function() {
                         return {
                             template: "<h1>{{title}}</h1>{{{ contents }}}",

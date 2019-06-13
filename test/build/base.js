@@ -1,7 +1,7 @@
 var rewire = require('rewire'), 
 should = require('should'), 
 S = require('string'),
-svc = rewire('../../modules/build.js');
+svc = rewire('../../modules/gulp-yuzu-def-render.js');
 
 var file = {};
 var error = {};
@@ -19,37 +19,6 @@ var output = {
         file.isStream = function() { return false; }	
         file.contents = new Buffer('{}');		
     },
-    mockFilesAndSchema: function mockFilesAndSchema(dataFile, schema, path)
-    {
-        if(!path)
-            file.path = 'c:/templates/parHeader/data/template_data.json';
-        else
-            file.path = path;
-            
-        file.contents = new Buffer(JSON.stringify(dataFile));
-        dir = 'c:\\templates\\parHeader';
-
-        var readdirSync = function(dir) {
-            if (dir == dir)
-                return ['data.schema', 'template.hbs']
-        }
-
-        var readFileSync = function(path, enc) {
-            if(output.fixDirSteps(path) == 'c:-templates-parHeader-data.schema')
-                return JSON.stringify(schema);
-            if(output.fixDirSteps(path) == 'c:-templates-parHeader-template.hbs')
-                return '<h1>Template</h1>';				
-        }			
-
-        output.createFsMock(readdirSync, readFileSync);
-    },
-
-    mockTemplateSettings: function(mockTemplateSettings, mockLayoutName) {
-
-         
-
-        return output.createRenderHelperMock(mockTemplateSettings, mockLayoutName);
-    },
 
     recordErrorResult: function()
     {
@@ -58,27 +27,6 @@ var output = {
         }		
 
         output.createThroughMock(emit);
-    },
-
-    fixDirSteps: function fixDirSeps(str)
-    {    
-        str = str.replace(/\//g, '-');
-        str = str.replace(/\\/g, '-');
-        return str
-    },
-
-    createFsMock : function(readdirSync, readFileSync)
-    {
-        svc.__set__(
-            { renderHelper:
-                { fs:
-                    { 
-                        readdirSync: readdirSync,
-                        readFileSync: readFileSync,
-                    }
-                }
-            }
-        );
     },
 
     createThroughMock : function(emit)
@@ -97,13 +45,15 @@ var output = {
         );
     },	
 
-    createRenderHelperMock: function(mockTemplateSettings, mockLayoutName)
+    createBuildMock: function(mockTemplateSettings, mockLayoutName)
     {
         svc.__set__(
-            { renderHelper:
+            { 
+                build:
                 { 
-                    GetTemplateSettings: mockTemplateSettings,
-                    GetLayoutName: mockLayoutName
+                    register: function() {},
+                    setup: function() {},
+                    render: function() {}
                 }
             }
         );

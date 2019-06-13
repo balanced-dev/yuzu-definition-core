@@ -60,36 +60,39 @@ function resolve_CycleProperties(path, data, refMap, config, results) {
 					resolve_Ref(path, ref, data, refMap, key, config, results);
 				}
 				else {
-                    var propertyValue = data[key];
-					resolve_CycleProperties(path, propertyValue, refMap, config, results);
+					var propertyValue = data[key];
+					var newPath = key != "properties" ? path +'/'+ key : path;
+					resolve_CycleProperties(newPath, propertyValue, refMap, config, results);
 				}
 			}
 		}
 		else if(_.isArray(data[key]))
 		{
-			var count = 0;
+			var index = 0;
 			data[key].forEach(function(id) {
 				if(id['$ref']) {
 					var ref = id['$ref'];
-					var propertyName = count;
 					var propertyValue = data[key];
-					resolve_Ref(path, ref,  propertyValue, refMap, propertyName, config, results);		
+					resolve_Ref(path, ref,  propertyValue, refMap, key, config, results, index);		
 				}
 				else {
-                    var propertyData = id;
-					resolve_CycleProperties(path, propertyData, refMap, config, results);
+					var propertyData = id;
+					var newPath = path +'/'+ key +'['+ index +']';
+					resolve_CycleProperties(newPath, propertyData, refMap, config, results);
 				}
-				count ++;
+				index ++;
 			})
 		}
 	})
 }
 
-function resolve_Ref(path, ref, data, refMap, key, config, results)
+function resolve_Ref(path, ref, data, refMap, key, config, results, index)
 {
 	if(ref) {
 
 		var newPath = path +'/'+ key;
+		if(index != undefined) 
+			newPath = newPath +'['+ index +']';
 
 		if(!config.external.hasOwnProperty(ref)) {
 			results.valid = false;
@@ -100,8 +103,11 @@ function resolve_Ref(path, ref, data, refMap, key, config, results)
             var childData =  config.deepclone ? _.cloneDeep(config.external[ref]) : config.external[ref];
             var childRefMap = {};
             Resolve_From_Root(newPath, childData, childRefMap, config, results);
-            
-            data[key] = childData;	
+			
+			if(index != undefined)
+				data[index] = childData;	
+			else
+           		data[key] = childData;	
 
             if(config.refMapper)
                 config.refMapper.process(newPath, ref, key, refMap, childRefMap);

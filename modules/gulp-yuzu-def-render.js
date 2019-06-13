@@ -1,17 +1,11 @@
 var gutil = require('gulp-util');
 var through = require('through2');
 var build = require('./build');
-var templateHelper = require('./templateHelper/templateHelper');
 
-var registerHandlebarsPartials = require('./registerHandlebarsPartials');
-var getExternals = require('./getExternals');
+function gulp(templatesDir, hbsHelpers, layoutDir) {
 
-function findTemplateAndValidate(templatesDir, layoutDir, helpers) {
-
-	registerHandlebarsPartials.register.partials(templatesDir);
-	registerHandlebarsPartials.register.helpers(helpers);
-	externals = getExternals(templatesDir);
-	layouts = templateHelper.GetLayouts(layoutDir);
+	build.register(templatesDir, hbsHelpers);
+	var externals = build.setup(templatesDir, layoutDir);
 
 	return through.obj(function (file, enc, cb) {
 
@@ -27,7 +21,7 @@ function findTemplateAndValidate(templatesDir, layoutDir, helpers) {
 			return cb();
 		}
 
-		var renderedTemplate = build(file.contents.toString(), file.path, externals, layouts, errors);
+		var renderedTemplate = build.render(file.contents.toString(), file.path, externals, errors);
 
 		if(errors.length > 0) {
 			errors.forEach(function(error) {
@@ -43,4 +37,4 @@ function findTemplateAndValidate(templatesDir, layoutDir, helpers) {
 	});
 }
 
-module.exports = findTemplateAndValidate;
+module.exports = gulp;

@@ -34,6 +34,20 @@ describe('templateHelper error', function() {
 		
 		var output = base.svc.GetTemplateSettings(base.file);
 		output.error.should.equal('More than one Json Schema file found at '+ dir);	
-	})			
+	})	
+	
+	it('should error when the schema file is not present for the json', function() {
+	
+		base.mockTemplateSettings(() => {
+			return {
+				path: "path"
+			 }
+		}, () => {});
+		
+		base.recordErrorResult();
+
+		base.svc();
+		base.error.message.should.equal('Schema file not found in the parent directory for path');
+	})	
 	
 });

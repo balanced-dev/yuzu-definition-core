@@ -1,19 +1,39 @@
 var S = require('string'),
 should = require('should'),
 jsonHelper = require('../../modules/jsonHelper/jsonHelper');
-data = require('../data/data.json');
 
 
 describe('jsonhelper component json', function() {		
 	
+	it('should error when the content file does not parse as json', function() {
+
+		var data = '{name: "test"}';
+
+		var results = jsonHelper.testJSON(data);
+
+		results.error.message.should.equal('Unexpected token n in JSON at position 1');
+	})	
+
 	it('should resolve and validate component json successfully', function(done) {	
 		
 		var config = {};
 		config.external = {
-			'/SimpleAddress': data.address 
+			'/SimpleAddress': {
+				"id": "/SimpleAddress",
+				"type": "object",
+				"properties": {
+					"zip": {"type": "string"},											
+				},
+				"additionalProperties": false	
+			} 
 		};
 
-		var results = jsonHelper.resolveComponentJson(data.baseRefAddress, config);
+		var data = {
+			"name": "Test",
+			"address": { "$ref": "/SimpleAddress" }
+		}
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);	
 
@@ -25,10 +45,15 @@ describe('jsonhelper component json', function() {
 		var config = {};
 		config.external = {};
 
-		var results = jsonHelper.resolveComponentJson(data.baseRefAddress, config);
+		var data = {
+			"name": "Test",
+			"address": { "$ref": "/SimpleAddress" }
+		}
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(false);			
-		results.errors[0].should.equal('Json component reference not found in /address');	
+		results.errors[0].should.equal("Json component reference not found in /address for schema /SimpleAddress");	
 
 		done();
 	})	
@@ -36,15 +61,26 @@ describe('jsonhelper component json', function() {
 	it('should resolve and validate sub component json successfully', function(done) {
 	
 		var config = {};
+
 		config.external = {
-			'/SimpleAddress': data.addressRefSub, 
-			'/SubItem': data.sub
+			'/SimpleAddress': {
+				"zip": {"type": "string"},	
+				"sub": { "$ref": "/SubItem" }						
+			},
+			'/SubItem': {
+				"child": "another sub item"
+			} 
 		};
 
-		var results = jsonHelper.resolveComponentJson(data.addressRefSub, config);
+		var data = {
+			"name": "Test",
+			"address": { "$ref": "/SimpleAddress" }
+		}
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true); 	
-		data.addressRefSub.sub.child.should.equal(data.sub.child);	
+		data.address.sub.should.equal(config.external["/SubItem"]);	
 		
 		done();
     })	
@@ -53,14 +89,22 @@ describe('jsonhelper component json', function() {
 	
 		var config = {};
 		config.external = {
-			'/SimpleAddress': data.addressRefSubSub, 
-			'/SubItem': data.sub
+			'/SubItem': {
+				"child": "another sub item"
+			}
 		};
 
-		var results = jsonHelper.resolveComponentJson(data.addressRefSubSub, config);
+		var data = {
+			"zip": "DC 20500",
+			"sub": { 
+				"sub": { "$ref": "/SubItem" }
+			 }
+		};
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);  	
-		data.addressRefSubSub.sub.sub.should.equal(data.sub);	
+		data.sub.sub.should.equal(config.external["/SubItem"]);	
 
 		done();	
 	})	
@@ -69,13 +113,21 @@ describe('jsonhelper component json', function() {
 	
 		var config = {};
 		config.external = {
-			'/SimpleAddress': data.addressRefSub
+			'/SimpleAddress': {
+				"zip": "DC 20500",
+				"sub": { "$ref": "/SubItem" }
+			}
 		};
 		
-		var results = jsonHelper.resolveComponentJson(data.baseRefAddress, config);
+		var data = {
+			"name": "Test",
+			"address": { "$ref": "/SimpleAddress" }
+		}
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(false);
-		results.errors[0].should.equal('Json component reference not found in /address/sub');
+		results.errors[0].should.equal("Json component reference not found in /address/sub for schema /SubItem");
 		
 		done();
 	})	
@@ -84,13 +136,25 @@ describe('jsonhelper component json', function() {
 	
 		var config = {};
 		config.external = {
-			'/SubItem': data.sub 
+			'/SubItem': {
+				"child": "another sub item"
+			} 
 		};
 
-		var results = jsonHelper.resolveComponentJson(data.variableArrayRefSub, config);
+		var data = {
+			"array": [{
+				"name": "Test",
+				"sub": { "$ref": "/SubItem" }
+			},{
+				"name": "Test 2",
+				"sub": { "$ref": "/SubItem" }
+			}]
+		};
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);
-		data.variableArrayRefSub.array[0].sub.should.equal(data.sub);
+		data.array[0].sub.should.equal(config.external["/SubItem"]);
 
 		done();
 	})	
@@ -99,13 +163,23 @@ describe('jsonhelper component json', function() {
 		
 		var config = {};
 		config.external = {
-			'/SubItem': data.sub 
+			'/SubItem': {
+				"child": "another sub item"
+			} 
 		};
 		
-		var results = jsonHelper.resolveComponentJson(data.arrayRefSub, config);
+		var data = [{
+			"name": "Test",
+			"sub": { "$ref": "/SubItem" }
+		},{
+			"name": "Test 2",
+			"sub": { "$ref": "/SubItem" }
+		}];
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);
-        data.arrayRefSub[0].sub.should.equal(data.sub);
+        data[0].sub.should.equal(config.external["/SubItem"]);
 	})
 	
 	
@@ -113,13 +187,24 @@ describe('jsonhelper component json', function() {
 	
 		var config = {};
 		config.external = {
-			'/SubItem': data.sub 
+			'/SubItem': {
+				"child": "another sub item"
+			} 
 		};
 		
-		var results = jsonHelper.resolveComponentJson(data.variableSubArrayRefSub, config);
+		var data = {
+			"array" : [
+				{"$ref": "/SubItem"},
+				{"$ref": "/SubItem"}
+			]
+		} 
+
+		var results = jsonHelper.resolveComponentJson(data, config);
 		
+		var debug = JSON.stringify(data, null, 4);
+
 		results.valid.should.equal(true);	
-        data.variableSubArrayRefSub.array[0].should.equal(data.sub);
+        data.array[0].should.equal(config.external["/SubItem"]);
 	})
 
 });	

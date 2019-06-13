@@ -1,6 +1,6 @@
 var handlebars = require('handlebars');
 var extend = require('extend');
-var templateHelper = require('../templateHelper/templateHelper');
+var layoutHelper = require('../layoutHelper/layoutHelper');
 
 const render = (hbs, data, errors) => {
     var output = '';
@@ -56,7 +56,7 @@ const fromTemplate = function(path, template, data, layouts, errors, blockLayout
 
     //add master layout
     if(blockLayout) {
-        var layout = templateHelper.GetBlockLayout(blockLayout);
+        var layout = layoutHelper.GetBlockLayout(blockLayout);
         if(layout) {
             templates.push(layout.template);
             datas.push(layout.data);
@@ -64,7 +64,7 @@ const fromTemplate = function(path, template, data, layouts, errors, blockLayout
     }
 
     //add master layout
-    var layout = templateHelper.GetLayout(path, layouts);
+    var layout = layoutHelper.GetLayout(path, layouts);
     if(layout) {
         templates.push(layout.template);
         datas.push(layout.data);

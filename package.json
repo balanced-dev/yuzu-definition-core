@@ -12,6 +12,7 @@
   "author": "Phil Whittaker",
   "license": "MIT",
   "devDependencies": {
+    "assert": "^2.0.0",
     "browser-sync": "^2.5.2",
     "extend": "^3.0.2",
     "mocha": "^2.3.3",
