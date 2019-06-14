@@ -1,9 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
-var jsonHelper = require('../jsonHelper/jsonHelper');
+var jsonHelper = require('../json/jsonService');
 
-function GetTemplateSettings(blockPath)
+function Get(blockPath)
 {
 	var dir = path.join(path.dirname(blockPath), '/..');
 	
@@ -43,4 +43,4 @@ function TestAndReadFile(dataObject, files, dir, dirFile, key, name, ext, valida
 	}
 }
 
-module.exports.GetTemplateSettings = GetTemplateSettings;
+module.exports.Get = Get;

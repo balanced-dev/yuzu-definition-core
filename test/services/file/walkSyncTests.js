@@ -1,8 +1,9 @@
-var rewire = require('rewire'), should = require('should'), walkSync = rewire('../../modules/walkSync');
+var rewire = require('rewire'), should = require('should'), 
+fileService = rewire('../../../modules/services/fileService');
 
 var createFsMock = function(readdirSync, statSync)
 {
-	walkSync.__set__(
+	fileService.__set__(
 		{ fs:
 			{ 
 				readdirSync: readdirSync,
@@ -18,7 +19,7 @@ var fileListAction = function(dir, filename) {
 	fileList.push(dir + filename) 
 }
 
-describe('walkSync', function() {
+describe('fileService getFilesInDir', function() {
 	
 	beforeEach(function() {
 		fileList = [];
@@ -32,7 +33,7 @@ describe('walkSync', function() {
 		createFsMock(readdirSync);		
 		
 		dir = 'test';
-		walkSync(dir, fileListAction);
+		fileService.getFilesInDir(dir, fileListAction);
 		
 		fileList.should.be.empty;
 	})		
@@ -45,7 +46,7 @@ describe('walkSync', function() {
 		}
 		createFsMock(readdirSync);	
 		
-		walkSync(dir, fileListAction);
+		fileService.getFilesInDir(dir, fileListAction);
 	})	
 	
 	it('should return a single file from the root directory', function() {
@@ -60,7 +61,7 @@ describe('walkSync', function() {
 		}
 		createFsMock(readdirSync, statSync);	
 		
-		walkSync(dir, fileListAction);
+		fileService.getFilesInDir(dir, fileListAction);
 		
 		fileList[0].should.be.equal("dir/testFile");
 	})	
@@ -77,7 +78,7 @@ describe('walkSync', function() {
 		}
 		createFsMock(readdirSync, statSync);			
 		
-		walkSync(dir, fileListAction);
+		fileService.getFilesInDir(dir, fileListAction);
 		
 		fileList[0].should.be.equal("dir/testFile");
 		fileList[1].should.be.equal("dir/testFile2");	
@@ -99,7 +100,7 @@ describe('walkSync', function() {
 		}
 		createFsMock(readdirSync, statSync);			
 		
-		walkSync(dir, fileListAction);
+		fileService.getFilesInDir(dir, fileListAction);
 		
 		fileList[0].should.be.equal("dir/testFile");
 		fileList[1].should.be.equal("dir/sub/testFile2");	
@@ -123,7 +124,7 @@ describe('walkSync', function() {
 		}
 		createFsMock(readdirSync, statSync);	
 		
-		walkSync(dir, fileListAction);
+		fileService.getFilesInDir(dir, fileListAction);
 		
 		fileList[0].should.be.equal("dir/testFile");
 		fileList[1].should.be.equal("dir/sub/sub2/testFile2");	

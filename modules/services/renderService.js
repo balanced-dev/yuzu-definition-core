@@ -1,6 +1,6 @@
 var handlebars = require('handlebars');
 var extend = require('extend');
-var layoutHelper = require('../layoutHelper/layoutHelper');
+var layoutHelper = require('./layoutService');
 
 const render = (hbs, data, errors) => {
     var output = '';

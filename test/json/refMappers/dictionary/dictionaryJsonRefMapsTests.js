@@ -1,70 +1,49 @@
 var S = require('string'),
 	assert = require("assert");
 	should = require('should'),
-	jsonHelper = require('../../modules/jsonHelper/jsonHelper');
+	jsonHelper = require('../../../../modules/json/jsonService');
 
+var config = {};
+config.refMapper = require('../../../../modules/json/refMappers/refsAsDictionary');
+config.deepclone = true;
 
-describe('jsonhelper component refMaps', function () {
+describe('json service dictionary schema refMaps tests', function () {
 
-	var schema = {
-		"$schema": "http://json-schema.org/draft-07/schema#",
-		"type": "object",
-		"properties": {
-			"child1": {
-				"$ref": "/child"
-			},
-			"child2": {
-				"$ref": "/child"
+	it('given a refs required as a dictionary', function (done) {
+
+		var schema = {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"child1": {
+					"$ref": "/child"
+				},
+				"child2": {
+					"$ref": "/child"
+				}
 			}
 		}
-	}
 
-	var childSchema = {
-		"$schema": "http://json-schema.org/draft-07/schema#",
-		"type": "object",
-		"properties": {
-			"grandchild": {
-				"$ref": "/grandchild"
+		var childSchema = {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"grandchild": {
+					"$ref": "/grandchild"
+				}
 			}
 		}
-	}
 
-	var grandchild = {
-		"$schema": "http://json-schema.org/draft-07/schema#",
-		"type": "object",
-		"properties": {}
-	  }
+		var grandchild = {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {}
+		  }
 
-	var external = {
-		"/child": childSchema,
-		"/grandchild": grandchild,
-	};
-
-
-	it('schema tree- given a refs required as a tree', function (done) {
-
-		var config = {};
-		config.external = external;
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsTree');
-		config.deepclone = true;
-
-		var results = jsonHelper.resolveComponentJson(schema, config);
-
-		results.refMap.child1.ref.should.equal('/child');
-		results.refMap.child1.children.grandchild.ref.should.equal('/grandchild');
-		results.refMap.child2.ref.should.equal('/child');
-		results.refMap.child2.children.grandchild.ref.should.equal('/grandchild');
-
-		done();
-
-	})
-
-	it('schema dictionary - given a refs required as a dictionary', function (done) {
-
-		var config = {};
-		config.external = external;
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsDictionary');
-		config.deepclone = true;
+		config.external = {
+			"/child": childSchema,
+			"/grandchild": grandchild,
+		};
 
 		var results = jsonHelper.resolveComponentJson(schema, config);
 
@@ -110,10 +89,6 @@ describe('jsonhelper component refMaps', function () {
 	})
 
 	it('json dictionary - given multiple json states then consolidate', function (done) {
-
-		var config = {};
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsDictionary');
-		config.deepclone = true;
 
 		config.external = {
 			"/child": {},
@@ -161,10 +136,6 @@ describe('jsonhelper component refMaps', function () {
 
 	it('json dictionary - given an array of childs then path correctly', function (done) {
 
-		var config = {};
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsDictionary');
-		config.deepclone = true;
-
 		config.external = {
 			"/child": {},
 			"/child_new-state": {},
@@ -206,10 +177,6 @@ describe('jsonhelper component refMaps', function () {
 	})
 
 	it('given a an array and a sub object in the array object', function (done) {
-
-		var config = {};
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsDictionary');
-		config.deepclone = true;
 
 		config.external = {
 			"/sub": {},
@@ -270,10 +237,6 @@ describe('jsonhelper component refMaps', function () {
 
 	it('given an internal array and a sub object in the array then path is correct', function (done) {
 
-		var config = {};
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsDictionary');
-		config.deepclone = true;
-
 		config.external = {
 			"/child": {},
 			"/child_new-state": {}
@@ -319,10 +282,6 @@ describe('jsonhelper component refMaps', function () {
 	})
 
 	it('given an internal object and a sub ref in the object then path is correct', function (done) {
-
-		var config = {};
-		config.refMapper = require('../../modules/jsonHelper/services/refsAsDictionary');
-		config.deepclone = true;
 
 		config.external = {
 			"/child": {},

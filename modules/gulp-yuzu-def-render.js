@@ -17,7 +17,7 @@ function gulp(templatesDir, hbsHelpers, layoutDir) {
 		}
 		
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('Find template and validate error', 'Streaming not supported'));
+			this.emit('error', new gutil.PluginError('yuzu render', 'Streaming not supported'));
 			return cb();
 		}
 

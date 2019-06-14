@@ -1,10 +1,10 @@
 var should = require('should'),
 rewire = require('rewire'),
 S = require('string'),
-svc = rewire('../../modules/renderHelper/renderHelper.js');
+svc = rewire('../../modules/services/renderService.js');
 
 
-describe('renderHelper error', function() {
+describe('render service tests', function() {
 	
 	it('should render hbs files', function() {
 	

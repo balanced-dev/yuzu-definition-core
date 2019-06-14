@@ -14,7 +14,7 @@ function buildData(templatesDir) {
 		}
 		
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('Build Data validate error', 'Streaming not supported'));
+			this.emit('error', new gutil.PluginError('yuzu data build', 'Streaming not supported'));
 			return cb();
 		}
 

@@ -1,23 +1,20 @@
-var jsonHelper = require('./jsonHelper/jsonHelper');
-var refMapperDictionary = require('./jsonHelper/services/refsAsDictionary');
-
-var templateHelper = require('./templateHelper/templateHelper');
-var layoutHelper = require('./layoutHelper/layoutHelper');
-var renderHelper = require('./renderHelper/renderHelper');
-var registerHandlebarsPartials = require('./registerHandlebarsPartials');
-var getExternals = require('./getExternals');
+var build = require('./build-internal');
+var layoutService = require('./services/layoutService');
+var renderService = require('./services/renderService');
+var hbsService = require('./services/hbsService');
+var fileService = require('./services/fileService');
 
 var register = function(partialsRootDir, hbsHelpers) {
 
-	registerHandlebarsPartials.register.helpers(hbsHelpers);
-	registerHandlebarsPartials.register.partials(partialsRootDir);
+	hbsService.registerHelpers(hbsHelpers);
+	hbsService.registerPartials(partialsRootDir);
 }
 
 const setup = function(partialsRootDir, layoutDir) {
 
-	var externals = getExternals(partialsRootDir);
+	var externals = fileService.getDataAndSchema(partialsRootDir);
 	if(layoutDir)
-		externals.layouts = layoutHelper.GetLayouts(layoutDir);
+		externals.layouts = layoutService.GetLayouts(layoutDir);
 	else
 		externals.layouts = [];
 
@@ -26,32 +23,32 @@ const setup = function(partialsRootDir, layoutDir) {
 
 const render = function(data, path, externals, errors) {
 
-	var blockData = getBlockData(path);
+	var blockData = build.getBlockData(path);
 
-	data = parseJson(data, path, errors);
-	data = resolveJson(data, externals, blockData, errors);
+	data = build.parseJson(data, path, errors);
+	data = build.resolveJson(data, externals, blockData, errors);
 
-	validateSchema(data, externals, blockData, errors);
+	build.validateSchema(data, externals, blockData, errors);
 
-	return renderHelper.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
+	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
 }
 
 const resolveDataString = function(data, path, externals, errors)
 {
-	data = parseJson(data, path, errors);
-	data = resolveJson(data, externals, blockData, errors);
+	data = build.parseJson(data, path, errors);
+	data = build.resolveJson(data, externals, blockData, errors);
 
 	return data
 }
 
 const resolveDataBlockName = function(partialsRootDir, blockName) {
 
-	var externals = getExternals(partialsRootDir);
+	var externals = fileService.getDataAndSchema(partialsRootDir);
 
 	if (externals.data.hasOwnProperty(blockName)) {
 		var data = externals.data[blockName];
 
-		data = resolveJson(data, externals);
+		data = build.resolveJson(data, externals);
 
 		return data;
 	}
@@ -62,14 +59,13 @@ const resolveDataBlockName = function(partialsRootDir, blockName) {
 
 const resolveDataAndRefMap = function(partialsRootDir, blockName) {
 
-	var externals = getExternals(partialsRootDir);
+	var externals = fileService.getDataAndSchema(partialsRootDir);
 
 	if (externals.data.hasOwnProperty(blockName)) {
 		var data = externals.data[blockName];
-		var schema = externals.schema[blockName];
 
-		refmap = resolveSchemaAsDictionaryRefMap(data, externals);
-		data = resolveJson(data, externals);
+		refmap = build.resolveSchemaAsDictionaryRefMap(data, externals);
+		data = build.resolveJson(data, externals);
 
 		return { 
 			data: data, 
@@ -78,73 +74,6 @@ const resolveDataAndRefMap = function(partialsRootDir, blockName) {
 	}
 	else {
 		throw blockName +" block not found"
-	}
-}
-
-
-/*private*/
-const parseJson = function(fileContents, path, errors)
-{
-	var results = jsonHelper.testJSON(fileContents);
-	if(!results.valid) {
-		errors.push({
-			source: 'yuzu build - json parse',
-			inner: 'JSON Error for '+ path +', '+ results.error
-		})
-	}
-	return results.data;
-}
-
-const resolveJson = function(data, externals, blockData, errors)
-{
-	var resolveResults = jsonHelper.resolveComponentJson(data, { external: externals.data });
-	if(!resolveResults.valid) {
-		var that = this;
-		resolveResults.errors.forEach(function(error) {
-			errors.push({
-				source: 'yuzu build - json resolve for '+ blockData.schema.id,
-				inner: error
-			})
-			that.emit('error', new gutil.PluginError('Resolve Map Ref for '+ blockData.schema.id, error));
-		});
-	}
-	return data;
-}
-
-const resolveSchemaAsDictionaryRefMap = function(schema, externals) {
-
-	var results = jsonHelper.resolveComponentJson(schema, { external: externals.data, refMapper: refMapperDictionary, deepclone: true });
-	return results.refMap;
-}
-
-const getBlockData = function(path) {
-
-	var blockData = templateHelper.GetTemplateSettings(path);
-	if(blockData.error) {
-		errors.push({
-			source: 'yuzu build - build template settings',
-			inner: blockData.error
-		})
-	}
-	return blockData;
-
-}
-
-const validateSchema = function(data, externals, blockData, errors) {
-	if(!blockData.schema) {
-		errors.push({
-			source: 'yuzu build - schema not found : '+ path.basename(blockData.path),
-		})			
-	}
-	else{
-
-		var result = jsonHelper.validateSchema(externals.schema, data, blockData.schema)
-		result.errors.forEach(function(error) {
-			errors.push({
-				source: 'yuzu build - validate schema '+ blockData.schema,
-				inner: error
-			});
-		});
 	}
 }
 		

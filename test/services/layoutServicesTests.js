@@ -1,9 +1,9 @@
 varS = require('string'),
 should = require('should'),
 rewire = require('rewire'),
-svc = rewire('../modules/layoutHelper/layoutHelper.js');;
+svc = rewire('../../modules/services/layoutService.js');;
 
-describe('layout helper', function() {		
+describe('layout service tests', function() {		
 	
 	it('should add a default layout of layout', function() {
 		

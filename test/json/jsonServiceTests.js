@@ -1,15 +1,15 @@
 var S = require('string'),
 should = require('should'),
-jsonHelper = require('../../modules/jsonHelper/jsonHelper');
+jsonService = require('../../modules/json/jsonService');
 
 
-describe('jsonhelper component json', function() {		
+describe('json service resolve tests', function() {		
 	
 	it('should error when the content file does not parse as json', function() {
 
 		var data = '{name: "test"}';
 
-		var results = jsonHelper.testJSON(data);
+		var results = jsonService.testJSON(data);
 
 		results.error.message.should.equal('Unexpected token n in JSON at position 1');
 	})	
@@ -33,7 +33,7 @@ describe('jsonhelper component json', function() {
 			"address": { "$ref": "/SimpleAddress" }
 		}
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);	
 
@@ -50,7 +50,7 @@ describe('jsonhelper component json', function() {
 			"address": { "$ref": "/SimpleAddress" }
 		}
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(false);			
 		results.errors[0].should.equal("Json component reference not found in /address for schema /SimpleAddress");	
@@ -77,7 +77,7 @@ describe('jsonhelper component json', function() {
 			"address": { "$ref": "/SimpleAddress" }
 		}
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true); 	
 		data.address.sub.should.equal(config.external["/SubItem"]);	
@@ -101,7 +101,7 @@ describe('jsonhelper component json', function() {
 			 }
 		};
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);  	
 		data.sub.sub.should.equal(config.external["/SubItem"]);	
@@ -124,7 +124,7 @@ describe('jsonhelper component json', function() {
 			"address": { "$ref": "/SimpleAddress" }
 		}
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(false);
 		results.errors[0].should.equal("Json component reference not found in /address/sub for schema /SubItem");
@@ -151,7 +151,7 @@ describe('jsonhelper component json', function() {
 			}]
 		};
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);
 		data.array[0].sub.should.equal(config.external["/SubItem"]);
@@ -176,7 +176,7 @@ describe('jsonhelper component json', function() {
 			"sub": { "$ref": "/SubItem" }
 		}];
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		results.valid.should.equal(true);
         data[0].sub.should.equal(config.external["/SubItem"]);
@@ -199,7 +199,7 @@ describe('jsonhelper component json', function() {
 			]
 		} 
 
-		var results = jsonHelper.resolveComponentJson(data, config);
+		var results = jsonService.resolveComponentJson(data, config);
 		
 		var debug = JSON.stringify(data, null, 4);
 

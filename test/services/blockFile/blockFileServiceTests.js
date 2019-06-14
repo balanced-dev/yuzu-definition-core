@@ -3,7 +3,7 @@ S = require('string'),
 base = require('./base.js');
 
 
-describe('templateHelper error', function() {
+describe('block files service tests', function() {
 	
 	it('should error when more than one handlebars file is found in parent directory', function() {
 	
@@ -16,7 +16,7 @@ describe('templateHelper error', function() {
 		}
 		base.createFsMock(readdirSync);
 		
-		var output = base.svc.GetTemplateSettings(base.file);
+		var output = base.svc.Get(base.file.path);
 		output.error.should.equal('More than one Handlebars file found at '+ dir);
 	})		
 	
@@ -32,7 +32,7 @@ describe('templateHelper error', function() {
 			
 		base.createFsMock(readdirSync);
 		
-		var output = base.svc.GetTemplateSettings(base.file);
+		var output = base.svc.Get(base.file.path);
 		output.error.should.equal('More than one Json Schema file found at '+ dir);	
 	})	
 	

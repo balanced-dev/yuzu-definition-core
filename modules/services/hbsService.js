@@ -1,4 +1,4 @@
-var walkSync = require('../modules/walkSync');
+var fileService = require('./fileService');
 var fs = require('fs');
 var path = require('path');
 var handlebars = require('handlebars');
@@ -7,7 +7,7 @@ var setPartials = function(partialsDir)
 {
 	filenames = [];
 	
-	walkSync(partialsDir, function(dir, filename) { 
+	fileService.getFilesInDir(partialsDir, function(dir, filename) { 
 		if(path.extname(filename) == ".hbs") 
 			filenames.push(dir + filename); 
 	});
@@ -30,6 +30,5 @@ var setHelpers = function(helpers)
 
 }
 
-module.exports.register = {};
-module.exports.register.partials = setPartials;
-module.exports.register.helpers = setHelpers;
+module.exports.registerPartials = setPartials;
+module.exports.registerHelpers = setHelpers;
