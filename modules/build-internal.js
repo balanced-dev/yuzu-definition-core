@@ -1,5 +1,5 @@
 var jsonService = require('./json/jsonService');
-var refMapperDictionary = require('./json/refMappers/refsAsDictionary');
+var refMapperSplits = require('./json/refMappers/refsAsSplits');
 
 var blockFilesService = require('./services/blockFilesService');
 
@@ -34,7 +34,7 @@ const resolveJson = function(data, externals, blockData, errors)
 
 const resolveSchemaAsDictionaryRefMap = function(schema, externals) {
 
-	var results = jsonService.resolveComponentJson(schema, { external: externals.data, refMapper: refMapperDictionary, deepclone: true });
+	var results = jsonService.resolveComponentJson(schema, { external: externals.data, refMapper: refMapperSplits, deepclone: true });
 	return results.refMap;
 }
 

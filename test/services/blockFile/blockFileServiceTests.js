@@ -36,7 +36,7 @@ describe('block files service tests', function() {
 		output.error.should.equal('More than one Json Schema file found at '+ dir);	
 	})	
 	
-	it('should error when the schema file is not present for the json', function() {
+	xit('should error when the schema file is not present for the json', function() {
 	
 		base.mockTemplateSettings(() => {
 			return {

@@ -44,41 +44,31 @@ function Resolve_From_Root(path, data, refMap, config, results)
 	return results;
 }
 
-function resolve_CycleProperties(path, data, refMap, config, results) {
-	Object.keys(data).forEach(function(key) {
-		if(_.isPlainObject(data[key]))
+function resolve_CycleProperties(path, object, refMap, config, results) {
+	Object.keys(object).forEach(function(key) {
+		var property = object[key];
+		if(_.isPlainObject(property))
 		{
-			if(_.isArray(data[key])) {
-				data[key].forEach(function(id) {
-                    var ref = data[key][id]['$ref'];
-					resolve_Ref(path, ref, data, refMap, key, config, results);
-				})
+			if(property['$ref']) { // externalise on this using this conditional as a isvalid and the resolve as the apply
+				var ref = property['$ref'];
+				resolve_Ref(ref, path, key, object, refMap, config, results);
 			}
 			else {
-				if(data[key]['$ref']) {
-                    var ref = data[key]['$ref'];
-					resolve_Ref(path, ref, data, refMap, key, config, results);
-				}
-				else {
-					var propertyValue = data[key];
-					var newPath = key != "properties" ? path +'/'+ key : path;
-					resolve_CycleProperties(newPath, propertyValue, refMap, config, results);
-				}
+				var newPath = key != "properties" ? path +'/'+ key : path;
+				resolve_CycleProperties(newPath, property, refMap, config, results);
 			}
 		}
-		else if(_.isArray(data[key]))
+		else if(_.isArray(property))
 		{
 			var index = 0;
-			data[key].forEach(function(id) {
-				if(id['$ref']) {
-					var ref = id['$ref'];
-					var propertyValue = data[key];
-					resolve_Ref(path, ref,  propertyValue, refMap, key, config, results, index);		
+			property.forEach(function(item) {
+				if(item['$ref']) {
+					var ref = item['$ref'];
+					resolve_Ref(ref, path, key, property, refMap, config, results, index);		
 				}
 				else {
-					var propertyData = id;
 					var newPath = path +'/'+ key +'['+ index +']';
-					resolve_CycleProperties(newPath, propertyData, refMap, config, results);
+					resolve_CycleProperties(newPath, item, refMap, config, results);
 				}
 				index ++;
 			})
@@ -86,7 +76,7 @@ function resolve_CycleProperties(path, data, refMap, config, results) {
 	})
 }
 
-function resolve_Ref(path, ref, data, refMap, key, config, results, index)
+function resolve_Ref(ref, path, key, context, refMap, config, results, index)
 {
 	if(ref) {
 
@@ -105,12 +95,12 @@ function resolve_Ref(path, ref, data, refMap, key, config, results, index)
             Resolve_From_Root(newPath, childData, childRefMap, config, results);
 			
 			if(index != undefined)
-				data[index] = childData;	
+				context[index] = childData;	
 			else
-           		data[key] = childData;	
+				context[key] = childData;	
 
             if(config.refMapper)
-                config.refMapper.process(newPath, ref, key, refMap, childRefMap);
+                config.refMapper.process(newPath, ref, key, refMap, childRefMap, config);
             			
 		}
 	}

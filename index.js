@@ -1,5 +1,5 @@
-var gulpBuild = require('./modules/gulp-yuzu-def-render');
-var gulpData = require('./modules/gulp-yuzu-def-data');
+var gulpBuild = require('./modules/gulp/gulp-yuzu-def-render');
+var gulpData = require('./modules/gulp/gulp-yuzu-def-data');
 var build = require('./modules/build');
 
 module.exports.gulpBuild = gulpBuild;

@@ -142,10 +142,12 @@ describe('json service resolve tests', function() {
 		};
 
 		var data = {
-			"array": [{
+			"array": [
+			{
 				"name": "Test",
 				"sub": { "$ref": "/SubItem" }
-			},{
+			},
+			{
 				"name": "Test 2",
 				"sub": { "$ref": "/SubItem" }
 			}]
@@ -168,10 +170,12 @@ describe('json service resolve tests', function() {
 			} 
 		};
 		
-		var data = [{
+		var data = [
+		{
 			"name": "Test",
 			"sub": { "$ref": "/SubItem" }
-		},{
+		},
+		{
 			"name": "Test 2",
 			"sub": { "$ref": "/SubItem" }
 		}];

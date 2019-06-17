@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var build = require('./build-internal');
 var layoutService = require('./services/layoutService');
 var renderService = require('./services/renderService');
@@ -63,12 +64,12 @@ const resolveDataAndRefMap = function(partialsRootDir, blockName) {
 
 	if (externals.data.hasOwnProperty(blockName)) {
 		var data = externals.data[blockName];
+		var unresolvedData = _.cloneDeep(data);
 
 		refmap = build.resolveSchemaAsDictionaryRefMap(data, externals);
-		data = build.resolveJson(data, externals);
 
 		return { 
-			data: data, 
+			data: unresolvedData, 
 			map: refmap
 		};
 	}

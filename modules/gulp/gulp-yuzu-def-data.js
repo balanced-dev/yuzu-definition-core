@@ -1,6 +1,6 @@
 var gutil = require('gulp-util');
 var through = require('through2');
-var build = require('./build');
+var build = require('../build');
 
 function buildData(templatesDir) {
 

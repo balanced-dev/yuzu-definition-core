@@ -4,7 +4,7 @@ jsonHelper = require('../../modules/json/jsonService');
 
 describe('json service validation tests', function() {		
 	
-	it('should error when the schema file does not parse', function() {	
+	xit('should error when the schema file does not parse', function() {	
 	
 		var data = {
 			"name": "Test"

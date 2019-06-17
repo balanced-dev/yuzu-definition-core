@@ -14,7 +14,7 @@ describe('gulp render tests', function() {
 		var emit = function(name, error) {
 			name.should.equal('error');
 			error.message.should.equal('Streaming not supported');
-			error.plugin.should.equal('Find template and validate error');
+			error.plugin.should.equal('yuzu render');
 		}
 
 		base.createBuildMock();

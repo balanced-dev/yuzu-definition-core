@@ -1,7 +1,7 @@
 var rewire = require('rewire'), 
 should = require('should'), 
 S = require('string'),
-svc = rewire('../../modules/gulp-yuzu-def-render.js');
+svc = rewire('../../modules/gulp/gulp-yuzu-def-render.js');
 
 var file = {};
 var error = {};
