@@ -34,6 +34,27 @@ const render = function(data, path, externals, errors) {
 	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
 }
 
+const renderPreview = function(data, refs, path, externals, errors) {
+
+	Object.keys(refs).forEach(function(key) {
+		externals.data[key] = refs[key];
+	});
+
+	return render(data, path, externals, errors);
+}
+
+const save = function(partialsRootDir, data, path, refs) {
+
+	fs.writeFileSync(path, JSON.stringify(data, null, 4));
+
+	var dataPaths = fileService.getDataPaths(partialsRootDir);
+
+	Object.keys(refs).forEach(function(key) {
+		fs.writeFileSync(dataPaths[key], JSON.stringify(refs[key], null, 4));
+	});
+
+}
+
 const resolveDataString = function(data, path, externals, errors)
 {
 	data = build.parseJson(data, path, errors);
@@ -82,6 +103,8 @@ module.exports = {
 	register,
 	setup,
 	render,
+	renderPreview,
+	save,
 	resolveDataString,
 	resolveDataBlockName,
 	resolveDataAndRefMap

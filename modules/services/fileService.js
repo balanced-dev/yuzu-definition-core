@@ -28,6 +28,23 @@ var getDataAndSchema = function (partialsDir) {
 	return output;
 }
 
+var getDataPaths = function (partialsDir) {
+	output = {};
+
+	getFilesInDir(partialsDir, function (dir, filename) {
+		var dirFilename = path.join(dir, filename);
+		if (path.extname(filename) == ".json")
+			try {
+				output[getFilename(filename)] = dirFilename;
+			}
+			catch (e) {
+				console.log("File not parsed " + filename)
+			}
+	});
+
+	return output;
+}
+
 function getFilename(filename) {
 	return '/' + filename.replace(path.extname(filename), "")
 }
@@ -48,5 +65,6 @@ function getFilesInDir(dir, fileAction) {
 
 module.exports = {
 	getDataAndSchema,
+	getDataPaths,
 	getFilesInDir
 };
