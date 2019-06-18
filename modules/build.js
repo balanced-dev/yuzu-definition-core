@@ -43,15 +43,19 @@ const renderPreview = function(data, refs, path, externals, errors) {
 	return render(data, path, externals, errors);
 }
 
-const save = function(partialsRootDir, data, path, refs) {
+const save = function(partialsRootDir, data, path, refs, errors) {
 
-	fs.writeFileSync(path, JSON.stringify(data, null, 4));
+	fs.writeFileSync(path, data);
 
 	var dataPaths = fileService.getDataPaths(partialsRootDir);
 
 	Object.keys(refs).forEach(function(key) {
 		fs.writeFileSync(dataPaths[key], JSON.stringify(refs[key], null, 4));
 	});
+
+	var externals = fileService.getDataAndSchema(partialsRootDir);
+
+	return render(data, path, externals, errors);
 
 }
 
