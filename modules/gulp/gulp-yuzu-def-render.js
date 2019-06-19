@@ -24,8 +24,9 @@ function gulp(templatesDir, hbsHelpers, layoutDir) {
 		var renderedTemplate = build.render(file.contents.toString(), file.path, externals, errors);
 
 		if(errors.length > 0) {
+			var that = this;
 			errors.forEach(function(error) {
-				this.emit('error', new gutil.PluginError(error.source, error.inner));
+				that.emit('error', new gutil.PluginError(error.source, error.inner));
 			});
 			return cb();	
 		}

@@ -48,9 +48,13 @@ const save = function(partialsRootDir, data, path, refs, errors) {
 	fs.writeFileSync(path, data);
 
 	var dataPaths = fileService.getDataPaths(partialsRootDir);
+	//only save sublocks that are in the current graph
+	var refmap = build.resolveSchemaAsListRefMap(JSON.parse(data), { data: refs });
 
 	Object.keys(refs).forEach(function(key) {
-		fs.writeFileSync(dataPaths[key], JSON.stringify(refs[key], null, 4));
+		if(refmap.hasOwnProperty(key)) {
+			fs.writeFileSync(dataPaths[key], JSON.stringify(refs[key], null, 4));
+		}
 	});
 
 	var externals = fileService.getDataAndSchema(partialsRootDir);
@@ -91,7 +95,7 @@ const resolveDataAndRefMap = function(partialsRootDir, blockName) {
 		var data = externals.data[blockName];
 		var unresolvedData = _.cloneDeep(data);
 
-		refmap = build.resolveSchemaAsDictionaryRefMap(data, externals);
+		refmap = build.resolveSchemaAsListRefMap(data, externals);
 
 		return { 
 			data: unresolvedData, 

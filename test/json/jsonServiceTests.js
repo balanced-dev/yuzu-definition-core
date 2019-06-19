@@ -1,4 +1,5 @@
 var S = require('string'),
+assert = require("assert");
 should = require('should'),
 jsonService = require('../../modules/json/jsonService');
 
@@ -19,12 +20,10 @@ describe('json service resolve tests', function() {
 		var config = {};
 		config.external = {
 			'/SimpleAddress': {
-				"id": "/SimpleAddress",
-				"type": "object",
-				"properties": {
-					"zip": {"type": "string"},											
-				},
-				"additionalProperties": false	
+				"lines": [ "1600 Pennsylvania Avenue Northwest" ],
+				"zip": "DC 20500",
+				"city": "Washington",
+				"country": "USA",
 			} 
 		};
 
@@ -34,8 +33,21 @@ describe('json service resolve tests', function() {
 		}
 
 		var results = jsonService.resolveComponentJson(data, config);
+
+		var expected = {
+			"name": "Test",
+			"address": {
+				"lines": [
+					"1600 Pennsylvania Avenue Northwest"
+				],
+				"zip": "DC 20500",
+				"city": "Washington",
+				"country": "USA"
+			}
+		};
 		
 		results.valid.should.equal(true);	
+		assert.deepEqual(expected, data);
 
 		done();
 	})		
@@ -64,7 +76,7 @@ describe('json service resolve tests', function() {
 
 		config.external = {
 			'/SimpleAddress': {
-				"zip": {"type": "string"},	
+				"zip": "DC 20500",
 				"sub": { "$ref": "/SubItem" }						
 			},
 			'/SubItem': {
@@ -78,9 +90,18 @@ describe('json service resolve tests', function() {
 		}
 
 		var results = jsonService.resolveComponentJson(data, config);
+		var expected = {
+			"name": "Test",
+			"address": {
+				"zip": "DC 20500",
+				"sub": {
+					"child": "another sub item"
+				}
+			}
+		};
 		
 		results.valid.should.equal(true); 	
-		data.address.sub.should.equal(config.external["/SubItem"]);	
+		assert.deepEqual(expected, data);
 		
 		done();
     })	
@@ -102,9 +123,17 @@ describe('json service resolve tests', function() {
 		};
 
 		var results = jsonService.resolveComponentJson(data, config);
+		var expected = {
+			"zip": "DC 20500",
+			"sub": {
+				"sub": {
+					"child": "another sub item"
+				}
+			}
+		};
 		
 		results.valid.should.equal(true);  	
-		data.sub.sub.should.equal(config.external["/SubItem"]);	
+		assert.deepEqual(expected, data);
 
 		done();	
 	})	
@@ -154,9 +183,25 @@ describe('json service resolve tests', function() {
 		};
 
 		var results = jsonService.resolveComponentJson(data, config);
+		var expected = {
+			"array": [
+				{
+					"name": "Test",
+					"sub": {
+						"child": "another sub item"
+					}
+				},
+				{
+					"name": "Test 2",
+					"sub": {
+						"child": "another sub item"
+					}
+				}
+			]
+		};
 		
 		results.valid.should.equal(true);
-		data.array[0].sub.should.equal(config.external["/SubItem"]);
+		assert.deepEqual(expected, data);
 
 		done();
 	})	
@@ -181,9 +226,23 @@ describe('json service resolve tests', function() {
 		}];
 
 		var results = jsonService.resolveComponentJson(data, config);
+		var expected = [
+			{
+				"name": "Test",
+				"sub": {
+					"child": "another sub item"
+				}
+			},
+			{
+				"name": "Test 2",
+				"sub": {
+					"child": "another sub item"
+				}
+			}
+		];
 		
 		results.valid.should.equal(true);
-        data[0].sub.should.equal(config.external["/SubItem"]);
+        assert.deepEqual(expected, data);
 	})
 	
 	
@@ -204,11 +263,109 @@ describe('json service resolve tests', function() {
 		} 
 
 		var results = jsonService.resolveComponentJson(data, config);
-		
-		var debug = JSON.stringify(data, null, 4);
+		var expected = {
+			"array": [
+				{
+					"child": "another sub item"
+				},
+				{
+					"child": "another sub item"
+				}
+			]
+		};
 
 		results.valid.should.equal(true);	
-        data.array[0].should.equal(config.external["/SubItem"]);
+        assert.deepEqual(expected, data);
 	})
+
+	it('array of refs', function() {	
+	
+		var config = {};
+		config.external = {
+			'/SubItem': {
+				"child": "another sub item"
+			} 
+		};
+		
+		var data = [
+			{"$ref": "/SubItem"},
+			{"$ref": "/SubItem"}
+		]
+
+		var results = jsonService.resolveComponentJson(data, config);
+		var expected = [
+			{
+				"child": "another sub item"
+			},
+			{
+				"child": "another sub item"
+			}
+		]
+
+		results.valid.should.equal(true);	
+        assert.deepEqual(expected, data);
+	})
+
+	it('should add back ref property marker for an object when configured', function(done) {	
+		
+		var config = {};
+		config.addRefProperty = true;
+		config.external = {
+			'/SimpleAddress': {
+				"zip": "DC 20500"
+			} 
+		};
+
+		var data = {
+			"name": "Test",
+			"address": { "$ref": "/SimpleAddress" }
+		}
+
+		var results = jsonService.resolveComponentJson(data, config);
+		var expected = {
+			"name": "Test",
+			"address": {
+				"zip": "DC 20500",
+				"$ref": "/SimpleAddress"
+			}
+		}
+		
+		results.valid.should.equal(true);	
+		assert.deepEqual(expected, data);
+
+		done();
+	})	
+
+	it('should add back ref property marker for an array when configured', function(done) {	
+		
+		var config = {};
+		config.addRefProperty = true;
+		config.external = {
+			'/SimpleAddress': {
+				"zip": "DC 20500"
+			} 
+		};
+
+		var data = [
+			{ "$ref": "/SimpleAddress" },
+			{ "$ref": "/SimpleAddress" }
+		]
+
+		var results = jsonService.resolveComponentJson(data, config);
+		var debug = JSON.stringify(data, null, 4);
+		var expected = [{
+			"zip": "DC 20500",
+			"$ref": "/SimpleAddress"
+		},
+		{
+			"zip": "DC 20500",
+			"$ref": "/SimpleAddress"
+		}]
+		
+		results.valid.should.equal(true);	
+		assert.deepEqual(expected, data);
+
+		done();
+	})	
 
 });	

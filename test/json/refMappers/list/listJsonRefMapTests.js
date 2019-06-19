@@ -4,12 +4,12 @@ var S = require('string'),
 	jsonHelper = require('../../../../modules/json/jsonService');
 
 var config = {};
-config.refMapper = require('../../../../modules/json/refMappers/refsAsSplits');
+config.refMapper = require('../../../../modules/json/refMappers/refsAsList');
 config.deepclone = true;
 
-describe('json service splits schema refMaps tests', function () {
+describe('json service list schema refMaps tests', function () {
 
-	it('json splits - multiple states', function (done) {
+	it('json list - multiple states', function (done) {
 
 		config.external = {
 			"/child": {
@@ -37,7 +37,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	})
 
-	it('json splits - add used types only', function (done) {
+	it('json list - add used types only', function (done) {
 
 		config.external = {
 			"/child": {
@@ -68,7 +68,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	})
 
-	it('json splits - multiple types', function (done) {
+	it('json list - multiple types', function (done) {
 
 		config.external = {
 			"/child": {
@@ -96,7 +96,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	})
 
-	it('json splits - sub block', function (done) {
+	it('json list - sub block', function (done) {
 
 		config.external = {
 			"/sub": {
@@ -119,7 +119,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	})
 
-	it('json splits - sub sub object', function (done) {
+	it('json list - sub sub object', function (done) {
 
 		config.external = {
 			"/child": {},
@@ -143,7 +143,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	})
 
-	it('json splits - array', function (done) {
+	it('json list - array', function (done) {
 
 		config.external = {
 			"/child": {},
@@ -165,7 +165,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	});
 
-	it('json splits - array item with sub block', function (done) {
+	it('json list - array item with sub block', function (done) {
 
 		config.external = {
 			"/sub": {
@@ -194,7 +194,7 @@ describe('json service splits schema refMaps tests', function () {
 
 	})
 
-	it('json splits - array item with sub block as object', function (done) {
+	it('json list - array item with sub block as object', function (done) {
 
 		config.external = {
 			"/child": {},

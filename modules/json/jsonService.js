@@ -34,10 +34,19 @@ function Resolve_ComponentJson(data, config)
 
 function Resolve_From_Root(path, data, refMap, config, results)
 {
-	if(_.isArray(data))
+	if(_.isArray(data)) {
+		var index = 0;
 		data.forEach(function(item) {
-			resolve_CycleProperties(path, item, refMap, config, results);
+			if(item.hasOwnProperty('$ref')) {
+				var ref = item['$ref'];
+				resolve_Ref(ref, path, "", data, refMap, config, results, index);
+			}
+			else {
+				resolve_CycleProperties(path, item, refMap, config, results);
+			}
+			index ++;
 		})
+	}
 	else
 		resolve_CycleProperties(path, data, refMap, config, results);
 	
@@ -94,6 +103,9 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
             var childRefMap = {};
             Resolve_From_Root(newPath, childData, childRefMap, config, results);
 			
+			if(config.addRefProperty)
+				childData["$ref"] = ref;
+
 			if(index != undefined)
 				context[index] = childData;	
 			else
