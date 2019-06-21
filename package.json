@@ -14,8 +14,8 @@
   "devDependencies": {
     "assert": "^2.0.0",
     "browser-sync": "^2.5.2",
+    "chai": "^4.2.0",
     "extend": "^3.0.2",
-    "json-schema-empty": "^1.1.1",
     "mocha": "^2.3.3",
     "nyc": "^14.1.1",
     "should": "^7.1.0",

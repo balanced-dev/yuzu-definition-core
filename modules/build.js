@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var build = require('./build-internal');
+var jsonService = require('./json/jsonService');
 var layoutService = require('./services/layoutService');
 var renderService = require('./services/renderService');
 var hbsService = require('./services/hbsService');
@@ -106,6 +107,15 @@ const resolveDataAndRefMap = function(partialsRootDir, blockName) {
 		throw blockName +" block not found"
 	}
 }
+
+const getEmpty = function(partialsRootDir, blockName, path) {
+
+	var externals = fileService.getDataAndSchema(partialsRootDir);
+
+	return jsonService.getEmpty(blockName, externals, path);
+}
+
+
 		
 module.exports = { 
 	register,
@@ -115,5 +125,6 @@ module.exports = {
 	save,
 	resolveDataString,
 	resolveDataBlockName,
-	resolveDataAndRefMap
+	resolveDataAndRefMap,
+	getEmpty
 };

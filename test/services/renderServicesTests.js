@@ -1,172 +1,182 @@
 var should = require('should'),
-rewire = require('rewire'),
-S = require('string'),
-svc = rewire('../../modules/services/renderService.js');
+    rewire = require('rewire'),
+    S = require('string'),
+    svc = rewire('../../modules/services/renderService.js');
 
 
-describe('render service tests', function() {
-	
-	it('should render hbs files', function() {
-	
-		var data = {
-			title: 'title'
-		};
+describe('render service', function () {
 
-		var hbs = '<h1>{{title}}</h1>'
+    describe('render', function () {
+        it('should render hbs files', function () {
 
-		var output = svc.render(hbs, data, []);
+            var data = {
+                title: 'title'
+            };
 
-        output.should.equal('<h1>title</h1>')
-    });	
-    
-    
-	it('should register partial', function() {
-    
-        var partial = '<h1>{{title}}</h1>';
+            var hbs = '<h1>{{title}}</h1>'
 
-        svc.handlebars.registerPartial('partial', partial)
+            var output = svc.render(hbs, data, []);
 
-		var data = {
-			title: 'title'
-		};
+            output.should.equal('<h1>title</h1>')
+        });
 
-		var hbs = '{{> partial}}'
 
-		var output = svc.render(hbs, data, []);
+        it('should register partial', function () {
 
-        output.should.equal('<h1>title</h1>')
-    });	
-    
-    it('should register helper', function() {
-    
-        var helper = function(name) {
-            return name.first + " " + name.last;
-        }
+            var partial = '<h1>{{title}}</h1>';
 
-        svc.handlebars.registerHelper('helper', helper)
+            svc.handlebars.registerPartial('partial', partial)
 
-		var data = {
-            name : {
-                first: 'first',
-                last: 'last'
+            var data = {
+                title: 'title'
+            };
+
+            var hbs = '{{> partial}}'
+
+            var output = svc.render(hbs, data, []);
+
+            output.should.equal('<h1>title</h1>')
+        });
+
+        it('should register helper', function () {
+
+            var helper = function (name) {
+                return name.first + " " + name.last;
             }
-		};
 
-		var hbs = '<h1>{{helper name}}</h1>'
+            svc.handlebars.registerHelper('helper', helper)
 
-		var output = svc.render(hbs, data, []);
+            var data = {
+                name: {
+                    first: 'first',
+                    last: 'last'
+                }
+            };
 
-        output.should.equal('<h1>first last</h1>')
+            var hbs = '<h1>{{helper name}}</h1>'
+
+            var output = svc.render(hbs, data, []);
+
+            output.should.equal('<h1>first last</h1>')
+        });
+
+        it('should error gracefully', function () {
+
+            var errors = [];
+            var hbs = '{{error}'
+
+            svc.render(hbs, {}, errors);
+
+            errors[0].source.should.equal('Handlebars render');
+        });
+
     });
-    
-    it('should error gracefully', function() {
-    
-        var errors = [];
-		var hbs = '{{error}'
 
-		svc.render(hbs, {}, errors);
+    describe('wrap', function () {
 
-        errors[0].source.should.equal('Handlebars render');
-    });
-    
-    it('should wrap template', function() {
-    
-        var contents = '<div>main</div>'
+        it('should wrap template', function () {
 
-		var data = {
-            title: 'title'
-		};
+            var contents = '<div>main</div>'
 
-		var hbs = '<body><h1>{{title}}</h1>{{{contents}}}</body>'
+            var data = {
+                title: 'title'
+            };
 
-		var output = svc.wrapSingle(hbs, data, new Buffer(contents), []);
+            var hbs = '<body><h1>{{title}}</h1>{{{contents}}}</body>'
 
-        output.should.equal('<body><h1>title</h1><div>main</div></body>')
-    });
-    
-    it('should render all wrapped', function() {
-    
-		var datas = [
-            {
-                title: 'contentTitle'
-            },
-            {
-                title: 'subLayoutTitle'
-            },
-            {
-                title: 'layoutTitle'
-            }
-        ];
+            var output = svc.wrapSingle(hbs, data, new Buffer(contents), []);
 
-        var hbses = [
-            "<h3>{{title}}</h3>",
-            "<h2>{{title}}</h2>{{{ contents }}}",
-            "<h1>{{title}}</h1>{{{ contents }}}"
-        ];
+            output.should.equal('<body><h1>title</h1><div>main</div></body>')
+        });
 
-		var output = svc.wrapMultiple(hbses, datas, []);
+        it('should render all wrapped', function () {
 
-        output.should.equal('<h1>layoutTitle</h1><h2>subLayoutTitle</h2><h3>contentTitle</h3>')
-    });
-    
-    it('should render from layouts', function() {
-    
-        var path = 'parHeader';
-        var template = "<h3>{{title}}</h3>";
-        var data = {
-            title: 'contentTitle'
-        };
-
-        var layouts = [
-            {
-                name: 'layout',
-                template: "<h1>{{title}}</h1>{{{ contents }}}",
-                data: {
+            var datas = [
+                {
+                    title: 'contentTitle'
+                },
+                {
+                    title: 'subLayoutTitle'
+                },
+                {
                     title: 'layoutTitle'
                 }
-            }
-        ]
+            ];
 
-		var output = svc.fromTemplate(path, template, data, layouts, []);
+            var hbses = [
+                "<h3>{{title}}</h3>",
+                "<h2>{{title}}</h2>{{{ contents }}}",
+                "<h1>{{title}}</h1>{{{ contents }}}"
+            ];
 
-        output.should.equal('<h1>layoutTitle</h1><h3>contentTitle</h3>')
+            var output = svc.wrapMultiple(hbses, datas, []);
+
+            output.should.equal('<h1>layoutTitle</h1><h2>subLayoutTitle</h2><h3>contentTitle</h3>')
+        });
+
     });
-    
-    it('should render from layouts and blockData', function() {
-    
 
-        svc.__set__(
-            {
-                layoutHelper: {
-                    GetLayout: function() {
-                        return {
-                            template: "<h1>{{title}}</h1>{{{ contents }}}",
-                            data: {
-                                title: 'layoutTitle'
+    describe('from template', function () {
+
+        it('should render from layouts', function () {
+
+            var path = 'parHeader';
+            var template = "<h3>{{title}}</h3>";
+            var data = {
+                title: 'contentTitle'
+            };
+
+            var layouts = [
+                {
+                    name: 'layout',
+                    template: "<h1>{{title}}</h1>{{{ contents }}}",
+                    data: {
+                        title: 'layoutTitle'
+                    }
+                }
+            ]
+
+            var output = svc.fromTemplate(path, template, data, layouts, []);
+
+            output.should.equal('<h1>layoutTitle</h1><h3>contentTitle</h3>')
+        });
+
+        it('should render from layouts and blockData', function () {
+
+
+            svc.__set__(
+                {
+                    layoutHelper: {
+                        GetLayout: function () {
+                            return {
+                                template: "<h1>{{title}}</h1>{{{ contents }}}",
+                                data: {
+                                    title: 'layoutTitle'
+                                }
                             }
-                        }
-                    },
-                    GetBlockLayout: function() {
-                        return {
-                            template: "<h2>{{title}}</h2>{{{ contents }}}",
-                            data: {
-                                title: 'subLayoutTitle'
+                        },
+                        GetBlockLayout: function () {
+                            return {
+                                template: "<h2>{{title}}</h2>{{{ contents }}}",
+                                data: {
+                                    title: 'subLayoutTitle'
+                                }
                             }
                         }
                     }
                 }
-            }
-        )
+            )
 
-        var path = 'parHeader';
-        var template = "<h3>{{title}}</h3>";
-        var data = {
-            title: 'contentTitle'
-        };
+            var path = 'parHeader';
+            var template = "<h3>{{title}}</h3>";
+            var data = {
+                title: 'contentTitle'
+            };
 
-		var output = svc.fromTemplate(path, template, data, [], [], 'blockLayout');
+            var output = svc.fromTemplate(path, template, data, [], [], 'blockLayout');
 
-        output.should.equal('<h1>layoutTitle</h1><h2>subLayoutTitle</h2><h3>contentTitle</h3>')
-	});
-	
+            output.should.equal('<h1>layoutTitle</h1><h2>subLayoutTitle</h2><h3>contentTitle</h3>')
+        });
+    });
+
 });

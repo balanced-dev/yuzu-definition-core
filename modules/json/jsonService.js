@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var Validator = require('jsonschema').Validator;
+var empty = require('../json-schema-empty/index').default;
 
 function TestJSON(json){
     var results = {};
@@ -130,6 +131,50 @@ function ValidateSchema(externalSchemas, data, schema)
     return v.validate(data, schema);
 }
 
+function getEmpty(ref, externals, path)
+{
+	var schema = externals.schema[ref];
+
+	if(path) {
+		
+		var paths = path.split("/"); 
+		paths.forEach(partPath => {
+			if(schema.properties.hasOwnProperty(partPath)) {
+				var property = schema.properties[partPath];
+				if(property.type == "object") {
+					schema = property;
+				}
+				else if(property.type == "array") {
+					schema = emptyForArray(property, externals);
+				}
+				else {
+					throw "Property "+ partPath +" at path "+ path +" wrong type";
+				}
+			}
+			else {
+				throw "Property "+ partPath +" not found";
+			}
+		});
+		
+	}
+
+	return empty(schema);
+}
+
+function emptyForArray(property, externals)
+{
+	var items = property.items;
+	if(items.hasOwnProperty("$ref")) {
+		var subRef = items["$ref"];
+		schema = externals.schema[subRef]
+	}
+	else {
+		schema = items;
+	}
+	return schema;
+}
+
 module.exports.resolveComponentJson = Resolve_ComponentJson;
 module.exports.testJSON = TestJSON;
 module.exports.validateSchema = ValidateSchema;
+module.exports.getEmpty = getEmpty;
