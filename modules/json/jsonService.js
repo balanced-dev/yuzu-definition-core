@@ -107,6 +107,9 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
 			if(config.addRefProperty)
 				childData["$ref"] = ref;
 
+			if(config.addPathProperty)
+				childData["yuzu-path"] = newPath;
+
 			if(index != undefined)
 				context[index] = childData;	
 			else

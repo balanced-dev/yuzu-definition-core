@@ -5,12 +5,12 @@ var S = require('string'),
 
 
 describe('json service', function () {
-	describe('map to path', function () {
+	describe('get empty for path', function () {
 
 		it('should get empty instance for a schema', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parBlock": {
 					"type": "object",
 					"properties": {
@@ -55,7 +55,7 @@ describe('json service', function () {
 		it('should error on path as property not found', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parBlock": {
 					"type": "object",
 					"properties": {
@@ -77,7 +77,7 @@ describe('json service', function () {
 		it('should get empty from root array object', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parBlock": {
 					"type": "object",
 					"properties": {
@@ -108,7 +108,7 @@ describe('json service', function () {
 		it('should get empty from root array ref', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parDataLink": {
 					"type": "object",
 					"properties": {
@@ -142,7 +142,7 @@ describe('json service', function () {
 		it('should get empty from root array ref', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parBlock": {
 					"type": "object",
 					"properties": {
@@ -168,7 +168,7 @@ describe('json service', function () {
 		it('should get empty from array in object', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parBlock": {
 					"type": "object",
 					"properties": {
@@ -204,7 +204,7 @@ describe('json service', function () {
 		it('should get empty from array in array', function () {
 
 			var externals = {};
-			externals.schemas = {
+			externals.schema = {
 				"/parBlock": {
 					"type": "object",
 					"properties": {

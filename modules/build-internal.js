@@ -18,7 +18,7 @@ const parseJson = function(fileContents, path, errors)
 
 const resolveJson = function(data, externals, blockData, errors)
 {
-	var resolveResults = jsonService.resolveComponentJson(data, { external: externals.data, addRefProperty: true });
+	var resolveResults = jsonService.resolveComponentJson(data, { external: externals.data, addRefProperty: true, addPathProperty: true, deepclone: true });
 	if(!resolveResults.valid) {
 		var that = this;
 		resolveResults.errors.forEach(function(error) {
