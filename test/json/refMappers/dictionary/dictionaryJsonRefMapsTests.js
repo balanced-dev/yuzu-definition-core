@@ -1,94 +1,15 @@
-var S = require('string'),
-	assert = require("assert");
-should = require('should'),
-	jsonHelper = require('../../../../modules/json/jsonService');
+var S = require('string');
+var assert = require("assert");
+var should = require('should');
+var jsonHelper = require('../../../../modules/json/jsonService');
 
 var config = {};
-config.refMapper = require('../../../../modules/json/refMappers/refsAsDictionary');
+config.refMapper = require('../../../../modules/json/refMappers/json/refsAsDictionary');
 config.deepclone = true;
 
 describe('json service', function () {
 	describe('refmaps', function () {
 		describe('dictionary schema', function () {
-
-			it('given a refs required as a dictionary', function (done) {
-
-				var schema = {
-					"$schema": "http://json-schema.org/draft-07/schema#",
-					"type": "object",
-					"properties": {
-						"child1": {
-							"$ref": "/child"
-						},
-						"child2": {
-							"$ref": "/child"
-						}
-					}
-				}
-
-				var childSchema = {
-					"$schema": "http://json-schema.org/draft-07/schema#",
-					"type": "object",
-					"properties": {
-						"grandchild": {
-							"$ref": "/grandchild"
-						}
-					}
-				}
-
-				var grandchild = {
-					"$schema": "http://json-schema.org/draft-07/schema#",
-					"type": "object",
-					"properties": {}
-				}
-
-				config.external = {
-					"/child": childSchema,
-					"/grandchild": grandchild,
-				};
-
-				var results = jsonHelper.resolveComponentJson(schema, config);
-
-				var debug = JSON.stringify(results.refMap, null, 4);
-
-				var expceted = {
-					"child": {
-						"instances": [
-							{
-								"path": "/child1",
-								"state": "/child"
-							},
-							{
-								"path": "/child2",
-								"state": "/child"
-							}
-						]
-					},
-					"grandchild": {
-						"instances": [
-							{
-								"path": "/child1/grandchild",
-								"state": "/grandchild"
-							},
-							{
-								"path": "/child2/grandchild",
-								"state": "/grandchild"
-							}
-						]
-					}
-				};
-
-				var child = results.refMap['child'].instances;
-				var grandchild = results.refMap['grandchild'].instances;
-
-				child[0].path.should.equal('/child1');
-				child[1].path.should.equal('/child2');
-				grandchild[0].path.should.equal('/child1/grandchild');
-				grandchild[1].path.should.equal('/child2/grandchild');
-
-				done();
-
-			})
 
 			it('json dictionary - given multiple json states then consolidate', function (done) {
 

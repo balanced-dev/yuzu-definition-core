@@ -1,60 +1,268 @@
 var S = require('string'),
 	assert = require("assert");
 should = require('should'),
-	jsonHelper = require('../../../../modules/json/jsonService');
+	schemaHelper = require('../../../../modules/json/jsonSchemaService');
 
-describe('json service', function () {
+var config = {};
+config.refMapper = require('../../../../modules/json/refMappers/schema/refsAsTree');
+config.deepclone = true;
+
+describe('json schema service', function () {
 	describe('refmaps', function () {
 		describe('tree schema', function () {
 
-			var schema = {
-				"type": "object",
-				"properties": {
-					"child1": {
-						"$ref": "/child"
-					},
-					"child2": {
-						"$ref": "/child"
+			it('without blocks', function (done) {
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"title": {
+							"type": "string"
+						},
+						"bodyText": {
+							"type": "string"
+						}
 					}
-				}
-			}
-
-			var childSchema = {
-				"type": "object",
-				"properties": {
-					"grandchild": {
-						"$ref": "/grandchild"
-					}
-				}
-			}
-
-			var grandchild = {
-				"type": "object",
-				"properties": {}
-			}
-
-
-			it('schema tree- given a refs required as a tree', function (done) {
-
-				var config = {};
-				config.external = {
-					"/child": childSchema,
-					"/grandchild": grandchild,
 				};
-				config.refMapper = require('../../../../modules/json/refMappers/refsAsTree');
-				config.deepclone = true;
 
-				var results = jsonHelper.resolveComponentJson(schema, config);
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
 
-				results.refMap.child1.ref.should.equal('/child');
-				results.refMap.child1.children.grandchild.ref.should.equal('/grandchild');
-				results.refMap.child2.ref.should.equal('/child');
-				results.refMap.child2.children.grandchild.ref.should.equal('/grandchild');
+				var expected = {};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
+			it('simple block', function (done) {
+
+				config.external = {
+					"/child": {
+						"type": "object",
+						"properties": {	}
+					}
+				};
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"child1": {
+							"$ref": "/child"
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
+			it('multiple instances', function (done) {
+
+				config.external = {
+					"/child": {
+						"type": "object",
+						"properties": {}
+					},
+				};
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"child1": {
+							"$ref": "/child"
+						},
+						"child2": {
+							"$ref": "/child"
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child"], 
+					"/child2": ["/child"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
+			it('ignores sub block refs', function (done) {
+
+				config.external = {
+					"/child": {
+						"type": "object",
+						"properties": {
+							"grandchild": {
+								"$ref": "/grandchild"
+							}
+						}
+					},
+					"/grandchild": {
+						"type": "object",
+						"properties": {}
+					},
+				};
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"child1": {
+							"$ref": "/child"
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
+			it('array', function (done) {
+
+				config.external = {
+					"/child": {
+						"type": "object",
+						"properties": {}
+					}
+				};
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"child1": {
+							"type": "array",
+							"items": {
+								"$ref": "/child"
+							}
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
+			it('any of', function (done) {
+
+				config.external = {
+					"/child8": {
+						"type": "object",
+						"properties": {}
+					},
+					"/child9": {
+						"type": "object",
+						"properties": {}
+					}
+				};
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"child1": {
+							"type": "array",
+							"items": {
+								"anyOf": [
+									{
+										"$ref": "/child8"
+									},
+									{
+										"$ref": "/child9"
+									}
+								]
+							}
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child8", "/child9"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
+			it('one of', function (done) {
+
+				config.external = {
+					"/child8": {
+						"type": "object",
+						"properties": {}
+					},
+					"/child9": {
+						"type": "object",
+						"properties": {}
+					}
+				};
+
+				var schema = {
+					"type": "object",
+					"properties": {
+						"child1": {
+							"oneOf": [
+								{
+									"$ref": "/child8"
+								},
+								{
+									"$ref": "/child9"
+								}
+							]
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child8", "/child9"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
 
 				done();
 
 			})
 
 		});
+
 	});
 });

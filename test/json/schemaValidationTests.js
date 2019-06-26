@@ -1,8 +1,8 @@
 var S = require('string'),
 	should = require('should')
-jsonHelper = require('../../modules/json/jsonService');
+jsonHelper = require('../../modules/json/jsonSchemaService');
 
-describe('json service', function () {
+describe('json schema service', function () {
 	describe('validation', function () {
 
 		xit('should error when the schema file does not parse', function () {

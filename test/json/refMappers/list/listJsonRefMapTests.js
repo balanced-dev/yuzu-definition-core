@@ -1,10 +1,10 @@
-var S = require('string'),
-	assert = require("assert");
-should = require('should'),
-	jsonHelper = require('../../../../modules/json/jsonService');
+var S = require('string');
+var assert = require("assert");
+var should = require('should');
+var jsonHelper = require('../../../../modules/json/jsonService');
 
 var config = {};
-config.refMapper = require('../../../../modules/json/refMappers/refsAsList');
+config.refMapper = require('../../../../modules/json/refMappers/json/refsAsList');
 config.deepclone = true;
 
 describe('json service', function () {

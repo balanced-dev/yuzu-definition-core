@@ -64,7 +64,7 @@ function resolve_CycleProperties(path, object, refMap, config, results) {
 				resolve_Ref(ref, path, key, object, refMap, config, results);
 			}
 			else {
-				var newPath = key != "properties" ? path +'/'+ key : path;
+				var newPath = createNewObjectPath(path, key, object);
 				resolve_CycleProperties(newPath, property, refMap, config, results);
 			}
 		}
@@ -77,7 +77,7 @@ function resolve_CycleProperties(path, object, refMap, config, results) {
 					resolve_Ref(ref, path, key, property, refMap, config, results, index);		
 				}
 				else {
-					var newPath = path +'/'+ key +'['+ index +']';
+					var newPath = createNewObjectPath(path, key, item, index);
 					resolve_CycleProperties(newPath, item, refMap, config, results);
 				}
 				index ++;
@@ -86,13 +86,20 @@ function resolve_CycleProperties(path, object, refMap, config, results) {
 	})
 }
 
+const createNewObjectPath = function(path, key, object, index) {
+
+	var newPath = path +'/'+ key;
+	if(index != undefined) {
+		newPath = newPath +'['+ index +']'
+	}
+	return newPath;
+}
+
 function resolve_Ref(ref, path, key, context, refMap, config, results, index)
 {
 	if(ref) {
 
-		var newPath = path +'/'+ key;
-		if(index != undefined) 
-			newPath = newPath +'['+ index +']';
+		var newPath = createNewObjectPath(path, key, context, index);
 
 		if(!config.external.hasOwnProperty(ref)) {
 			results.valid = false;
@@ -120,18 +127,6 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
             			
 		}
 	}
-}
-
-function ValidateSchema(externalSchemas, data, schema)
-{
-    var v = new Validator();	
-    if(externalSchemas)  {
-        Object.keys(externalSchemas).forEach(function(key) {
-            v.addSchema(externalSchemas[key], key);				
-        });	
-    }			
-    
-    return v.validate(data, schema);
 }
 
 function getEmpty(ref, externals, path)
@@ -179,5 +174,4 @@ function emptyForArray(property, externals)
 
 module.exports.resolveComponentJson = Resolve_ComponentJson;
 module.exports.testJSON = TestJSON;
-module.exports.validateSchema = ValidateSchema;
 module.exports.getEmpty = getEmpty;

@@ -1,5 +1,7 @@
 var jsonService = require('./json/jsonService');
-var refMapperList = require('./json/refMappers/refsAsList');
+var jsonSchemaService = require('./json/jsonSchemaService');
+var refMapperList = require('./json/refMappers/json/refsAsList');
+var refMapperPaths = require('./json/refMappers/schema/refsAsTree');
 
 var blockFilesService = require('./services/blockFilesService');
 
@@ -32,9 +34,15 @@ const resolveJson = function(data, externals, blockData, errors)
 	return data;
 }
 
-const resolveSchemaAsListRefMap = function(schema, externals) {
+const resolveDataAsListRefMap = function(data, externals) {
 
-	var results = jsonService.resolveComponentJson(schema, { external: externals.data, refMapper: refMapperList, deepclone: true });
+	var results = jsonService.resolveComponentJson(data, { external: externals.data, refMapper: refMapperList, deepclone: true });
+	return results.refMap;
+}
+
+const resolveSchemaAsPathsRefMap = function(schema, externals) {
+
+	var results = jsonSchemaService.Resolve_ComponentJsonSchema(schema, { external: externals.schema, refMapper: refMapperPaths });
 	return results.refMap;
 }
 
@@ -59,7 +67,7 @@ const validateSchema = function(data, externals, blockData, errors) {
 	}
 	else{
 
-		var result = jsonService.validateSchema(externals.schema, data, blockData.schema)
+		var result = jsonSchemaService.validateSchema(externals.schema, data, blockData.schema)
 		result.errors.forEach(function(error) {
 			errors.push({
 				source: 'yuzu build - validate schema '+ blockData.schema.id,
@@ -72,7 +80,8 @@ const validateSchema = function(data, externals, blockData, errors) {
 module.exports = { 
 	parseJson,
 	resolveJson,
-	resolveSchemaAsListRefMap,
+	resolveDataAsListRefMap,
+	resolveSchemaAsPathsRefMap,
 	getBlockData,
 	validateSchema
 };
