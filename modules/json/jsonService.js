@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var Validator = require('jsonschema').Validator;
+var blockPathService = require('../services/blockPathService');
 var empty = require('../json-schema-empty/index').default;
 
 function TestJSON(json){
@@ -112,7 +113,7 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
             Resolve_From_Root(newPath, childData, childRefMap, config, results);
 			
 			if(config.addRefProperty)
-				childData["$ref"] = ref;
+				childData["$ref"] = blockPathService.blockFromState(ref, false);
 
 			if(config.addPathProperty)
 				childData["yuzu-path"] = newPath;

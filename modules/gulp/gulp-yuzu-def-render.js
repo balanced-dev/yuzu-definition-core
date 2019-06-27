@@ -1,11 +1,13 @@
 var gutil = require('gulp-util');
 var through = require('through2');
 var build = require('../build');
+var highlightService = require('../services/blockHighlightService');
 
 function gulp(templatesDir, hbsHelpers, layoutDir) {
 
 	build.register(templatesDir, hbsHelpers);
-	var externals = build.setup(templatesDir, layoutDir);
+	var rootSchemaProperties = ["$ref", highlightService.property];
+	var externals = build.setup(templatesDir, layoutDir, rootSchemaProperties);
 
 	return through.obj(function (file, enc, cb) {
 

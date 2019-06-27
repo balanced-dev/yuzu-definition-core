@@ -2,14 +2,20 @@ var fs = require('fs');
 var path = require('path');
 var _ = require("lodash");
 
-var getDataAndSchema = function (partialsDir) {
+var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 	externalSchemas = {}, externalDatas = {};
 
 	getFilesInDir(partialsDir, function (dir, filename) {
 		var dirFilename = path.join(dir, filename);
 		if (path.extname(filename) == ".schema")
 			try {
-				externalSchemas[getFilename(filename)] = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
+				var schema = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
+				if(rootSchemaProperties && schema.properties && schema.type == "object") {
+					rootSchemaProperties.forEach(function(item) {
+						schema.properties[item] = { "type": "string" };
+					});
+				}
+				externalSchemas[getFilename(filename)] = schema;
 			}
 			catch (e) {
 				console.log("File not parsed " + filename)

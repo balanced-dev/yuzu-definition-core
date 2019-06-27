@@ -7,7 +7,7 @@ should = require('should'),
 describe('json service', function () {
 	describe('resolve property settings', function () {
 
-		it('should add back ref property marker for an object when configured', function (done) {
+		it('should add back in ref property for sub block', function (done) {
 
 			var config = {};
 			config.addRefProperty = true;
@@ -37,7 +37,37 @@ describe('json service', function () {
 			done();
 		})
 
-		it('should add back ref property marker for an array when configured', function (done) {
+		it('should convert state refs to block names', function (done) {
+
+			var config = {};
+			config.addRefProperty = true;
+			config.external = {
+				'/SimpleAddress_state': {
+					"zip": "DC 20500"
+				}
+			};
+
+			var data = {
+				"name": "Test",
+				"address": { "$ref": "/SimpleAddress_state" }
+			}
+
+			var results = jsonService.resolveComponentJson(data, config);
+			var expected = {
+				"name": "Test",
+				"address": {
+					"zip": "DC 20500",
+					"$ref": "/SimpleAddress"
+				}
+			}
+
+			results.valid.should.equal(true);
+			assert.deepEqual(expected, data);
+
+			done();
+		})
+
+		it('should add ref property in an array', function (done) {
 
 			var config = {};
 			config.addRefProperty = true;
@@ -73,7 +103,7 @@ describe('json service', function () {
 		})
 
 
-		it('should add path property marker for an object when configured', function (done) {
+		it('should add path property for an object', function (done) {
 
 			var config = {};
 			config.addPathProperty = true;
@@ -103,7 +133,7 @@ describe('json service', function () {
 			done();
 		})
 
-		it('should add path property marker for an array when configured', function (done) {
+		it('should add path property for an array', function (done) {
 
 			var config = {};
 			config.addPathProperty = true;

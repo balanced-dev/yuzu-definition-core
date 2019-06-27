@@ -1,4 +1,5 @@
 var fileService = require('./fileService');
+var highlightService = require('./blockHighlightService');
 var fs = require('fs');
 var path = require('path');
 var handlebars = require('handlebars');
@@ -16,6 +17,7 @@ var setPartials = function(partialsDir)
 
 		var templateName = path.basename(filename, '.hbs');
 		var template = fs.readFileSync(filename, 'utf8');
+		template = highlightService.addYuzuMarker(template);
 
 		handlebars.registerPartial(templateName, template);
 	});	
@@ -27,7 +29,6 @@ var setHelpers = function(helpers)
 	Object.keys(helpers).forEach(function(key) {
 		handlebars.registerHelper(key, helpers[key])
 	});
-
 }
 
 module.exports.registerPartials = setPartials;

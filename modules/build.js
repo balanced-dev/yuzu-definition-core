@@ -13,9 +13,9 @@ var register = function (partialsRootDir, hbsHelpers) {
 	hbsService.registerPartials(partialsRootDir);
 }
 
-const setup = function (partialsRootDir, layoutDir) {
+const setup = function (partialsRootDir, layoutDir, rootSchemaProperties) {
 
-	var externals = fileService.getDataAndSchema(partialsRootDir);
+	var externals = fileService.getDataAndSchema(partialsRootDir, rootSchemaProperties);
 	if (layoutDir)
 		externals.layouts = layoutService.GetLayouts(layoutDir);
 	else

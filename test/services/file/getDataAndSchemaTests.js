@@ -161,6 +161,82 @@ describe('file service', function () {
 			expect(output).to.be.deep.equal(expected);
 		})
 
+		it('should add default root properties to object schema', function () {
+
+			var readFileSync = function(filename, format) {
+				if(filename === "dir\\pageHeader\\parPageHeader.schema") {
+					return JSON.stringify({
+						"type": "object",
+						"properties": {}
+					});
+				}
+			}
+
+			var dirs = {
+				'dir/': ['pageHeader'],
+				'dir/pageHeader/': ['parPageHeader.schema'],
+			}; 
+
+			mockFiles(dirs, readFileSync);
+
+			var output = fileService.getDataAndSchema(dir, ["$ref", "yuzuPath"]);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"data": {},
+				"schema": {
+					"/parPageHeader": {
+						"type": "object",
+					    "properties": {
+							"$ref": {
+								"type": "string"
+							},
+							"yuzuPath": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+		})
+
+		it('shouldnt add default root properties to array schema', function () {
+
+			var readFileSync = function(filename, format) {
+				if(filename === "dir\\pageHeader\\parPageHeader.schema") {
+					return JSON.stringify({
+						"type": "array",
+						"items": {}
+					});
+				}
+			}
+
+			var dirs = {
+				'dir/': ['pageHeader'],
+				'dir/pageHeader/': ['parPageHeader.schema'],
+			}; 
+
+			mockFiles(dirs, readFileSync);
+
+			var output = fileService.getDataAndSchema(dir, ["$ref"]);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"data": {},
+				"schema": {
+					"/parPageHeader": {
+						"type": "array",
+					    "items": {
+						}
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+		})
+
 	})
 
 	describe('get previews', function () {

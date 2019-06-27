@@ -18,23 +18,25 @@ function Resolve_ComponentJsonSchema(data, config)
 
 function Resolve_From_Root(path, data, refMap, config, results)
 {
-	if(data.type === "array") {
-		var items = data.items;
-
-		if(items.hasOwnProperty('$ref')) {
-			var ref = items['$ref'];
-			resolve_Ref(ref, path, "", items, refMap, config, results);
+	if(data) {
+		if(data.type === "array") {
+			var items = data.items;
+	
+			if(items.hasOwnProperty('$ref')) {
+				var ref = items['$ref'];
+				resolve_Ref(ref, path, "", items, refMap, config, results);
+			}
+			else if(items.hasOwnProperty("anyOf")) {
+				doMultipleRefs(path, items.anyOf, refMap, config, results);	
+			}
+			
 		}
-		else if(items.hasOwnProperty("anyOf")) {
-			doMultipleRefs(path, items.anyOf, refMap, config, results);	
+		else if (data.hasOwnProperty("oneOf")) {
+			doMultipleRefs(path, data.oneOf, refMap, config, results);
 		}
-		
-	}
-	else if (data.hasOwnProperty("oneOf")) {
-		doMultipleRefs(path, data.oneOf, refMap, config, results);
-	}
-	else if (data.type === "object") {
-		resolve_CycleProperties(path, data.properties, refMap, config, results);
+		else if (data.type === "object") {
+			resolve_CycleProperties(path, data.properties, refMap, config, results);
+		}
 	}
 	
 	return results;
