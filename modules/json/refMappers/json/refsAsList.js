@@ -2,21 +2,25 @@ var _ = require('lodash');
 
 const process = function(path, ref, key, refMap, childRefMap, config)
 {
-
-    if(!refMap[ref]) {
-        refMap[ref] = config.external[ref];
+    if(!refMap.hasOwnProperty('items')) {
+        refMap.items = [];
     }
 
-    Object.keys(childRefMap).forEach(function(ref) {
+    if(!_.find(refMap.items, { name: ref })) {
+        refMap.items.push({
+            name: ref,
+            state: config.external[ref]
+        });
+    }
 
-        var childRef = childRefMap[ref];
-
-        if(!refMap[ref])
-        {
-            refMap[ref] = childRef;
-        }
-
-    });
+    if(childRefMap.items) {
+        childRefMap.items.forEach(function(item) {
+            if(!_.find(refMap.items, { name: item.name }))
+            {
+                refMap.items.push(item);
+            }
+        })
+    }
 
 }
 

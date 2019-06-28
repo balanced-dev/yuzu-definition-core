@@ -74,39 +74,41 @@ const resolveDataString = function (data, path, externals, errors) {
 	return data
 }
 
-const resolveDataBlockName = function (partialsRootDir, blockName) {
+const getData = function (partialsRootDir, state) {
 
 	var externals = fileService.getDataAndSchema(partialsRootDir);
 
-	if (externals.data.hasOwnProperty(blockName)) {
-		var data = externals.data[blockName];
-
-		data = build.resolveJson(data, externals);
-
-		return data;
+	if (externals.data.hasOwnProperty(state)) {
+		return externals.data[state];
 	}
 	else {
-		throw blockName + " block not found"
+		throw state + " block state not found"
 	}
 }
 
-const resolveDataAndRefMap = function (partialsRootDir, block, state) {
+const getChildStates = function (partialsRootDir, state) {
 
 	var externals = fileService.getDataAndSchema(partialsRootDir);
 
 	if (externals.data.hasOwnProperty(state)) {
 		var data = externals.data[state];
-		var schema = externals.schema[block];
-		var unresolvedData = _.cloneDeep(data);
 
 		refmapData = build.resolveDataAsListRefMap(data, externals);
-		refMapPaths = build.resolveSchemaAsPathsRefMap(schema, externals);
 
-		return {
-			data: unresolvedData,
-			map: refmapData,
-			paths: refMapPaths
-		};
+		return refmapData;
+	}
+	else {
+		throw state + " block state not found"
+	}
+}
+
+const getRefPaths = function (partialsRootDir, block) {
+
+	var externals = fileService.getDataAndSchema(partialsRootDir);
+
+	if (externals.schema.hasOwnProperty(block)) {
+		var schema = externals.schema[block];
+		return build.resolveSchemaAsPathsRefMap(schema, externals);
 	}
 	else {
 		throw state + " block state not found"
@@ -133,8 +135,9 @@ module.exports = {
 	renderPreview,
 	save,
 	resolveDataString,
-	resolveDataBlockName,
-	resolveDataAndRefMap,
+	getData,
+	getChildStates,
+	getRefPaths,
 	getEmpty,
 	getPreviews
 };
