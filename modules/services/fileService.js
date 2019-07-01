@@ -10,6 +10,9 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 		if (path.extname(filename) == ".schema")
 			try {
 				var schema = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
+				if(schema.type === undefined) {
+					throw "Schema "+ schema.id +" mucst have a schema type";
+				} 
 				if(rootSchemaProperties && schema.properties && schema.type == "object") {
 					rootSchemaProperties.forEach(function(item) {
 						schema.properties[item] = { "type": "string" };

@@ -1,4 +1,3 @@
-var handlebars = require('handlebars');
 var extend = require('extend');
 var layoutHelper = require('./layoutService');
 
@@ -78,4 +77,3 @@ module.exports.fromTemplate = fromTemplate;
 module.exports.wrapMultiple = wrapMultiple;
 module.exports.wrapSingle = wrapSingle;
 module.exports.render = render;
-module.exports.handlebars = handlebars;

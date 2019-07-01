@@ -2,7 +2,6 @@ var fileService = require('./fileService');
 var highlightService = require('./blockHighlightService');
 var fs = require('fs');
 var path = require('path');
-var handlebars = require('handlebars');
 
 var setPartials = function(partialsDir)
 {
@@ -25,7 +24,8 @@ var setPartials = function(partialsDir)
 
 var setHelpers = function(helpers)
 {
-	
+	if(!helpers)
+		throw "Hbs Helpers not found, check they have been sent to gulp build";
 	Object.keys(helpers).forEach(function(key) {
 		handlebars.registerHelper(key, helpers[key])
 	});

@@ -237,6 +237,34 @@ describe('file service', function () {
 			expect(output).to.be.deep.equal(expected);
 		})
 
+		it('schema should always have a tyoe', function () {
+
+			var readFileSync = function(filename, format) {
+				var data = JSON.stringify({});
+				if(filename === "dir\\pageHeader\\parPageHeader.schema") {
+					return data;
+				}
+			}
+
+			var dirs = {
+				'dir/': ['pageHeader'],
+				'dir/pageHeader/': ['parPageHeader.schema'],
+			}; 
+
+			mockFiles(dirs, readFileSync);
+
+			var output = fileService.getDataAndSchema(dir);
+
+			var expected = {
+				"data": {},
+				"schema": {
+					"/parPageHeader": {}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+		})
+
 	})
 
 	describe('get previews', function () {

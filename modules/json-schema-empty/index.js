@@ -8,6 +8,8 @@ var _merge = require('./merge');
 
 var _empty;
 
+var _externals = {};
+
 // array <<
 var _array = function _array(schema, global) {
   var items =
@@ -159,16 +161,24 @@ _empty = function empty(schema, global) {
       return _empty(oneOf[0], global);
     } else if (ref) {
       // just copy across the ref
-      return {
-        "$ref": ref
-      };
+      if(_externals && !_externals.data.hasOwnProperty(ref) && _externals.schema.hasOwnProperty(ref)) {
+        var childSchema = _externals.schema[ref];
+        return _empty(childSchema, childSchema);
+      }
+      else {
+        return {
+          "$ref": ref
+        };
+      }
+
     } else {
       throw new Error('cannot generate data from schema ' + schema);
     }
 };
 // >>
 
-var make = function make(schema) {
+var make = function make(schema, externals) {
+  _externals = externals;
   return _empty(schema, schema);
 };
 

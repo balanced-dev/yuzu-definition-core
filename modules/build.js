@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var fs = require('fs');
 var build = require('./build-internal');
 var jsonService = require('./json/jsonService');
 var layoutService = require('./services/layoutService');
@@ -45,7 +46,7 @@ const renderPreview = function (data, refs, path, externals, errors) {
 	return render(data, path, externals, errors);
 }
 
-const save = function (partialsRootDir, data, path, refs, errors) {
+const save = function (partialsRootDir, layoutsDir, data, path, refs, errors) {
 
 	fs.writeFileSync(path, data);
 
@@ -53,6 +54,7 @@ const save = function (partialsRootDir, data, path, refs, errors) {
 	//only save sublocks that are in the current graph
 	var refmap = build.resolveDataAsListRefMap(JSON.parse(data), { data: refs });
 
+	//write out used refs to their files
 	Object.keys(refs).forEach(function (key) {
 		if (refmap.hasOwnProperty(key)) {
 			var blockPath = dataPaths[key];
@@ -61,10 +63,15 @@ const save = function (partialsRootDir, data, path, refs, errors) {
 		}
 	});
 
-	var externals = fileService.getDataAndSchema(partialsRootDir);
+	//read externals including newly changed refs from above
+	var externals = setup(partialsRootDir, layoutsDir);
 
 	return render(data, path, externals, errors);
 
+}
+
+const savePreview = function (path, template) {
+	fs.writeFileSync(path, template);
 }
 
 const resolveDataString = function (data, path, externals, errors) {
@@ -82,7 +89,9 @@ const getData = function (partialsRootDir, state) {
 		return externals.data[state];
 	}
 	else {
-		throw state + " block state not found"
+		return {
+			inlineBlock: true
+		}
 	}
 }
 
@@ -93,7 +102,7 @@ const getChildStates = function (partialsRootDir, state) {
 	if (externals.data.hasOwnProperty(state)) {
 		var data = externals.data[state];
 
-		refmapData = build.resolveDataAsListRefMap(data, externals);
+		refmapData = build.resolveDataAsObjectRefMap(data, externals);
 
 		return refmapData;
 	}
@@ -134,6 +143,7 @@ module.exports = {
 	render,
 	renderPreview,
 	save,
+	savePreview,
 	resolveDataString,
 	getData,
 	getChildStates,

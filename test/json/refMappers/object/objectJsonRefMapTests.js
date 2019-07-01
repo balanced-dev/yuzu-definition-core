@@ -4,12 +4,30 @@ var should = require('should');
 var jsonHelper = require('../../../../modules/json/jsonService');
 
 var config = {};
-config.refMapper = require('../../../../modules/json/refMappers/json/refsAsList');
+config.refMapper = require('../../../../modules/json/refMappers/json/refsAsObject');
 config.deepclone = true;
 
 describe('json service', function () {
 	describe('refmaps', function () {
-		describe('list json', function () {
+		describe('object json', function () {
+
+			it('empty', function (done) {
+
+				config.external = {	}
+
+				var data = {}
+
+				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+
+				var expected = {
+					"items": []
+				}
+
+				assert.deepEqual(expected, results);
+
+				done();
+
+			})
 
 			it('multiple states', function (done) {
 
@@ -33,7 +51,24 @@ describe('json service', function () {
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {
+								"title": "state1"
+							}
+						},
+						{
+							"name": "/child_new-state",
+							"state": {
+								"title": "state2"
+							}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 
@@ -59,9 +94,14 @@ describe('json service', function () {
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
 
 				var expected = {
-					"/child": {
-						"title": "state1"
-					}
+					"items": [
+						{
+							"name": "/child",
+							"state": {
+								"title": "state1"
+							}
+						}
+					]
 				}
 
 				assert.deepEqual(expected, results);
@@ -92,7 +132,24 @@ describe('json service', function () {
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {
+								"title": "type"
+							}
+						},
+						{
+							"name": "/child2",
+							"state": {
+								"title": "type2"
+							}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 
@@ -114,8 +171,26 @@ describe('json service', function () {
 				}
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var debug = JSON.stringify(results, null, 4);
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {
+								"vm": { "$ref": "/sub" }
+							}
+						},
+						{
+							"name": "/sub",
+							"state": {
+								"title": "type"
+							}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 
@@ -139,7 +214,20 @@ describe('json service', function () {
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {	}
+						},
+						{
+							"name": "/child_new-state",
+							"state": {	}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 
@@ -161,7 +249,20 @@ describe('json service', function () {
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {	}
+						},
+						{
+							"name": "/child_new-state",
+							"state": {	}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 
@@ -190,7 +291,30 @@ describe('json service', function () {
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {	
+								"vm": { "$ref": "/sub" }
+							}
+						},
+						{
+							"name": "/sub",
+							"state": {
+								"title": "type"
+							}
+						},
+						{
+							"name": "/child_new-state",
+							"state": {	
+								"vm": { "$ref": "/sub" }
+							}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 
@@ -215,8 +339,22 @@ describe('json service', function () {
 				}
 
 				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var debug = JSON.stringify(results, null, 4);
 
-				assert.deepEqual(config.external, results);
+				var expected = {
+					"items": [
+						{
+							"name": "/child",
+							"state": {	}
+						},
+						{
+							"name": "/child_new-state",
+							"state": {	}
+						}
+					]
+				}
+
+				assert.deepEqual(expected, results);
 
 				done();
 

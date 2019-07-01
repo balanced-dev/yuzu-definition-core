@@ -1,6 +1,7 @@
 var jsonService = require('./json/jsonService');
 var jsonSchemaService = require('./json/jsonSchemaService');
 var refMapperList = require('./json/refMappers/json/refsAsList');
+var refMapperObject = require('./json/refMappers/json/refsAsObject');
 var refMapperPaths = require('./json/refMappers/schema/refsAsTree');
 
 var blockFilesService = require('./services/blockFilesService');
@@ -32,6 +33,12 @@ const resolveJson = function(data, externals, blockData, errors)
 		});
 	}
 	return data;
+}
+
+const resolveDataAsObjectRefMap = function(data, externals) {
+
+	var results = jsonService.resolveComponentJson(data, { external: externals.data, refMapper: refMapperObject, deepclone: true });
+	return results.refMap;
 }
 
 const resolveDataAsListRefMap = function(data, externals) {
@@ -70,7 +77,7 @@ const validateSchema = function(data, externals, blockData, errors) {
 		var result = jsonSchemaService.validateSchema(externals.schema, data, blockData.schema)
 		result.errors.forEach(function(error) {
 			errors.push({
-				source: 'yuzu build - validate schema '+ blockData.schema.id,
+				source: 'yuzu build ('+ blockData.schema.id +') - validate schema '+ error.schema +', '+ error.property,
 				inner: error
 			});
 		});
@@ -81,6 +88,7 @@ module.exports = {
 	parseJson,
 	resolveJson,
 	resolveDataAsListRefMap,
+	resolveDataAsObjectRefMap,
 	resolveSchemaAsPathsRefMap,
 	getBlockData,
 	validateSchema

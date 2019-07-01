@@ -26,6 +26,9 @@ function Resolve_ComponentJson(data, config)
     results.errors = [];
 
 	var refMap = {};
+	if(config.refMapper && config.refMapper.init) {
+		config.refMapper.init(refMap);
+	}
 	
 	Resolve_From_Root('', data, refMap, config, results);
 
@@ -118,10 +121,13 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
 			if(config.addPathProperty)
 				childData["yuzu-path"] = newPath;
 
-			if(index != undefined)
+			if(index != undefined) {
 				context[index] = childData;	
-			else
+			}
+			else {
 				context[key] = childData;	
+			}
+
 
             if(config.refMapper)
                 config.refMapper.process(newPath, ref, key, refMap, childRefMap, config);
@@ -157,7 +163,7 @@ function getEmpty(ref, externals, path)
 		
 	}
 
-	return empty(schema);
+	return empty(schema, externals);
 }
 
 function emptyForArray(property, externals)
