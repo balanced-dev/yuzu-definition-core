@@ -1,3 +1,5 @@
+handlebars = require('handlebars')
+
 var should = require('should'),
     rewire = require('rewire'),
     S = require('string'),
@@ -25,7 +27,7 @@ describe('render service', function () {
 
             var partial = '<h1>{{title}}</h1>';
 
-            svc.handlebars.registerPartial('partial', partial)
+            handlebars.registerPartial('partial', partial)
 
             var data = {
                 title: 'title'
@@ -44,7 +46,7 @@ describe('render service', function () {
                 return name.first + " " + name.last;
             }
 
-            svc.handlebars.registerHelper('helper', helper)
+            handlebars.registerHelper('helper', helper)
 
             var data = {
                 name: {

@@ -11,7 +11,7 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 			try {
 				var schema = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
 				if(schema.type === undefined) {
-					throw "Schema "+ schema.id +" mucst have a schema type";
+					console.warn("Schema "+ schema.id +" must have a schema type");
 				} 
 				if(rootSchemaProperties && schema.properties && schema.type == "object") {
 					rootSchemaProperties.forEach(function(item) {
@@ -21,7 +21,7 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 				externalSchemas[getFilename(filename)] = schema;
 			}
 			catch (e) {
-				console.log("File not parsed " + filename)
+				console.log("File not parsed :" + filename)
 			}
 		if (path.extname(filename) == ".json")
 			try {

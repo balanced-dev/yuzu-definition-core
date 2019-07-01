@@ -29,7 +29,9 @@ describe('file service', function () {
 		it('should add schema file', function () {
 
 			var readFileSync = function(filename, format) {
-				var data = JSON.stringify({});
+				var data = JSON.stringify({
+					"type": "object"
+				});
 				if(filename === "dir\\pageHeader\\parPageHeader.schema") {
 					return data;
 				}
@@ -47,7 +49,9 @@ describe('file service', function () {
 			var expected = {
 				"data": {},
 				"schema": {
-					"/parPageHeader": {}
+					"/parPageHeader": {
+						"type": "object"
+					}
 				}
 			};
 
@@ -119,15 +123,18 @@ describe('file service', function () {
 		it('should add multiple blocks', function () {
 
 			var readFileSync = function(filename, format) {
-				var data = JSON.stringify({});
+				var data = JSON.stringify({	});
+				var schema = JSON.stringify({
+					"type": "object"
+				});
 				if(filename === "dir\\pageHeader\\parPageHeader.schema") {
-					return data;
+					return schema;
 				}
 				if(filename === "dir\\pageHeader\\data\\parPageHeader.json") {
 					return data;
 				}
 				if(filename === "dir\\team\\parTeam.schema") {
-					return data;
+					return schema;
 				}
 				if(filename === "dir\\team\\data\\parTeam.json") {
 					return data;
@@ -149,8 +156,12 @@ describe('file service', function () {
 
 			var expected = {
 				"schema": {
-					"/parPageHeader": {},
-					"/parTeam": {}
+					"/parPageHeader": {
+						"type": "object"
+					},
+					"/parTeam": {
+						"type": "object"
+					}
 				},
 				"data": {
 					"/parPageHeader": {},
@@ -240,7 +251,9 @@ describe('file service', function () {
 		it('schema should always have a tyoe', function () {
 
 			var readFileSync = function(filename, format) {
-				var data = JSON.stringify({});
+				var data = JSON.stringify({
+					"type": "object"
+				});
 				if(filename === "dir\\pageHeader\\parPageHeader.schema") {
 					return data;
 				}
@@ -258,7 +271,9 @@ describe('file service', function () {
 			var expected = {
 				"data": {},
 				"schema": {
-					"/parPageHeader": {}
+					"/parPageHeader": {
+						"type": "object"
+					}
 				}
 			};
 
