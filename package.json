@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test --recursive"
+    "test": "nyc mocha test --recursive"
   },
   "author": "Phil Whittaker",
   "license": "MIT",

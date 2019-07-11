@@ -2,13 +2,11 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var build = require('../build');
 
-function buildData(templatesDir) {
+function buildPaths(templatesDir) {
 
 	var externals = build.setup(templatesDir);
 
 	return through.obj(function (file, enc, cb) {
-
-		var errors = [];
 
 		if (file.isNull()) {
 			this.push(file);
@@ -20,15 +18,7 @@ function buildData(templatesDir) {
 			return cb();
 		}
 
-		var data = build.resolveDataString(file.contents.toString(), file.path, externals, errors);
-
-		if(errors.length > 0) {
-			var that = this;
-			errors.forEach(function(error) {
-				that.emit('error', new gutil.PluginError(error.source, error.inner));
-			});
-			return cb();	
-		}
+		var data = build.resolvePaths(file.contents.toString(), externals);
 
 		file.contents = new Buffer(JSON.stringify(data, null, 4));
 
@@ -37,4 +27,4 @@ function buildData(templatesDir) {
 	});
 }
 
-module.exports = buildData;
+module.exports = buildPaths;

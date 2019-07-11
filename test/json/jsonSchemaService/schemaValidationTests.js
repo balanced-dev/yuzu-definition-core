@@ -1,6 +1,6 @@
 var S = require('string'),
 	should = require('should')
-jsonHelper = require('../../modules/json/jsonSchemaService');
+jsonHelper = require('../../../modules/json/jsonSchemaService');
 
 describe('json schema service', function () {
 	describe('validation', function () {

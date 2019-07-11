@@ -6,7 +6,7 @@ var highlightService = require('../services/blockHighlightService');
 function gulp(templatesDir, hbsHelpers, layoutDir) {
 
 	build.register(templatesDir, hbsHelpers);
-	var rootSchemaProperties = ["$ref", highlightService.property];
+	var rootSchemaProperties = ["_ref", highlightService.property];
 	var externals = build.setup(templatesDir, layoutDir, rootSchemaProperties);
 
 	return through.obj(function (file, enc, cb) {

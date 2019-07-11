@@ -27,12 +27,22 @@ function Resolve_From_Root(path, data, refMap, config, results)
 				resolve_Ref(ref, path, "", items, refMap, config, results);
 			}
 			else if(items.hasOwnProperty("anyOf")) {
-				doMultipleRefs(path, items.anyOf, refMap, config, results);	
+				if(config.removeAnyOf) {
+					items.anyOf = [];
+				}
+				else { 
+					doMultipleRefs(path, items.anyOf, refMap, config, results);	
+				}
 			}
 			
 		}
 		else if (data.hasOwnProperty("oneOf")) {
-			doMultipleRefs(path, data.oneOf, refMap, config, results);
+			if(config.removeOneOf) {
+				data.oneOf = [];
+			}
+			else {
+				doMultipleRefs(path, data.oneOf, refMap, config, results);
+			}
 		}
 		else if (data.type === "object") {
 			resolve_CycleProperties(path, data.properties, refMap, config, results);

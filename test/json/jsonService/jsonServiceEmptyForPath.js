@@ -1,7 +1,7 @@
 var S = require('string'),
 	assert = require("assert"),
 	should = require('should'),
-	jsonService = require('../../modules/json/jsonService');
+	jsonService = require('../../../modules/json/jsonService');
 
 
 describe('json service', function () {

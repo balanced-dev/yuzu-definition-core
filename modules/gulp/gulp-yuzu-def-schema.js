@@ -2,7 +2,7 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var build = require('../build');
 
-function buildData(templatesDir) {
+function buildData(templatesDir, addRef) {
 
 	var externals = build.setup(templatesDir);
 
@@ -20,7 +20,11 @@ function buildData(templatesDir) {
 			return cb();
 		}
 
-		var data = build.resolveDataString(file.contents.toString(), file.path, externals, errors);
+		var schema = build.resolveSchema(file.contents.toString(), externals);
+		if(addRef && schema.properties && schema.type == "object") {
+			schema.properties['_ref'] = { "type": "string" };
+		}
+
 
 		if(errors.length > 0) {
 			var that = this;
@@ -30,7 +34,7 @@ function buildData(templatesDir) {
 			return cb();	
 		}
 
-		file.contents = new Buffer(JSON.stringify(data, null, 4));
+		file.contents = new Buffer(JSON.stringify(schema, null, 4));
 
 		this.push(file);
 		cb();

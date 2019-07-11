@@ -25,6 +25,26 @@ const setup = function (partialsRootDir, layoutDir, rootSchemaProperties) {
 	return externals;
 }
 
+const resolveDataString = function (data, path, externals, errors) {
+
+	var blockData = build.getBlockData(path);
+
+	data = build.parseJson(data, path, errors);
+	data = build.resolveJson(data, externals, blockData, errors);
+
+	return data
+}
+
+const resolveSchema = function (schema, externals) {
+
+	return build.resolveSchemaRemoveAnyOfOneOf(JSON.parse(schema), externals);
+}
+
+const resolvePaths = function (schema, externals) {
+
+	return build.resolveSchemaAsPathsRefMap(JSON.parse(schema), externals);
+}
+
 const render = function (data, path, externals, errors) {
 
 	var blockData = build.getBlockData(path);
@@ -74,11 +94,9 @@ const savePreview = function (path, template) {
 	fs.writeFileSync(path, template);
 }
 
-const resolveDataString = function (data, path, externals, errors) {
-	data = build.parseJson(data, path, errors);
-	data = build.resolveJson(data, externals, blockData, errors);
+const getPreviews = function(partialsRootDir) {
 
-	return data
+	return fileService.getPreviews(partialsRootDir);
 }
 
 const getData = function (partialsRootDir, state) {
@@ -131,11 +149,6 @@ const getEmpty = function (partialsRootDir, blockName, path) {
 	return jsonService.getEmpty(blockName, externals, path);
 }
 
-const getPreviews = function(partialsRootDir) {
-
-	return fileService.getPreviews(partialsRootDir);
-}
-
 
 module.exports = {
 	register,
@@ -145,6 +158,8 @@ module.exports = {
 	save,
 	savePreview,
 	resolveDataString,
+	resolvePaths,
+	resolveSchema,
 	getData,
 	getChildStates,
 	getRefPaths,

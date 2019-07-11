@@ -23,13 +23,11 @@ const resolveJson = function(data, externals, blockData, errors)
 {
 	var resolveResults = jsonService.resolveComponentJson(data, { external: externals.data, addRefProperty: true, addPathProperty: true, deepclone: true });
 	if(!resolveResults.valid) {
-		var that = this;
 		resolveResults.errors.forEach(function(error) {
 			errors.push({
 				source: 'yuzu build - json resolve for '+ blockData.schema.id,
 				inner: error
-			})
-			that.emit('error', new gutil.PluginError('Resolve Map Ref for '+ blockData.schema.id, error));
+			});
 		});
 	}
 	return data;
@@ -51,6 +49,12 @@ const resolveSchemaAsPathsRefMap = function(schema, externals) {
 
 	var results = jsonSchemaService.Resolve_ComponentJsonSchema(schema, { external: externals.schema, refMapper: refMapperPaths });
 	return results.refMap;
+}
+
+const resolveSchemaRemoveAnyOfOneOf = function(schema, externals) {
+
+	jsonSchemaService.Resolve_ComponentJsonSchema(schema, { external: externals.schema, removeAnyOf: true, removeOneOf: true });
+	return schema;
 }
 
 const getBlockData = function(path) {
@@ -90,6 +94,7 @@ module.exports = {
 	resolveDataAsListRefMap,
 	resolveDataAsObjectRefMap,
 	resolveSchemaAsPathsRefMap,
+	resolveSchemaRemoveAnyOfOneOf,
 	getBlockData,
 	validateSchema
 };
