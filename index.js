@@ -1,4 +1,5 @@
 handlebars = require('handlebars');
+fs = require("fs");
 
 var gulpBuild = require('./modules/gulp/gulp-yuzu-def-render');
 var gulpData = require('./modules/gulp/gulp-yuzu-def-data');
