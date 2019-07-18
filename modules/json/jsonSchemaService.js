@@ -22,16 +22,18 @@ function Resolve_From_Root(path, data, refMap, config, results)
 		if(data.type === "array") {
 			var items = data.items;
 	
-			if(items.hasOwnProperty('$ref')) {
-				var ref = items['$ref'];
-				resolve_Ref(ref, path, "", items, refMap, config, results);
-			}
-			else if(items.hasOwnProperty("anyOf")) {
-				if(config.removeAnyOf) {
-					items.anyOf = [];
+			if(items) {
+				if(items.hasOwnProperty('$ref')) {
+					var ref = items['$ref'];
+					resolve_Ref(ref, path, "", items, refMap, config, results);
 				}
-				else { 
-					doMultipleRefs(path, items.anyOf, refMap, config, results);	
+				else if(items.hasOwnProperty("anyOf")) {
+					if(config.removeAnyOf) {
+						items.anyOf = [];
+					}
+					else { 
+						doMultipleRefs(path, items.anyOf, refMap, config, results);	
+					}
 				}
 			}
 			

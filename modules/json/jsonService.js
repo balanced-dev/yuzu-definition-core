@@ -107,7 +107,7 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
 
 		if(!config.external.hasOwnProperty(ref)) {
 			results.valid = false;
-			results.errors.push('Json component reference not found in '+ newPath +' for schema '+ ref);
+			results.errors.push('Json data component reference not found in '+ newPath +' for data ref : '+ ref +'. Is this inline data?');
 		}
 		else {
 
