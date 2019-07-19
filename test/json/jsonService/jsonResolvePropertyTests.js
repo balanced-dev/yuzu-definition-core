@@ -27,7 +27,7 @@ describe('json service', function () {
 				"name": "Test",
 				"address": {
 					"zip": "DC 20500",
-					"_ref": "/SimpleAddress"
+					"@ref": "/SimpleAddress"
 				}
 			}
 
@@ -57,7 +57,7 @@ describe('json service', function () {
 				"name": "Test",
 				"address": {
 					"zip": "DC 20500",
-					"_ref": "/SimpleAddress"
+					"@ref": "/SimpleAddress"
 				}
 			}
 
@@ -89,11 +89,11 @@ describe('json service', function () {
 			var debug = JSON.stringify(data, null, 4);
 			var expected = [{
 				"zip": "DC 20500",
-				"_ref": "/Address"
+				"@ref": "/Address"
 			},
 			{
 				"no": "8904309342",
-				"_ref": "/Phone"
+				"@ref": "/Phone"
 			}]
 
 			results.valid.should.equal(true);

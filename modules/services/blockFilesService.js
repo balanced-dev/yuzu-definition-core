@@ -33,10 +33,14 @@ function TestAndReadFile(dataObject, files, dir, dirFile, key, name, ext, valida
 		{
 			var result = jsonHelper.testJSON(fileContent);
 			if(!result.valid) {
-				dataObject.error = 'Cannot parse file : '+ name +' in '+ dir;	
+				dataObject.error = 'Cannot parse file : '+ dirFile +' in '+ dir;	
 				return;
 			}
-			dataObject[key] = result.data;		
+			var data = result.data;
+			if(data.properties && data.type == "object") {
+				data.properties['@modifier'] = { "type": "string" };
+			}
+			dataObject[key] = data;		
 		}
 		else
 			dataObject[key] = fileContent;	
