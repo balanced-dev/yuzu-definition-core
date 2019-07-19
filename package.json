@@ -1,6 +1,6 @@
 {
   "name": "block-templates-parse",
-  "version": "1.2.12",
+  "version": "1.2.13",
   "description": "Helper modules for parsing of blocs from json and handlebars files into html",
   "main": "index.js",
   "directories": {
@@ -29,7 +29,7 @@
     "gulp-util": "^3.0.8",
     "handlebars": "^4.1.2",
     "jsonschema": "^1.2.4",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.11",
     "through2": "^3.0.1",
     "util-extend": "^1.0.1"
   },
