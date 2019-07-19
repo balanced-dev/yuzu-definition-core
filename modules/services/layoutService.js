@@ -10,11 +10,11 @@ function GetLayouts(dir)
 	files.forEach(function(filename) {
 		
 		if(filename.endsWith('.hbs')) {
-			var layoutName = path.basename(filename, '.hbs');
 
 			var templatePath = path.join(dir, filename);
 			var template = fs.readFileSync(templatePath, 'utf8');
 
+			var layoutName = path.basename(filename, '.hbs');			
 			var dataPath = path.join(dir, layoutName +'.json');
 			var data = fs.readFileSync(dataPath, 'utf8');
 
@@ -22,7 +22,7 @@ function GetLayouts(dir)
 				layouts.push({
 					name: layoutName,
 					template: template,
-					data: data
+					data: JSON.parse(data)
 				})
 			}
 		}

@@ -20,9 +20,9 @@ const render = (hbs, data, errors) => {
 
 const wrapSingle = (hbs, data, contents, errors) => {
     
-    var newData = extend(data, {contents: contents});
+    var content = {contents: contents};
+    var newData = extend(data, content);
     return render(hbs, newData, errors);
-
 }
 
 const wrapMultiple = function(hbses, datas, errors) {

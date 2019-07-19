@@ -20,7 +20,7 @@ describe('json service', function () {
 			var results = jsonService.resolveComponentJson(data, config);
 
 			results.valid.should.equal(false);
-			results.errors[0].should.equal("Json component reference not found in /address for schema /SimpleAddress");
+			results.errors[0].should.equal("Json data component reference not found in /address for data ref : /SimpleAddress. Is this inline data?");
 
 			done();
 		})
@@ -111,7 +111,7 @@ describe('json service', function () {
 			var results = jsonService.resolveComponentJson(data, config);
 
 			results.valid.should.equal(false);
-			results.errors[0].should.equal("Json component reference not found in /address/sub for schema /SubItem");
+			results.errors[0].should.equal("Json data component reference not found in /address/sub for data ref : /SubItem. Is this inline data?");
 
 			done();
 		})

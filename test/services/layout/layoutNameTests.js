@@ -1,7 +1,7 @@
-varS = require('string'),
+var S = require('string'),
 	should = require('should'),
 	rewire = require('rewire'),
-	svc = rewire('../../modules/services/layoutService.js');;
+	svc = rewire('../../../modules/services/layoutService.js');;
 
 
 describe('layout service', function () {
