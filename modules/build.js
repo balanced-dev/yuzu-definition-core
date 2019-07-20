@@ -64,9 +64,13 @@ const renderState = function (partialsRootDir, state, errors) {
 
 	if (externals.data.hasOwnProperty(state)) {
 		var data = externals.data[state];
-		var paths = fileService.getDataPaths(state);
+		var paths = fileService.getDataPaths(partialsRootDir);
+		var path = paths[state];
 
-		return render(data, paths[state], externals, errors);
+		var blockData = build.getBlockData(path);
+		data = build.resolveJson(data, externals, blockData, errors);
+	
+		return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
 	}
 	else {
 		throw state + " block state not found"
@@ -115,12 +119,20 @@ const getPreviews = function(partialsRootDir) {
 	return fileService.getPreviews(partialsRootDir);
 }
 
-const getData = function (partialsRootDir, state) {
+const getData = function (partialsRootDir, state, resolve, errors) {
 
 	var externals = fileService.getDataAndSchema(partialsRootDir);
 
 	if (externals.data.hasOwnProperty(state)) {
-		return externals.data[state];
+		var data = externals.data[state];
+		if(resolve) {
+			var paths = fileService.getDataPaths(partialsRootDir);
+			var path = paths[state];
+	
+			var blockData = build.getBlockData(path);
+			data = build.resolveJson(data, externals, blockData, errors);
+		}
+		return (data);
 	}
 	else {
 		return {

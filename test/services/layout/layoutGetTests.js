@@ -64,5 +64,33 @@ describe('layout service', function () {
 			output.length.should.equal(0);
 		})
 
+		xit('should error when layout data not valid', function () {
+
+			files = ['file.hbs']
+			var dir = 'c:\\templates\\';
+
+			svc.__set__(
+				{ fs:
+					{ 
+						readdirSync: function (dir) {
+							return files;
+						},
+						readFileSync: (filename) => {
+							if(filename == 'c:\\templates\\file.hbs') {
+								return 'template'
+							}
+							else if (filename == 'c:\\templates\\file.json') {
+								return 'ieriuwer}'
+							}
+						}
+					}
+				}
+			)
+
+			var output = svc.GetLayouts(dir);
+
+			output.length.should.equal(0);
+		})
+
 	});
 });

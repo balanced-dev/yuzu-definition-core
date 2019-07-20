@@ -30,9 +30,7 @@ describe('build', function () {
                     },
                     build: {
                         getBlockData() { return {}; },
-                        parseJson() {},
-                        resolveJson() {},
-                        validateSchema() {}
+                        resolveJson() {}
                     },
                     renderService: {
                         fromTemplate() { return renderedHtml; }
