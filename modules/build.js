@@ -57,6 +57,22 @@ const render = function (data, path, externals, errors) {
 	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
 }
 
+const renderState = function (partialsRootDir, state, errors) {
+
+	var externals = fileService.getDataAndSchema(partialsRootDir);
+	externals.layouts = [];
+
+	if (externals.data.hasOwnProperty(state)) {
+		var data = externals.data[state];
+		var paths = fileService.getDataPaths(state);
+
+		return render(data, paths[state], externals, errors);
+	}
+	else {
+		throw state + " block state not found"
+	}
+}
+
 const renderPreview = function (data, refs, path, externals, errors) {
 
 	Object.keys(refs).forEach(function (key) {
@@ -154,6 +170,7 @@ module.exports = {
 	register,
 	setup,
 	render,
+	renderState,
 	renderPreview,
 	save,
 	savePreview,
