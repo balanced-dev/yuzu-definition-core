@@ -135,9 +135,7 @@ const getData = function (partialsRootDir, state, resolve, errors) {
 		return (data);
 	}
 	else {
-		return {
-			inlineBlock: true
-		}
+		jsonService.getEmpty(state, externals);
 	}
 }
 
