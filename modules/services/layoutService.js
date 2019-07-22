@@ -19,10 +19,18 @@ function GetLayouts(dir)
 			var data = fs.readFileSync(dataPath, 'utf8');
 
 			if(template && data) {
+
+				try{
+					data = JSON.parse(data)
+				}
+				catch(ex) {
+					console.log('layout '+ filename +' does not parse');
+				}
+
 				layouts.push({
 					name: layoutName,
 					template: template,
-					data: JSON.parse(data)
+					data: data
 				})
 			}
 		}

@@ -38,7 +38,7 @@ function TestAndReadFile(dataObject, files, dir, dirFile, key, name, ext, valida
 			}
 			var data = result.data;
 			if(data.properties && data.type == "object") {
-				data.properties['@modifier'] = { "type": "string" };
+				data.properties['_modifiers'] = { "type": "string" };
 			}
 			dataObject[key] = data;		
 		}

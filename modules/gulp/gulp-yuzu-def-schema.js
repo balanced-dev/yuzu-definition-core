@@ -22,7 +22,7 @@ function buildData(templatesDir, addRef) {
 
 		var schema = build.resolveSchema(file.contents.toString(), externals);
 		if(addRef && schema.properties && schema.type == "object") {
-			schema.properties['@ref'] = { "type": "string" };
+			schema.properties['_ref'] = { "type": "string" };
 		}
 
 

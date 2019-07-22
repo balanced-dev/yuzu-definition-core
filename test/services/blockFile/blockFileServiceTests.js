@@ -86,7 +86,7 @@ describe('block files service', function () {
 			assert.deepEqual(output.schema, {});
 		})
 
-		it('should add @modifier to the schema', function () {
+		it('should add _modifiers to the schema', function () {
 
 			base.file.path = 'c:/templates/parHeader/data/template_data.json';
 
@@ -105,7 +105,7 @@ describe('block files service', function () {
 			base.createFsMock(readdirSync, readfileSync);
 
 			var output = base.svc.Get('');
-			output.schema.properties["@modifier"].type.should.equal('string');
+			output.schema.properties["_modifiers"].type.should.equal('string');
 		})
 
 		it('should error when schema file is not valid', function () {

@@ -116,7 +116,7 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
             Resolve_From_Root(newPath, childData, childRefMap, config, results);
 			
 			if(config.addRefProperty)
-				childData["@ref"] = blockPathService.blockFromState(ref, false);
+				childData["_ref"] = blockPathService.blockFromState(ref, false);
 
 			if(config.addPathProperty)
 				childData["yuzu-path"] = newPath;
