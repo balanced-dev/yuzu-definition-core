@@ -35,6 +35,9 @@ function Resolve_From_Root(path, data, refMap, config, results)
 						doMultipleRefs(path, items.anyOf, refMap, config, results);	
 					}
 				}
+				else {
+					resolve_CycleProperties(path, items.properties, refMap, config, results);
+				}
 			}
 			
 		}

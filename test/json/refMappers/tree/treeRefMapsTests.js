@@ -67,6 +67,40 @@ describe('json schema service', function () {
 
 			})
 
+			it('simple array', function (done) {
+
+				config.external = {
+					"/child": {
+						"type": "object",
+						"properties": {	}
+					}
+				};
+
+				var schema = {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"child1": {
+								"$ref": "/child"
+							}
+						}
+					}
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.refMap, null, 4);
+
+				var expected = {
+					"/child1": ["/child"]
+				};
+
+				assert.deepEqual(expected, results.refMap);
+
+				done();
+
+			})
+
 			it('multiple instances', function (done) {
 
 				config.external = {
