@@ -86,7 +86,7 @@ const renderPreview = function (data, refs, path, externals, errors) {
 	return render(data, path, externals, errors);
 }
 
-const save = function (partialsRootDir, layoutsDir, data, path, refs, errors) {
+const save = function (partialsRootDir, data, path, refs) {
 
 	fs.writeFileSync(path, data);
 
@@ -102,11 +102,6 @@ const save = function (partialsRootDir, layoutsDir, data, path, refs, errors) {
 			fs.writeFileSync(blockPath, JSON.stringify(refs[key], null, 4));
 		}
 	});
-
-	//read externals including newly changed refs from above
-	var externals = setup(partialsRootDir, layoutsDir);
-
-	return render(data, path, externals, errors);
 
 }
 
