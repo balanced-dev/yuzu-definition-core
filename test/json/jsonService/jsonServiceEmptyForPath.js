@@ -30,6 +30,69 @@ describe('json service', function () {
 			assert.deepEqual(expected, results);
 		});
 
+		it('should get empty instance for inline schema with array at root', function () {
+
+			var externals = {};
+			externals.schema = {
+				"/parDataLink": {
+					"type": "object",
+					"properties": {
+						"src": {
+							"type": "string"
+						}
+					}
+				},
+				"/parBlock": {
+					"type": "array",
+					"items": {
+						"$ref": "/parDataLink"
+					}
+				}
+			};
+
+			var results = jsonService.getEmpty("/parBlock", externals);
+
+			var expected = {
+				src: ""
+			}
+
+			assert.deepEqual(expected, results);
+		});
+
+		it('should get empty instance for ref schema with array at root', function () {
+
+			var externals = {};
+			externals.schema = {
+				"/parDataLink": {
+					"type": "object",
+					"properties": {
+						"src": {
+							"type": "string"
+						}
+					}
+				},
+				"/parBlock": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"title": {
+								"type": "string"
+							},
+						}
+					}
+				}
+			};
+
+			var results = jsonService.getEmpty("/parBlock", externals);
+
+			var expected = {
+				title: ""
+			}
+
+			assert.deepEqual(expected, results);
+		});
+
 		it('should error on path as object or array not found', function () {
 
 			var externals = {};

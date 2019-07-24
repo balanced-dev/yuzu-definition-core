@@ -160,7 +160,12 @@ function getEmpty(ref, externals, path)
 				throw "Property "+ partPath +" not found";
 			}
 		});
-		
+	}
+	else if(schema.type == 'array' && schema.items.type == 'object') {
+		schema = schema.items;
+	}
+	else if(schema.type == 'array' && schema.items.$ref) {
+		schema = externals.schema[schema.items.$ref];
 	}
 
 	return empty(schema, externals);
