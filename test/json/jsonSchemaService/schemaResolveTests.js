@@ -28,11 +28,10 @@ describe('json schema service', function () {
 			done();
 		})
 
-		it('should remove anyof or oneOf when asked', function (done) {
+		it('should remove anyof when asked', function (done) {
 
 			var config = {};
 			config.removeAnyOf = true;
-			config.removeOneOf = true;
 			config.external = {};
 
 			var schema = {
@@ -52,7 +51,7 @@ describe('json schema service', function () {
 						}
 					},
 					"child2": {
-						"oneOf": [
+						"anyOf": [
 							{
 								"$ref": "/child8"
 							},
@@ -76,7 +75,7 @@ describe('json schema service', function () {
 						}
 					},
 					"child2": {
-						"oneOf": []
+						"anyOf": []
 					}
 				}
 			};
@@ -86,11 +85,10 @@ describe('json schema service', function () {
 			done();
 		})
 
-		it('should remove anyof or oneOf in child object when asked', function (done) {
+		it('should remove anyof in child object when asked', function (done) {
 
 			var config = {};
 			config.removeAnyOf = true;
-			config.removeOneOf = true;
 			config.external = {};
 
 			var schema = {
@@ -113,7 +111,7 @@ describe('json schema service', function () {
 								}
 							},
 							"child2": {
-								"oneOf": [
+								"anyOf": [
 									{
 										"$ref": "/child8"
 									},
@@ -144,7 +142,7 @@ describe('json schema service', function () {
 								}
 							},
 							"child2": {
-								"oneOf": []
+								"anyOf": []
 							}
 						}
 					}

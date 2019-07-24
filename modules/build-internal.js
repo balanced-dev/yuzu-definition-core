@@ -51,9 +51,9 @@ const resolveSchemaAsPathsRefMap = function(schema, externals) {
 	return results.refMap;
 }
 
-const resolveSchemaRemoveAnyOfOneOf = function(schema, externals) {
+const resolveSchemaRemoveAnyOf = function(schema, externals) {
 
-	jsonSchemaService.Resolve_ComponentJsonSchema(schema, { external: externals.schema, removeAnyOf: true, removeOneOf: true });
+	jsonSchemaService.Resolve_ComponentJsonSchema(schema, { external: externals.schema, removeAnyOf: true });
 	return schema;
 }
 
@@ -94,7 +94,7 @@ module.exports = {
 	resolveDataAsListRefMap,
 	resolveDataAsObjectRefMap,
 	resolveSchemaAsPathsRefMap,
-	resolveSchemaRemoveAnyOfOneOf,
+	resolveSchemaRemoveAnyOf,
 	getBlockData,
 	validateSchema
 };

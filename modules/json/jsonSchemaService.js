@@ -41,12 +41,12 @@ function Resolve_From_Root(path, data, refMap, config, results)
 			}
 			
 		}
-		else if (data.hasOwnProperty("oneOf")) {
-			if(config.removeOneOf) {
-				data.oneOf = [];
+		else if (data.hasOwnProperty("anyOf")) {
+			if(config.removeAnyOf) {
+				data.anyOf = [];
 			}
 			else {
-				doMultipleRefs(path, data.oneOf, refMap, config, results);
+				doMultipleRefs(path, data.anyOf, refMap, config, results);
 			}
 		}
 		else if (data.type === "object") {

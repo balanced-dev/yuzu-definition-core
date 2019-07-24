@@ -37,7 +37,7 @@ const resolveDataString = function (data, path, externals, errors) {
 
 const resolveSchema = function (schema, externals) {
 
-	return build.resolveSchemaRemoveAnyOfOneOf(JSON.parse(schema), externals);
+	return build.resolveSchemaRemoveAnyOf(JSON.parse(schema), externals);
 }
 
 const resolvePaths = function (schema, externals) {

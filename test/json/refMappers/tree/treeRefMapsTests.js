@@ -271,7 +271,7 @@ describe('json schema service', function () {
 					"type": "object",
 					"properties": {
 						"child1": {
-							"oneOf": [
+							"anyOf": [
 								{
 									"$ref": "/child8"
 								},
