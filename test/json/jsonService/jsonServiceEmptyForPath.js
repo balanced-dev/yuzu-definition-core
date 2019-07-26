@@ -168,6 +168,36 @@ describe('json service', function () {
 			assert.deepEqual(expected, results);
 		})
 
+		it('should get empty from root array object where object type is missing', function () {
+
+			var externals = {};
+			externals.schema = {
+				"/parBlock": {
+					"type": "object",
+					"properties": {
+						"members": {
+							"type": "array",
+							"items": {
+								"properties": {
+									"title": {
+										"type": "string"
+									}
+								}
+							}
+						},
+					}
+				}
+			};
+
+			var results = jsonService.getEmpty("/parBlock", externals, "members");
+
+			var expected = {
+				title: ""
+			}
+
+			assert.deepEqual(expected, results);
+		})
+
 		it('should get empty from root array ref', function () {
 
 			var externals = {};

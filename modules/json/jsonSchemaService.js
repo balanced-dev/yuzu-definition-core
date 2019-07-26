@@ -68,17 +68,19 @@ doMultipleRefs = function(path, items, refMap, config, results) {
 }
 
 function resolve_CycleProperties(path, object, refMap, config, results) {
-	Object.keys(object).forEach(function(key) {
-		var property = object[key];
-		if(property['$ref']) {
-			var ref = property['$ref'];
-			resolve_Ref(ref, path, key, object, refMap, config, results);
-		}
-		else {
-			var newPath = path +'/'+ key;
-			Resolve_From_Root(newPath, property, refMap, config, results);
-		}
-	})
+	if(object) {
+		Object.keys(object).forEach(function(key) {
+			var property = object[key];
+			if(property['$ref']) {
+				var ref = property['$ref'];
+				resolve_Ref(ref, path, key, object, refMap, config, results);
+			}
+			else {
+				var newPath = path +'/'+ key;
+				Resolve_From_Root(newPath, property, refMap, config, results);
+			}
+		})
+	}
 }
 
 function resolve_Ref(ref, path, key, context, refMap, config, results, index)

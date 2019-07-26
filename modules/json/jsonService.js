@@ -180,6 +180,9 @@ function emptyForArray(property, externals)
 	}
 	else {
 		schema = items;
+		if(!schema.type){
+			schema.type = 'object';
+		}
 	}
 	return schema;
 }
