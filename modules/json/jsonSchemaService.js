@@ -115,8 +115,8 @@ function ValidateSchema(externalSchemas, data, schema)
         Object.keys(externalSchemas).forEach(function(key) {
             v.addSchema(externalSchemas[key], key);				
         });	
-    }			
-    
+	}			
+	
     return v.validate(data, schema);
 }
 

@@ -15,7 +15,7 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 				} 
 				if(rootSchemaProperties && schema.properties && schema.type == "object") {
 					rootSchemaProperties.forEach(function(item) {
-						schema.properties[item] = { "type": "string" };
+						schema.properties[item.name] = item.schema;
 					});
 				}
 				externalSchemas[getFilename(filename)] = schema;

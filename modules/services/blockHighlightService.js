@@ -1,4 +1,9 @@
-const property = 'yuzu-path';
+const property = {
+	name: 'yuzu-path',
+	schema: {
+		"type": "string"
+	}
+};
 
 var addYuzuMarker = function(template) {
 

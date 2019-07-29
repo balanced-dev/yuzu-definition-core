@@ -3,11 +3,25 @@ var through = require('through2');
 var build = require('../build');
 var highlightService = require('../services/blockHighlightService');
 
-function gulp(templatesDir, hbsHelpers, layoutDir) {
+function gulp(blocksDir, hbsHelpers, layoutDir) {
 
-	build.register(templatesDir, hbsHelpers);
-	var rootSchemaProperties = ["_ref", "_modifiers", highlightService.property];
-	var externals = build.setup(templatesDir, layoutDir, rootSchemaProperties);
+	var _ref = {
+		name: '_ref',
+		schema: {
+			"type": "string"
+		}
+	}
+
+	var _modifiers = {
+		name: '_modifiers',
+		schema: {
+			"type": "string"
+		}
+	}
+
+	build.register(blocksDir, hbsHelpers);
+	var blockSchemaProperties = [_ref, _modifiers, highlightService.property];
+	var externals = build.setup(blocksDir, layoutDir, blockSchemaProperties);
 
 	return through.obj(function (file, enc, cb) {
 

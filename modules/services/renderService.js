@@ -53,17 +53,8 @@ const fromTemplate = function(path, template, data, layouts, errors, blockLayout
         data
     ]
 
-    //add master layout
-    if(blockLayout) {
-        var layout = layoutHelper.GetBlockLayout(blockLayout);
-        if(layout) {
-            templates.push(layout.template);
-            datas.push(layout.data);
-        }
-    }
-
-    //add master layout
-    var layout = layoutHelper.GetLayout(path, layouts);
+    //add selected layout
+    var layout = layoutHelper.GetLayout(path, layouts, data);
     if(layout) {
         templates.push(layout.template);
         datas.push(layout.data);

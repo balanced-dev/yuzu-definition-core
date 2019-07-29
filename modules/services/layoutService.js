@@ -1,78 +1,106 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var fileService = require('./fileService');
+var jsonService = require('../json/jsonService');
 
-function GetLayouts(dir)
+const property = {
+	name: '_layout',
+	schema: {
+		"type": "object",
+		"properties": {
+			"name": {
+				"type": "string"
+			},
+			"data": {
+				"type": "string"
+			}
+		}
+	}
+};
+
+function GetLayouts(partialsDir, externals)
 {
 	var layouts = [];
-	var files = fs.readdirSync(dir);
 	
-	files.forEach(function(filename) {
-		
-		if(filename.endsWith('.hbs')) {
+	fileService.getFilesInDir(partialsDir, function (dir, filename) {
+		if(path.extname(filename) == ".hbs") {
+
+            var layoutName = path.basename(filename, '.hbs');         
 
 			var templatePath = path.join(dir, filename);
 			var template = fs.readFileSync(templatePath, 'utf8');
+			
+			var dataItems = [];
+			var dataFiles = fs.readdirSync(path.join(dir, 'data'));
+			dataFiles.forEach(function(dataFilename) {
+				var dataPath = path.join(dir, 'data', dataFilename);
 
-			var layoutName = path.basename(filename, '.hbs');			
-			var dataPath = path.join(dir, layoutName +'.json');
-			var data = fs.readFileSync(dataPath, 'utf8');
+				var fileContents = fs.readFileSync(dataPath, 'utf8');
+				data = jsonService.testJSON(fileContents).data;
+				jsonService.resolveComponentJson(data, { external: externals.data, addRefProperty: true, deepclone: true });
 
-			if(template && data) {
+				dataItems.push({
+					name: path.basename(dataFilename, '.json'),
+					value: data
+				});
+			});
 
-				try{
-					data = JSON.parse(data)
-				}
-				catch(ex) {
-					console.log('layout '+ filename +' does not parse');
-				}
-
+			if(template && dataItems && dataItems.length > 0) {
 				layouts.push({
 					name: layoutName,
 					template: template,
-					data: data
+					data: dataItems
 				})
 			}
 		}
-	});
-	
+		
+	}, function(dir) {});
+
 	return layouts;
 }
 
-function GetLayoutName(p)
+function GetSelectedLayout(blockPath, data)
 {
-	var layout = 'layout';
-	var paths = path.basename(p).split('.');
-    var dirs = path.dirname(p).split(path.sep);
+	var dirs = path.dirname(blockPath).split(path.sep);
+	var isLayout = _.find(dirs, function(o) { return o == "_layouts"; }) != undefined;
+	if(isLayout) return undefined;
+
     var isBlock = _.find(dirs, function(o) { return o == "blocks"; }) != undefined;
-    
-    if(isBlock)
-        layout = 'block';
-    else
-        if(paths.length == 3)
-            layout = paths[1];
+	var layout = isBlock ? { name: '_block', data: '_block' } : { name: '_page', data: '_page' } ;
+
+    if(data && data._layout) {
+		return data._layout;
+	}
             
 	return layout;
 }
 
-function GetLayout(path, layouts) {
-	var layoutName = GetLayoutName(path);
+function GetLayout(path, layouts, data) {
+	var selectedLayout = GetSelectedLayout(path, data);
 
-	return _.chain(layouts).filter( function(layout) {
-		return layout.name == layoutName;
-	}).first().value();
-}
+	if(selectedLayout) {
+		var layout = _.chain(layouts).filter( function(layout) {
+			return layout.name == selectedLayout.name;
+		}).first().value();
 
-function GetBlockLayout(blockLayout) {
-	var template = fs.readFileSync(blockLayout, 'utf8');
+		if(layout) {
+			var layoutData = _.chain(layout.data).filter( function(data) {
+				return data.name == selectedLayout.data;
+			}).first().value();
 
-	return {
-		template: template,
-		data: {}
+			if(layoutData) {
+				return {
+					template: layout.template,
+					data: layoutData.value
+				}
+			}
+		}
 	}
+	return undefined;
 }
 
-module.exports.GetLayoutName = GetLayoutName;
+module.exports.GetSelectedLayout = GetSelectedLayout;
 module.exports.GetLayouts = GetLayouts;
 module.exports.GetLayout = GetLayout;
-module.exports.GetBlockLayout = GetBlockLayout;
+module.exports.property = property;

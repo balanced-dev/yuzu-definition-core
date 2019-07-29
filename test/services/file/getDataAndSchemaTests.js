@@ -190,7 +190,20 @@ describe('file service', function () {
 
 			mockFiles(dirs, readFileSync);
 
-			var output = fileService.getDataAndSchema(dir, ["$ref", "yuzuPath"]);
+			var output = fileService.getDataAndSchema(dir, [
+				{
+					name: "_ref",
+					schema: {
+						type: "string"
+					}
+				},
+				{
+					name: "yuzuPath",
+					schema: {
+						type: "object"
+					}
+				}
+			]);
 			var debug = JSON.stringify(output, null, 4);
 
 			var expected = {
@@ -199,11 +212,11 @@ describe('file service', function () {
 					"/parPageHeader": {
 						"type": "object",
 					    "properties": {
-							"$ref": {
+							"_ref": {
 								"type": "string"
 							},
 							"yuzuPath": {
-								"type": "string"
+								"type": "object"
 							}
 						}
 					}
@@ -231,7 +244,14 @@ describe('file service', function () {
 
 			mockFiles(dirs, readFileSync);
 
-			var output = fileService.getDataAndSchema(dir, ["$ref"]);
+			var output = fileService.getDataAndSchema(dir, [
+				{
+					name: "_ref",
+					schema: {
+						type: "string"
+					}
+				}
+			]);
 			var debug = JSON.stringify(output, null, 4);
 
 			var expected = {
@@ -248,7 +268,7 @@ describe('file service', function () {
 			expect(output).to.be.deep.equal(expected);
 		})
 
-		it('schema should always have a tyoe', function () {
+		it('schema should always have a type', function () {
 
 			var readFileSync = function(filename, format) {
 				var data = JSON.stringify({

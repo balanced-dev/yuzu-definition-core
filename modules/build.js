@@ -18,7 +18,7 @@ const setup = function (partialsRootDir, layoutDir, rootSchemaProperties) {
 
 	var externals = fileService.getDataAndSchema(partialsRootDir, rootSchemaProperties);
 	if (layoutDir)
-		externals.layouts = layoutService.GetLayouts(layoutDir);
+		externals.layouts = layoutService.GetLayouts(layoutDir, externals);
 	else
 		externals.layouts = [];
 
@@ -48,6 +48,9 @@ const resolvePaths = function (schema, externals) {
 const render = function (data, path, externals, errors) {
 
 	var blockData = build.getBlockData(path);
+
+	var layoutProperty = layoutService.property;
+	blockData.schema.properties[layoutProperty.name] = layoutProperty.schema;
 
 	data = build.parseJson(data, path, errors);
 	data = build.resolveJson(data, externals, blockData, errors);
