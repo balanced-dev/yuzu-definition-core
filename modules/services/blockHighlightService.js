@@ -7,7 +7,7 @@ const property = {
 
 var addYuzuMarker = function(template) {
 
-	return template.replace(/<\w*\s/, '$&{{#if '+ property +'}}data-yuzu="{{'+ property +'}}"{{/if}} ');
+	return template.replace(/<\w*\s/, '$&{{#if '+ property.name +'}}data-yuzu="{{'+ property.name +'}}"{{/if}} ');
 }
 
 module.exports.property = property;
