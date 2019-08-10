@@ -1,3 +1,4 @@
+var path = require('path');
 var jsonService = require('./json/jsonService');
 var jsonSchemaService = require('./json/jsonSchemaService');
 var refMapperList = require('./json/refMappers/json/refsAsList');
@@ -57,7 +58,7 @@ const resolveSchemaRemoveAnyOf = function(schema, externals) {
 	return schema;
 }
 
-const getBlockData = function(path) {
+const getBlockData = function(path, errors) {
 
 	var blockData = blockFilesService.Get(path);
 	if(blockData.error) {

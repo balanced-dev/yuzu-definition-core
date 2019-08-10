@@ -47,10 +47,12 @@ const resolvePaths = function (schema, externals) {
 
 const render = function (data, path, externals, errors) {
 
-	var blockData = build.getBlockData(path);
+	var blockData = build.getBlockData(path, errors);
 
 	var layoutProperty = layoutService.property;
-	blockData.schema.properties[layoutProperty.name] = layoutProperty.schema;
+	if(blockData.schema && blockData.schema.properties) {
+		blockData.schema.properties[layoutProperty.name] = layoutProperty.schema;
+	}
 
 	data = build.parseJson(data, path, errors);
 	data = build.resolveJson(data, externals, blockData, errors);

@@ -8,11 +8,17 @@ function Resolve_ComponentJsonSchema(data, config)
     results.errors = [];
 
 	var refMap = {};
+	if(data.hasOwnProperty("anyOfTypes"))
+		refMap.anyOfTypes = data.anyOfTypes;
 	
 	Resolve_From_Root('', data, refMap, config, results);
+	
+	if(config.refMapper && config.refMapper.postProcess) {
+		refMap = config.refMapper.postProcess(refMap, config.external);
+	}
 
 	results.refMap = refMap;
-	
+
 	return results;
 }
 
@@ -24,8 +30,7 @@ function Resolve_From_Root(path, data, refMap, config, results)
 	
 			if(items) {
 				if(items.hasOwnProperty('$ref')) {
-					var ref = items['$ref'];
-					resolve_Ref(ref, path, "", items, refMap, config, results);
+					resolve_Ref(items, path, "", items, refMap, config, results);
 				}
 				else if(items.hasOwnProperty("anyOf")) {
 					if(config.removeAnyOf) {
@@ -61,8 +66,9 @@ doMultipleRefs = function(path, items, refMap, config, results) {
 
 	if(items) {
 		items.forEach(function(item) {
-			var ref = item['$ref'];
-			resolve_Ref(ref, path, "", items, refMap, config, results);
+			if(item['$ref']) {
+				resolve_Ref(item, path, "", items, refMap, config, results);
+			}
 		})
 	}
 }
@@ -72,8 +78,7 @@ function resolve_CycleProperties(path, object, refMap, config, results) {
 		Object.keys(object).forEach(function(key) {
 			var property = object[key];
 			if(property['$ref']) {
-				var ref = property['$ref'];
-				resolve_Ref(ref, path, key, object, refMap, config, results);
+				resolve_Ref(property, path, key, object, refMap, config, results);
 			}
 			else {
 				var newPath = path +'/'+ key;
@@ -83,8 +88,9 @@ function resolve_CycleProperties(path, object, refMap, config, results) {
 	}
 }
 
-function resolve_Ref(ref, path, key, context, refMap, config, results, index)
+function resolve_Ref(refProperty, path, key, context, refMap, config, results, index)
 {
+	var ref = refProperty['$ref'];
 	if(ref) {
 
 		if(key) {
@@ -102,7 +108,7 @@ function resolve_Ref(ref, path, key, context, refMap, config, results, index)
             Resolve_From_Root(path, childData, childRefMap, config, results);
 
             if(config.refMapper)
-                config.refMapper.process(path, ref, key, refMap, childRefMap, config);
+                config.refMapper.process(path, refProperty, key, refMap, childRefMap, config);
             			
 		}
 	}
