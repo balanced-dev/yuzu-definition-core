@@ -5,24 +5,23 @@ function Resolve_ComponentJsonSchema(data, config)
 {
 	var results = {};
 	results.valid = true;	
-    results.errors = [];
+	results.errors = [];
+	results.output = {};
 
 	var refMap = {};
-	if(data.hasOwnProperty("anyOfTypes"))
-		refMap.anyOfTypes = data.anyOfTypes;
 	
-	Resolve_From_Root('', data, refMap, config, results);
+	Resolve_From_Root('', data, refMap, config, results, true);
 	
-	if(config.refMapper && config.refMapper.postProcess) {
-		refMap = config.refMapper.postProcess(refMap, config.external);
-	}
+	results.output.refs = refMap;
 
-	results.refMap = refMap;
+	if(config.postProcessor) {
+		results = config.postProcessor.apply(results, data, config);
+	}
 
 	return results;
 }
 
-function Resolve_From_Root(path, data, refMap, config, results)
+function Resolve_From_Root(path, data, refMap, config, results, isRoot)
 {
 	if(data) {
 		if(data.type === "array") {
@@ -41,7 +40,7 @@ function Resolve_From_Root(path, data, refMap, config, results)
 					}
 				}
 				else {
-					resolve_CycleProperties(path, items.properties, refMap, config, results);
+					resolve_CycleProperties(path, items.properties, refMap, config, results, isRoot);
 				}
 			}
 			
@@ -55,7 +54,7 @@ function Resolve_From_Root(path, data, refMap, config, results)
 			}
 		}
 		else if (data.type === "object") {
-			resolve_CycleProperties(path, data.properties, refMap, config, results);
+			resolve_CycleProperties(path, data.properties, refMap, config, results, isRoot);
 		}
 	}
 	
@@ -73,22 +72,28 @@ doMultipleRefs = function(path, items, refMap, config, results) {
 	}
 }
 
-function resolve_CycleProperties(path, object, refMap, config, results) {
+function resolve_CycleProperties(path, object, refMap, config, results, isRoot) {
 	if(object) {
 		Object.keys(object).forEach(function(key) {
 			var property = object[key];
+			var propertyMapper = _.find(config.propertyMappers, (i) => { return i.isValid(property); });
+
 			if(property['$ref']) {
 				resolve_Ref(property, path, key, object, refMap, config, results);
 			}
+			else if(propertyMapper && isRoot) {
+				var newPath = path +'/'+ key;
+				propertyMapper.apply(results, property, newPath);
+			}
 			else {
 				var newPath = path +'/'+ key;
-				Resolve_From_Root(newPath, property, refMap, config, results);
+				Resolve_From_Root(newPath, property, refMap, config, results, isRoot);
 			}
 		})
 	}
 }
 
-function resolve_Ref(refProperty, path, key, context, refMap, config, results, index)
+function resolve_Ref(refProperty, path, key, context, refMap, config, results)
 {
 	var ref = refProperty['$ref'];
 	if(ref) {
@@ -105,7 +110,7 @@ function resolve_Ref(refProperty, path, key, context, refMap, config, results, i
 
             var childData =  _.cloneDeep(config.external[ref]);
             var childRefMap = {};
-            Resolve_From_Root(path, childData, childRefMap, config, results);
+            Resolve_From_Root(path, childData, childRefMap, config, results, false);
 
             if(config.refMapper)
                 config.refMapper.process(path, refProperty, key, refMap, childRefMap, config);

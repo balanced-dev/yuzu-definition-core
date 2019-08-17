@@ -3,7 +3,12 @@ var jsonService = require('./json/jsonService');
 var jsonSchemaService = require('./json/jsonSchemaService');
 var refMapperList = require('./json/refMappers/json/refsAsList');
 var refMapperObject = require('./json/refMappers/json/refsAsObject');
+
+var propertyMappers = [];
+propertyMappers.push(require('./json/propertyMappers/schema/propertyEnum'));
+propertyMappers.push(require('./json/propertyMappers/schema/propertyNumeric'));
 var refMapperPaths = require('./json/refMappers/schema/refsAsTree');
+var postProcessor = require('./json/postProcessors/schema/anyOfTypes');
 
 var blockFilesService = require('./services/blockFilesService');
 
@@ -48,8 +53,13 @@ const resolveDataAsListRefMap = function(data, externals) {
 
 const resolveSchemaAsPathsRefMap = function(schema, externals) {
 
-	var results = jsonSchemaService.Resolve_ComponentJsonSchema(schema, { external: externals.schema, refMapper: refMapperPaths });
-	return results.refMap;
+	var results = jsonSchemaService.Resolve_ComponentJsonSchema(schema, { 
+		external: externals.schema,
+		postProcessor: postProcessor,
+		refMapper: refMapperPaths, 
+		propertyMappers: propertyMappers
+	});
+	return results.output;
 }
 
 const resolveSchemaRemoveAnyOf = function(schema, externals) {
