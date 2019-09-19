@@ -1,4 +1,4 @@
-var gutil = require('gulp-util');
+var pluginError = require('plugin-error');
 var through = require('through2');
 var build = require('../build');
 var highlightService = require('../services/blockHighlightService');
@@ -33,7 +33,7 @@ function gulp(blocksDir, hbsHelpers, layoutDir) {
 		}
 		
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('yuzu render', 'Streaming not supported'));
+			this.emit('error', new pluginError('yuzu render', 'Streaming not supported'));
 			return cb();
 		}
 
@@ -42,7 +42,7 @@ function gulp(blocksDir, hbsHelpers, layoutDir) {
 		if(errors.length > 0) {
 			var that = this;
 			errors.forEach(function(error) {
-				that.emit('error', new gutil.PluginError(error.source, error.inner));
+				that.emit('error', new pluginError(error.source, error.inner));
 			});
 			return cb();	
 		}

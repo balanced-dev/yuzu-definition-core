@@ -1,4 +1,4 @@
-var gutil = require('gulp-util');
+var pluginError = require('plugin-error');
 var through = require('through2');
 var build = require('../build');
 
@@ -16,7 +16,7 @@ function buildData(templatesDir, addRef) {
 		}
 		
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('yuzu data build', 'Streaming not supported'));
+			this.emit('error', new pluginError('yuzu data build', 'Streaming not supported'));
 			return cb();
 		}
 
@@ -29,7 +29,7 @@ function buildData(templatesDir, addRef) {
 		if(errors.length > 0) {
 			var that = this;
 			errors.forEach(function(error) {
-				that.emit('error', new gutil.PluginError(error.source, error.inner));
+				that.emit('error', new pluginError(error.source, error.inner));
 			});
 			return cb();	
 		}
