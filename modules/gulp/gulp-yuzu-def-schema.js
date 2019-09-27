@@ -23,6 +23,7 @@ function buildData(templatesDir, addRef) {
 		var schema = build.resolveSchema(file.contents.toString(), externals);
 		if(addRef && schema.properties && schema.type == "object") {
 			schema.properties['_ref'] = { "type": "string" };
+			schema.properties['_modifiers'] = { "type": "array", "items": { "type": "string" } };
 		}
 
 
