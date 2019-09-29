@@ -1,6 +1,6 @@
 {
   "name": "block-templates-parse",
-  "version": "1.2.29",
+  "version": "1.2.30",
   "description": "Helper modules for parsing of blocs from json and handlebars files into html",
   "main": "index.js",
   "directories": {
@@ -33,6 +33,10 @@
     "through2": "^3.0.1",
     "util-extend": "^1.0.1"
   },
+  "file": [
+    "index.js",
+    "/modules"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hifi-phil/block-templates-parse.git"
