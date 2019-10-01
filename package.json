@@ -1,7 +1,7 @@
 {
-  "name": "block-templates-parse",
+  "name": "yuzu-definition-core",
   "version": "1.2.31",
-  "description": "Helper modules for parsing of blocs from json and handlebars files into html",
+  "description": "Core tools for running the pattern library and state manager for Yuzu Definition",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -39,7 +39,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hifi-phil/block-templates-parse.git"
+    "url": "git+https://github.com/balanced-dev/yuzu-definition-core"
   },
-  "homepage": "https://github.com/hifi-phil/block-templates-parse.git#readme"
+  "homepage": "https://github.com/balanced-dev/yuzu-definition-core#readme"
 }

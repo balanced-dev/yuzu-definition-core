@@ -46,7 +46,7 @@ var getPreviews = function (partialsDir) {
 		var filePath = path.join(dir, filename);
 		var objPath = path.join(dir, path.basename(filename, '.html'));
 
-		var arrPath = objPath.split("\\");
+		var arrPath = objPath.split(path.sep);
 		var blockPosition = arrPath.length - 1;
 		arrPath[blockPosition] = "/"+ arrPath[blockPosition];
 
