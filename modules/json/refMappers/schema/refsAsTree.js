@@ -11,13 +11,16 @@ const postProcess = function(output, anyOfType, refMap, external) {
         }).value();
         var schema = external[val];
     
-        if(schema.type == "array" && schema.items && schema.items.anyOf) {
+        if(schema != undefined && schema.type == "array" && schema.items && schema.items.anyOf) {
             output[anyOfType].refs[key] = _.map(schema.items.anyOf, (i) => { 
                 return i["$ref"]; 
             });
         }
-        else {
+        else if(schema != undefined) {
             output[anyOfType].refs[key] = [val]; 
+        }
+        else {
+            output[anyOfType].refs[key] = refMap[key];
         }
 
     });

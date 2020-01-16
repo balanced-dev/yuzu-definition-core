@@ -334,6 +334,47 @@ describe('json schema service', function () {
 
 			})
 
+			it('of type with normal array', function (done) {
+
+				config.external = {
+					"/dataLink": {
+						"type": "object",
+						"properties": {}
+					}
+				};
+
+				var schema = {
+					"type": "object",
+					"anyOfTypes": ["specificGrid"],
+					"properties": {
+						"actionLinks": {
+							"type": "array",
+							"items": {
+								"$ref": "/dataLink"
+							}
+						}
+					},
+					"id": "/dataGridRows"
+				};
+
+				var results = schemaHelper.Resolve_ComponentJsonSchema(schema, config);
+				var debug = JSON.stringify(results.output, null, 4);
+
+				var expected = {
+					"specificGrid": {
+						"refs": {
+							"/actionLinks": ["/dataLink"]
+						}
+					},
+					"anyOfTypes": ["specificGrid"]
+				};
+
+				assert.deepEqual(expected, results.output);
+
+				done();
+
+			})
+
 		});
 
 	});
