@@ -19,7 +19,7 @@ const property = {
 	}
 };
 
-function GetLayouts(partialsDir, externals)
+function GetLayouts(partialsDir, externals, errors)
 {
 	var layouts = [];
 	
@@ -37,8 +37,8 @@ function GetLayouts(partialsDir, externals)
 				var dataPath = path.join(dir, 'data', dataFilename);
 
 				var fileContents = fs.readFileSync(dataPath, 'utf8');
-				data = jsonService.testJSON(fileContents).data;
-				jsonService.resolveComponentJson(data, { external: externals.data, addRefProperty: true, deepclone: true });
+				data = jsonService.testJSON(fileContents, errors);
+				jsonService.resolveComponentJson(data, errors, { external: externals.data, addRefProperty: true, deepclone: true });
 
 				dataItems.push({
 					name: path.basename(dataFilename, '.json'),

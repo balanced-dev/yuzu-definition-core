@@ -11,13 +11,17 @@ describe('json service', function () {
 	describe('refmaps', function () {
 		describe('object json', function () {
 
+			beforeEach(function() {
+				errors = [];
+			});
+
 			it('empty', function (done) {
 
 				config.external = {	}
 
 				var data = {}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": []
@@ -49,7 +53,7 @@ describe('json service', function () {
 					},
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": [
@@ -91,7 +95,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": [
@@ -130,7 +134,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": [
@@ -170,7 +174,7 @@ describe('json service', function () {
 					"child1": { "$ref": "/child" }
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 				var debug = JSON.stringify(results, null, 4);
 
 				var expected = {
@@ -212,7 +216,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": [
@@ -247,7 +251,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": [
@@ -289,7 +293,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"items": [
@@ -338,7 +342,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 				var debug = JSON.stringify(results, null, 4);
 
 				var expected = {

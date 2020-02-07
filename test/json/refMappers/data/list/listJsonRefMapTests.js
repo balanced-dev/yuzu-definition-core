@@ -11,6 +11,10 @@ describe('json service', function () {
 	describe('refmaps', function () {
 		describe('list json', function () {
 
+			beforeEach(function() {
+				errors = [];
+			});
+
 			it('multiple states', function (done) {
 
 				config.external = {
@@ -31,7 +35,7 @@ describe('json service', function () {
 					},
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 
@@ -56,7 +60,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				var expected = {
 					"/child": {
@@ -90,7 +94,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 
@@ -113,7 +117,7 @@ describe('json service', function () {
 					"child1": { "$ref": "/child" }
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 
@@ -137,7 +141,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 
@@ -159,7 +163,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 
@@ -188,7 +192,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 
@@ -214,7 +218,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config).refMap;
+				var results = jsonHelper.resolveComponentJson(data, errors, config).refMap;
 
 				assert.deepEqual(config.external, results);
 

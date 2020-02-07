@@ -16,9 +16,10 @@ var register = function (partialsRootDir, hbsHelpers) {
 
 const setup = function (partialsRootDir, layoutDir, rootSchemaProperties) {
 
+	var errors = [];
 	var externals = fileService.getDataAndSchema(partialsRootDir, rootSchemaProperties);
 	if (layoutDir)
-		externals.layouts = layoutService.GetLayouts(layoutDir, externals);
+		externals.layouts = layoutService.GetLayouts(layoutDir, externals, errors);
 	else
 		externals.layouts = [];
 
@@ -29,7 +30,7 @@ const resolveDataString = function (data, path, externals, errors) {
 
 	var blockData = build.getBlockData(path);
 
-	data = build.parseJson(data, path, errors);
+	data = build.parseJson(data, errors);
 	data = build.resolveJson(data, externals, blockData, errors);
 
 	return data
@@ -54,10 +55,14 @@ const render = function (data, path, externals, errors) {
 		blockData.schema.properties[layoutProperty.name] = layoutProperty.schema;
 	}
 
-	data = build.parseJson(data, path, errors);
+	data = build.parseJson(data, errors);
 	data = build.resolveJson(data, externals, blockData, errors);
 
+	if(_.some(errors)) return '';
+	
 	build.validateSchema(data, externals, blockData, errors);
+
+	if(_.some(errors)) return '';
 
 	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
 }
@@ -88,7 +93,12 @@ const renderPreview = function (data, refs, path, externals, errors) {
 		externals.data[key] = refs[key];
 	});
 
-	return render(data, path, externals, errors);
+	var blockData = build.getBlockData(path, errors);
+
+	data = build.parseJson(data, errors);
+	data = build.resolveJson(data, externals, blockData, errors);
+
+	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
 }
 
 const save = function (partialsRootDir, data, path, refs) {

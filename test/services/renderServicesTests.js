@@ -62,16 +62,6 @@ describe('render service', function () {
             output.should.equal('<h1>first last</h1>')
         });
 
-        it('should error gracefully', function () {
-
-            var errors = [];
-            var hbs = '{{error}'
-
-            svc.render(hbs, {}, errors);
-
-            errors[0].source.should.equal('Handlebars render');
-        });
-
     });
 
     describe('wrap', function () {
@@ -174,6 +164,43 @@ describe('render service', function () {
             var output = svc.fromTemplate(path, template, data, layouts, []);
 
             output.should.equal('<h1>layoutTitle</h1><h3>contentTitle</h3>')
+        });
+
+    });
+
+    describe('render errors', function () {
+
+        it('should error gracefully', function () {
+
+            var errors = [];
+            var hbs = '{{error}'
+
+            svc.render(hbs, {}, errors);
+
+            errors[0].source.should.equal('Template rendering');
+        });
+
+        it('should error when file not present', function () {
+
+            var errors = [];
+            var hbs = undefined;
+
+            svc.render(hbs, {}, errors);
+
+            errors[0].message.should.equal('You must pass a string or Handlebars AST to Handlebars.compile. You passed undefined');
+
+        });
+
+        it('should error hbs file contains an error', function () {
+
+            var errors = [];
+
+            var hbs = '{{#if}}';
+
+             svc.render(hbs, {}, errors);
+
+            errors[0].message.should.startWith('Parse error on line 1:');
+
         });
 
     });

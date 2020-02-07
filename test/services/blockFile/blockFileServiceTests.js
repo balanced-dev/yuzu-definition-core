@@ -1,41 +1,13 @@
 var should = require('should'),
 	S = require('string'),
 	assert = require('assert'),
-	base = require('./base.js');
+	base = require('./base.js')
+	errors = [];
 
 describe('block files service', function () {
 	describe('get', function () {
 
-		it('should error when more than one handlebars file is found in parent directory', function () {
-
-			base.file.path = 'c:/templates/parHeader/data/template_data.json';
-			dir = 'c:\\templates\\parHeader';
-
-			var readdirSync = function (dir) {
-				return ['template.hbs', 'template2.hbs']
-			}
-			base.createFsMock(readdirSync);
-
-			var output = base.svc.Get(base.file.path);
-			output.error.should.equal('More than one Handlebars file found at ' + dir);
-		})
-
-		it('should error when more than one schema file is found in parent directory', function () {
-
-			base.file.path = 'c:/templates/parHeader/data/template_data.json';
-			dir = 'c:\\templates\\parHeader';
-
-			var readdirSync = function (dir) {
-				return ['data.schema', 'data2.schema']
-			}
-
-			base.createFsMock(readdirSync);
-
-			var output = base.svc.Get(base.file.path);
-			output.error.should.equal('More than one Json Schema file found at ' + dir);
-		})
-
-		it('should get template file and add to ouput', function () {
+		it('should get template file and add to output', function () {
 
 			base.file.path = 'c:/templates/parHeader/data/template_data.json';
 
@@ -48,11 +20,11 @@ describe('block files service', function () {
 
 			base.createFsMock(readdirSync, readfileSync);
 
-			var output = base.svc.Get('');
+			var output = base.svc.Get('', errors);
 			output.template.should.equal('file');
 		})
 
-		it('should get block layout file and add to ouput', function () {
+		it('should get block layout file and add to output', function () {
 
 			base.file.path = 'c:/templates/parHeader/data/template_data.json';
 
@@ -65,11 +37,11 @@ describe('block files service', function () {
 
 			base.createFsMock(readdirSync, readfileSync);
 
-			var output = base.svc.Get('');
+			var output = base.svc.Get('', errors);
 			output.blockLayout.should.equal('layout');
 		})
 
-		it('should parse schema file and add to ouput', function () {
+		it('should parse schema file and add to output', function () {
 
 			base.file.path = 'c:/templates/parHeader/data/template_data.json';
 
@@ -82,7 +54,7 @@ describe('block files service', function () {
 
 			base.createFsMock(readdirSync, readfileSync);
 
-			var output = base.svc.Get('');
+			var output = base.svc.Get('', errors);
 			assert.deepEqual(output.schema, {});
 		})
 
@@ -104,27 +76,69 @@ describe('block files service', function () {
 
 			base.createFsMock(readdirSync, readfileSync);
 
-			var output = base.svc.Get('');
+			var output = base.svc.Get('', errors);
 			output.schema.properties["_modifiers"].type.should.equal('string');
 		})
 
-		it('should error when schema file is not valid', function () {
+		describe(' errors', function () {
 
-			base.file.path = 'c:/templates/parHeader/data/template_data.json';
-			dir = 'c:\\templates\\parHeader';
+			beforeEach(function() {
+				errors = [];
+			});
 
-			var readdirSync = function (dir) {
-				return ['data.schema']
-			}
-			var readfileSync = function (file) {
-				return '{fierui';
-			}
+			it('should error when more than one handlebars file is found in parent directory', function () {
 
-			base.createFsMock(readdirSync, readfileSync);
+				base.file.path = 'c:/templates/parHeader/data/template_data.json';
+				dir = 'c:\\templates\\parHeader';
+	
+				var readdirSync = function (dir) {
+					return ['template.hbs', 'template2.hbs']
+				}
+				base.createFsMock(readdirSync);
+	
+				base.svc.Get(base.file.path, errors);
+				errors.length.should.equal(1);
+				errors[0].message.should.equal('More than one Handlebars file found');
+			})
+	
+			it('should error when more than one schema file is found in parent directory', function () {
+	
+				base.file.path = 'c:/templates/parHeader/data/template_data.json';
+				dir = 'c:\\templates\\parHeader';
+	
+				var readdirSync = function (dir) {
+					return ['data.schema', 'data2.schema']
+				}
+	
+				base.createFsMock(readdirSync);
+	
+				base.svc.Get(base.file.path, errors);
+				errors.length.should.equal(1);
+				errors[0].message.should.equal('More than one Json Schema file found');
+			})
 
-			var output = base.svc.Get(base.file.path);
-			output.error.should.equal('Cannot parse file : data.schema in ' + dir);
-		})
+			it('should error when schema file is not valid', function () {
+
+				base.file.path = 'c:/templates/parHeader/data/template_data.json';
+				dir = 'c:\\templates\\parHeader';
+	
+				var readdirSync = function (dir) {
+					return ['data.schema']
+				}
+				var readfileSync = function (file) {
+					return '{fierui';
+				}
+	
+				base.createFsMock(readdirSync, readfileSync);
+	
+				base.svc.Get(base.file.path, errors);
+				
+				errors.length.should.equal(2);
+				errors[0].message.should.equal('Unexpected token f in JSON at position 1');
+				errors[1].message.should.equal('Cannot parse file : data.schema');
+			})
+	
+		});
 
 	});
 });

@@ -21,14 +21,14 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 				externalSchemas[getFilename(filename)] = schema;
 			}
 			catch (e) {
-				console.log("File not parsed :" + filename)
+				//console.log("File not parsed :" + filename)
 			}
 		if (path.extname(filename) == ".json")
 			try {
 				externalDatas[getFilename(filename)] = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
 			}
 			catch (e) {
-				console.log("File not parsed " + filename)
+				//console.log("File not parsed " + filename)
 			}
 	});
 
@@ -41,26 +41,29 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 var getPreviews = function (partialsDir) {
 	var output = {}
 
-	getFilesInDir(partialsDir, function (dir, filename) {
-		dir = dir.replace(partialsDir, ""); 
-		var filePath = path.join(dir, filename);
-		var objPath = path.join(dir, path.basename(filename, '.html'));
-
-		var arrPath = objPath.split(path.sep);
-		var blockPosition = arrPath.length - 1;
-		arrPath[blockPosition] = "/"+ arrPath[blockPosition];
-
-		objPath = arrPath.join('.');
-
-		_.set(output, objPath, filePath);
-		
-	}, function(dir) {
-		dir = dir.replace(partialsDir, ""); 
-		dir = dir.substring(0, dir.length - 1).replace(new RegExp("/", 'g'), ".");
-		if(dir && !_.has(output, dir)) {
-			_.set(output, dir, {});
-		}
-	});
+	try {
+		getFilesInDir(partialsDir, function (dir, filename) {
+			dir = dir.replace(partialsDir, ""); 
+			var filePath = path.join(dir, filename);
+			var objPath = path.join(dir, path.basename(filename, '.html'));
+	
+			var arrPath = objPath.split(path.sep);
+			var blockPosition = arrPath.length - 1;
+			arrPath[blockPosition] = "/"+ arrPath[blockPosition];
+	
+			objPath = arrPath.join('.');
+	
+			_.set(output, objPath, filePath);
+			
+		}, function(dir) {
+			dir = dir.replace(partialsDir, ""); 
+			dir = dir.substring(0, dir.length - 1).replace(new RegExp("/", 'g'), ".");
+			if(dir && !_.has(output, dir)) {
+				_.set(output, dir, {});
+			}
+		});
+	}
+	catch(err) {}
 
 	return output;
 }

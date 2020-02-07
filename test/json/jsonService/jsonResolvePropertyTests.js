@@ -7,6 +7,10 @@ should = require('should'),
 describe('json service', function () {
 	describe('resolve property settings', function () {
 
+		beforeEach(function() {
+			errors = [];
+		});
+
 		it('should add back in ref property for sub block', function (done) {
 
 			var config = {};
@@ -22,7 +26,7 @@ describe('json service', function () {
 				"address": { "$ref": "/SimpleAddress" }
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"name": "Test",
 				"address": {
@@ -52,7 +56,7 @@ describe('json service', function () {
 				"address": { "$ref": "/SimpleAddress_state" }
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"name": "Test",
 				"address": {
@@ -85,7 +89,7 @@ describe('json service', function () {
 				{ "$ref": "/Phone" }
 			]
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var debug = JSON.stringify(data, null, 4);
 			var expected = [{
 				"zip": "DC 20500",
@@ -118,7 +122,7 @@ describe('json service', function () {
 				"address": { "$ref": "/SimpleAddress" }
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"name": "Test",
 				"address": {
@@ -149,7 +153,7 @@ describe('json service', function () {
 				{ "$ref": "/SimpleAddress" }
 			]
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var debug = JSON.stringify(data, null, 4);
 			var expected = [{
 				"zip": "DC 20500",

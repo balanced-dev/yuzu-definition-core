@@ -11,6 +11,10 @@ describe('json service', function () {
 	describe('refmaps', function () {
 		describe('dictionary schema', function () {
 
+			beforeEach(function() {
+				errors = [];
+			});
+
 			it('json dictionary - given multiple json states then consolidate', function (done) {
 
 				config.external = {
@@ -27,7 +31,7 @@ describe('json service', function () {
 					},
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config);
+				var results = jsonHelper.resolveComponentJson(data, errors, config);
 
 				var debug = JSON.stringify(results.refMap, null, 4);
 
@@ -71,7 +75,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config);
+				var results = jsonHelper.resolveComponentJson(data, errors, config);
 
 				var debug = JSON.stringify(results.refMap, null, 4);
 
@@ -118,7 +122,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config);
+				var results = jsonHelper.resolveComponentJson(data, errors, config);
 
 				var debug = JSON.stringify(results.refMap, null, 4);
 
@@ -176,7 +180,7 @@ describe('json service', function () {
 					]
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config);
+				var results = jsonHelper.resolveComponentJson(data, errors, config);
 
 				var debug = JSON.stringify(results.refMap, null, 4);
 
@@ -220,7 +224,7 @@ describe('json service', function () {
 					}
 				}
 
-				var results = jsonHelper.resolveComponentJson(data, config);
+				var results = jsonHelper.resolveComponentJson(data, errors, config);
 
 				var debug = JSON.stringify(results.refMap, null, 4);
 

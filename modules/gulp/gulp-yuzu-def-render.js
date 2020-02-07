@@ -2,6 +2,8 @@ var pluginError = require('plugin-error');
 var through = require('through2');
 var build = require('../build');
 var highlightService = require('../services/blockHighlightService');
+var chalk = require('chalk');
+var path = require('path');
 
 function gulp(blocksDir, hbsHelpers, layoutDir) {
 
@@ -42,7 +44,10 @@ function gulp(blocksDir, hbsHelpers, layoutDir) {
 		if(errors.length > 0) {
 			var that = this;
 			errors.forEach(function(error) {
-				that.emit('error', new pluginError(error.source, error.inner));
+				var filePath = path.basename(file.path);
+				var message = '\n\n'+ chalk.yellow(error.source) +' at '+ chalk.bold.yellow(filePath) +'\n\n'+ chalk.bold.blue(error.message) +'\n'
+
+				that.emit('error', new pluginError(chalk.yellow('Yuzu Definition'), message));
 			});
 			return cb();	
 		}

@@ -1,5 +1,7 @@
 var extend = require('extend');
 var layoutHelper = require('./layoutService');
+var errorSvc = require('./errorService');
+var errorSource = 'Template rendering';
 
 const render = (hbs, data, errors) => {
     var output = '';
@@ -9,10 +11,7 @@ const render = (hbs, data, errors) => {
         output = template(data);
     } 
     catch (err) {
-        errors.push({
-            source: "Handlebars render",
-            inner: err
-        })
+		errorSvc.AddError(errors, errorSource, err.message, err);
     }
     
     return output;

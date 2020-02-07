@@ -2,74 +2,77 @@ var _ = require('lodash');
 var Validator = require('jsonschema').Validator;
 var blockPathService = require('../services/blockPathService');
 var empty = require('../json-schema-empty/index').default;
+var errorSvc = require('../services/errorService');
+var errorSourceParse = 'Parse JSON file';
+var errorSourceResolve = 'Resolve JSON file'
 
-function TestJSON(json){
-    var results = {};
-	results.valid = true;
+function TestJSON(json, errors){
+    var output = {};
 	try{
-        results.data = JSON.parse(json);
-		if(!_.isPlainObject(results.data) && !_.isArray(results.data)) {
-			results.valid = false;
+        output = JSON.parse(json);
+		if(!_.isPlainObject(output) && !_.isArray(output)) {
+			errorSvc.AddError(errors, errorSourceParse, 'Json data must be an plain object or array');
 		}
     }
     catch (error){
-        results.valid = false;
-		results.error = error;
+		errorSvc.AddError(errors, errorSourceResolve, error.message, error);
     }
-	return results;
+	return output;
 }
 
-function Resolve_ComponentJson(data, config)
+function Resolve_ComponentJson(data, errors, config)
 {
 	var results = {};
 	results.valid = true;	
-    results.errors = [];
 
 	var refMap = {};
 	if(config.refMapper && config.refMapper.init) {
 		config.refMapper.init(refMap);
 	}
 	
-	Resolve_From_Root('', data, refMap, config, results);
+	Resolve_From_Root('', data, refMap, config, results, errors);
 
 	results.refMap = refMap;
+
+	if(errors.length > 0)
+		results.valid = false;
 	
 	return results;
 }
 
-function Resolve_From_Root(path, data, refMap, config, results)
+function Resolve_From_Root(path, data, refMap, config, results, errors)
 {
 	if(_.isArray(data)) {
 		var index = 0;
 		data.forEach(function(item) {
 			if(item.hasOwnProperty('$ref')) {
 				var ref = item['$ref'];
-				resolve_Ref(ref, path, "", data, refMap, config, results, index);
+				resolve_Ref(ref, path, "", data, refMap, config, results, errors, index);
 			}
 			else {
-				resolve_CycleProperties(path, item, refMap, config, results);
+				resolve_CycleProperties(path, item, refMap, config, results, errors);
 			}
 			index ++;
 		})
 	}
 	else
-		resolve_CycleProperties(path, data, refMap, config, results);
+		resolve_CycleProperties(path, data, refMap, config, results, errors);
 	
 	return results;
 }
 
-function resolve_CycleProperties(path, object, refMap, config, results) {
+function resolve_CycleProperties(path, object, refMap, config, results, errors) {
 	Object.keys(object).forEach(function(key) {
 		var property = object[key];
 		if(_.isPlainObject(property))
 		{
-			if(property['$ref']) { // externalise on this using this conditional as a isvalid and the resolve as the apply
+			if(property['$ref']) { // externalize on this using this conditional as a is valid and the resolve as the apply
 				var ref = property['$ref'];
-				resolve_Ref(ref, path, key, object, refMap, config, results);
+				resolve_Ref(ref, path, key, object, refMap, config, results, errors);
 			}
 			else {
 				var newPath = createNewObjectPath(path, key, object);
-				resolve_CycleProperties(newPath, property, refMap, config, results);
+				resolve_CycleProperties(newPath, property, refMap, config, results, errors);
 			}
 		}
 		else if(_.isArray(property))
@@ -78,11 +81,11 @@ function resolve_CycleProperties(path, object, refMap, config, results) {
 			property.forEach(function(item) {
 				if(item['$ref']) {
 					var ref = item['$ref'];
-					resolve_Ref(ref, path, key, property, refMap, config, results, index);		
+					resolve_Ref(ref, path, key, property, refMap, config, results, errors, index);		
 				}
 				else {
 					var newPath = createNewObjectPath(path, key, item, index);
-					resolve_CycleProperties(newPath, item, refMap, config, results);
+					resolve_CycleProperties(newPath, item, refMap, config, results, errors);
 				}
 				index ++;
 			})
@@ -99,21 +102,20 @@ const createNewObjectPath = function(path, key, object, index) {
 	return newPath;
 }
 
-function resolve_Ref(ref, path, key, context, refMap, config, results, index)
+function resolve_Ref(ref, path, key, context, refMap, config, results, errors, index)
 {
 	if(ref) {
 
 		var newPath = createNewObjectPath(path, key, context, index);
 
 		if(!config.external.hasOwnProperty(ref)) {
-			results.valid = false;
-			results.errors.push('Json data component reference not found in '+ newPath +' for data ref : '+ ref +'. Is this inline data?');
+			errorSvc.AddError(errors, errorSourceResolve, 'Json data component reference not found in '+ newPath +' for data ref : '+ ref +'. Is this inline data?');
 		}
 		else {
 
             var childData =  config.deepclone ? _.cloneDeep(config.external[ref]) : config.external[ref];
             var childRefMap = {};
-            Resolve_From_Root(newPath, childData, childRefMap, config, results);
+            Resolve_From_Root(newPath, childData, childRefMap, config, results, errors);
 			
 			if(config.addRefProperty)
 				childData["_ref"] = blockPathService.blockFromState(ref, false);

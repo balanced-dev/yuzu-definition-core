@@ -44,10 +44,8 @@ describe('layout service', function () {
 				{ 
 					jsonService: { 
 						resolveComponentJson : function() {},
-						testJSON : function(data) {
-							return {
-								data: JSON.parse(data)
-							}
+						testJSON : function(data, errors) {
+							return JSON.parse(data);
 						},  
 					},
 					fileService: filesvc,

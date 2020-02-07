@@ -13,41 +13,26 @@ var postProcessor = require('./json/postProcessors/schema/anyOfTypes');
 var blockFilesService = require('./services/blockFilesService');
 
 /*private*/
-const parseJson = function(fileContents, path, errors)
+const parseJson = function(fileContents, errors)
 {
-	var results = jsonService.testJSON(fileContents);
-	if(!results.valid) {
-		errors.push({
-			source: 'yuzu build - json parse',
-			inner: 'JSON Error for '+ path +', '+ results.error
-		})
-	}
-	return results.data;
+	return jsonService.testJSON(fileContents, errors);
 }
 
 const resolveJson = function(data, externals, blockData, errors)
 {
-	var resolveResults = jsonService.resolveComponentJson(data, { external: externals.data, addRefProperty: true, addPathProperty: true, deepclone: true });
-	if(!resolveResults.valid) {
-		resolveResults.errors.forEach(function(error) {
-			errors.push({
-				source: 'yuzu build - json resolve for '+ blockData.schema.id,
-				inner: error
-			});
-		});
-	}
+	jsonService.resolveComponentJson(data, errors, { external: externals.data, addRefProperty: true, addPathProperty: true, deepclone: true });
 	return data;
 }
 
 const resolveDataAsObjectRefMap = function(data, externals) {
 
-	var results = jsonService.resolveComponentJson(data, { external: externals.data, refMapper: refMapperObject, deepclone: true });
+	var results = jsonService.resolveComponentJson(data, [], { external: externals.data, refMapper: refMapperObject, deepclone: true });
 	return results.refMap;
 }
 
 const resolveDataAsListRefMap = function(data, externals) {
 
-	var results = jsonService.resolveComponentJson(data, { external: externals.data, refMapper: refMapperList, deepclone: true });
+	var results = jsonService.resolveComponentJson(data, [], { external: externals.data, refMapper: refMapperList, deepclone: true });
 	return results.refMap;
 }
 
@@ -70,33 +55,13 @@ const resolveSchemaRemoveAnyOf = function(schema, externals) {
 
 const getBlockData = function(path, errors) {
 
-	var blockData = blockFilesService.Get(path);
-	if(blockData.error) {
-		errors.push({
-			source: 'yuzu build - build template settings',
-			inner: blockData.error
-		})
-	}
-	return blockData;
+	var blockData = blockFilesService.Get(path, errors);
 
+	return blockData;
 }
 
 const validateSchema = function(data, externals, blockData, errors) {
-	if(!blockData.schema) {
-		errors.push({
-			source: 'yuzu build - schema not found : '+ path.basename(blockData.path),
-		})			
-	}
-	else{
-
-		var result = jsonSchemaService.validateSchema(externals.schema, data, blockData.schema)
-		result.errors.forEach(function(error) {
-			errors.push({
-				source: 'yuzu build ('+ blockData.schema.id +') - validate schema '+ error.schema +', '+ error.property,
-				inner: error
-			});
-		});
-	}
+	jsonSchemaService.validateSchema(externals.schema, data, blockData.schema, errors)
 }
 		
 module.exports = { 

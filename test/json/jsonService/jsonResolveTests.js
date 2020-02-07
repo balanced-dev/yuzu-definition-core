@@ -7,6 +7,10 @@ should = require('should'),
 describe('json service', function () {
 	describe('resolving', function () {
 
+		beforeEach(function() {
+			errors = [];
+		});
+
 		it('should error when referenced json component not present', function (done) {
 
 			var config = {};
@@ -17,10 +21,10 @@ describe('json service', function () {
 				"address": { "$ref": "/SimpleAddress" }
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 
 			results.valid.should.equal(false);
-			results.errors[0].should.equal("Json data component reference not found in /address for data ref : /SimpleAddress. Is this inline data?");
+			errors[0].message.should.equal("Json data component reference not found in /address for data ref : /SimpleAddress. Is this inline data?");
 
 			done();
 		})
@@ -44,7 +48,7 @@ describe('json service', function () {
 				"address": { "$ref": "/SimpleAddress" }
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"name": "Test",
 				"address": {
@@ -77,7 +81,7 @@ describe('json service', function () {
 				}
 			};
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"zip": "DC 20500",
 				"sub": {
@@ -108,10 +112,10 @@ describe('json service', function () {
 				"address": { "$ref": "/SimpleAddress" }
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 
 			results.valid.should.equal(false);
-			results.errors[0].should.equal("Json data component reference not found in /address/sub for data ref : /SubItem. Is this inline data?");
+			errors[0].message.should.equal("Json data component reference not found in /address/sub for data ref : /SubItem. Is this inline data?");
 
 			done();
 		})
@@ -137,7 +141,7 @@ describe('json service', function () {
 					}]
 			};
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"array": [
 					{
@@ -180,7 +184,7 @@ describe('json service', function () {
 					"sub": { "$ref": "/SubItem" }
 				}];
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = [
 				{
 					"name": "Test",
@@ -217,7 +221,7 @@ describe('json service', function () {
 				]
 			}
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = {
 				"array": [
 					{
@@ -247,7 +251,7 @@ describe('json service', function () {
 				{ "$ref": "/SubItem" }
 			]
 
-			var results = jsonService.resolveComponentJson(data, config);
+			var results = jsonService.resolveComponentJson(data, errors, config);
 			var expected = [
 				{
 					"child": "another sub item"

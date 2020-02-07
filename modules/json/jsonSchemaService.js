@@ -1,5 +1,7 @@
 var _ = require('lodash');
 var Validator = require('jsonschema').Validator;
+var errorSvc = require('../services/errorService');
+var errorSource = 'Validate schema and data';
 
 function Resolve_ComponentJsonSchema(data, config)
 {
@@ -119,16 +121,38 @@ function resolve_Ref(refProperty, path, key, context, refMap, config, results)
 	}
 }
 
-function ValidateSchema(externalSchemas, data, schema)
+function ValidateSchema(externalSchemas, data, schema, errors)
 {
-    var v = new Validator();	
-    if(externalSchemas)  {
-        Object.keys(externalSchemas).forEach(function(key) {
-            v.addSchema(externalSchemas[key], key);				
-        });	
-	}			
-	
-    return v.validate(data, schema);
+
+	if(!schema) {
+		errorSvc.AddError(errors, errorSource, 'schema not found');		
+	}
+	else {
+		try{
+
+			var v = new Validator();	
+			if(externalSchemas)  {
+				Object.keys(externalSchemas).forEach(function(key) {
+					v.addSchema(externalSchemas[key], key);				
+				});	
+			}			
+
+			var result = v.validate(data, schema);
+			result.errors.forEach(function(error) {
+				var message = '';
+				if(error.instance && _.isString(error.instance)) message = message + 'Data value : '+ error.instance +'\n';
+				if(error.property && error.property != 'instance') message = message + 'Schema property : '+ error.property +'\n';
+				if(error.message) message = message + error.message;
+				
+				errorSvc.AddError(errors, errorSource, message, error);	
+			});
+
+		}
+		catch (error){
+			errorSvc.AddError(errors, errorSource, "schema validation error: "+ error.message, error);
+		}
+	}
+
 }
 
 module.exports.Resolve_ComponentJsonSchema = Resolve_ComponentJsonSchema;

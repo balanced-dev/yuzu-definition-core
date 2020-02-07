@@ -5,19 +5,9 @@ jsonHelper = require('../../../modules/json/jsonSchemaService');
 describe('json schema service', function () {
 	describe('validation', function () {
 
-		xit('should error when the schema file does not parse', function () {
-
-			var data = {
-				"name": "Test"
-			};
-
-			var schemaInvalid = '{ "id": "/SimplePerson", "type":"object "properties": {"name": {"type": "string"}}, "additionalProperties": false}';
-
-			var result = jsonHelper.validateSchema({}, data, schemaInvalid);
-
-			result.errors.length.should.equals == 1;
-			result.message.should.equal('Cannot parse file : Json Schema in ' + dir);
-		})
+		beforeEach(function() {
+			errors = [];
+		});
 
 		it('should validate using schema file', function () {
 
@@ -34,8 +24,28 @@ describe('json schema service', function () {
 				"additionalProperties": false
 			};
 
-			var result = jsonHelper.validateSchema({}, data, schema);
-			result.errors.length.should.equal(0);
+			jsonHelper.validateSchema({}, data, schema, errors);
+			errors.length.should.equal(0);
+		})
+
+		it('should validate inconsistent types between data and schema', function () {
+
+			var data = {
+				"name": "Test"
+			};
+
+			var schema = {
+				"id": "/SimplePerson",
+				"type": "object",
+				"properties": {
+					"name": { "type": "integer" }
+				},
+				"additionalProperties": false
+			};
+
+			jsonHelper.validateSchema({}, data, schema, errors);
+			errors.length.should.equal(1);
+			errors[0].message.should.equal('Data value : Test\nSchema property : instance.name\nis not of a type(s) integer');
 		})
 
 		it('should error using invalid schema file', function () {
@@ -55,10 +65,10 @@ describe('json schema service', function () {
 
 			data.another = 'test';
 
-			var result = jsonHelper.validateSchema({}, data, schema);
+			jsonHelper.validateSchema({}, data, schema, errors);
 
-			result.errors.length.should.equal(1);
-			result.errors[0].message.should.equal('additionalProperty "another" exists in instance when not allowed');
+			errors.length.should.equal(1);
+			errors[0].message.should.equal('additionalProperty "another" exists in instance when not allowed');
 		})
 
 		it('should validate and resolve schema file', function () {
@@ -96,9 +106,9 @@ describe('json schema service', function () {
 				}
 			};
 
-			var result = jsonHelper.validateSchema(externalSchemas, data, schema);
+			jsonHelper.validateSchema(externalSchemas, data, schema, errors);
 
-			result.errors.length.should.equal(0);
+			errors.length.should.equal(0);
 		})
 
 		it('should error using invalid resolved schema file', function () {
@@ -133,10 +143,10 @@ describe('json schema service', function () {
 
 			data.address.postcode = 'M1 2JW';
 
-			var result = jsonHelper.validateSchema(externalSchemas, data, schema);
+			jsonHelper.validateSchema(externalSchemas, data, schema, errors);
 
-			result.errors.length.should.equal(1);
-			result.errors[0].message.should.equal('additionalProperty "postcode" exists in instance when not allowed');
+			errors.length.should.equal(1);
+			errors[0].message.should.equal('Schema property : instance.address\nadditionalProperty "postcode" exists in instance when not allowed');
 		})
 
 		it('should validate using sub schema files', function () {
@@ -181,9 +191,47 @@ describe('json schema service', function () {
 				}
 			};
 
-			var result = jsonHelper.validateSchema(externalSchemas, data, schema);
+			jsonHelper.validateSchema(externalSchemas, data, schema, errors);
 
-			result.errors.length.should.equal(0);
+			errors.length.should.equal(0);
+		});
+
+		it('should error when sub schema isnt present', function () {
+
+			var externalSchemas = {}
+
+			var schema = {
+				"id": "/SimplePerson",
+				"type": "object",
+				"properties": {
+					"name": { "type": "string" },
+					"address": { "$ref": "/SimpleAddress" }
+				},
+				"additionalProperties": false
+			};
+
+			var data = {
+				"name": "Test"
+			};
+
+			jsonHelper.validateSchema(externalSchemas, data, schema, errors);
+
+			errors.length.should.equal(1);
+			errors[0].message.should.equal('schema validation error: no such schema </SimpleAddress>');
+		})
+
+		it('should error when schema is empty', function () {
+
+			var externalSchemas = {}
+
+			var data = {
+				"name": "Test"
+			};
+
+			jsonHelper.validateSchema(externalSchemas, data, undefined, errors);
+
+			errors.length.should.equal(1);
+			errors[0].message.should.equal('schema not found');
 		})
 
 	});

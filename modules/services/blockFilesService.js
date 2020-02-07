@@ -2,8 +2,10 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var jsonHelper = require('../json/jsonService');
+var errorSvc = require('./errorService');
+var errorSource = 'Gather template files';
 
-function Get(blockPath)
+function Get(blockPath, errors)
 {
 	var dir = path.join(path.dirname(blockPath), '/..');
 	
@@ -12,18 +14,18 @@ function Get(blockPath)
 	dataObject.path = dir;
 	
 	files.forEach(function(dirFile) {
-		TestAndReadFile(dataObject, files, dir, dirFile, 'template', 'Handlebars', '.hbs');
-        TestAndReadFile(dataObject, files, dir, dirFile, 'blockLayout', 'Block Layout', '.layout');
-		TestAndReadFile(dataObject, files, dir, dirFile, 'schema', 'Json Schema', '.schema', true);
+		TestAndReadFile(dataObject, files, dir, dirFile, errors, 'template', 'Handlebars', '.hbs');
+        TestAndReadFile(dataObject, files, dir, dirFile, errors, 'blockLayout', 'Block Layout', '.layout');
+		TestAndReadFile(dataObject, files, dir, dirFile, errors, 'schema', 'Json Schema', '.schema', true);
 	});
 	
 	return dataObject;
 }
 
-function TestAndReadFile(dataObject, files, dir, dirFile, key, name, ext, validate)
+function TestAndReadFile(dataObject, files, dir, dirFile, errors, key, name, ext, validate)
 {
 	if(_.filter(files, function(i) { return path.extname(i) == ext }).length > 1){
-		dataObject.error = 'More than one '+ name +' file found at '+ dir;	
+		errorSvc.AddError(errors, errorSource, 'More than one '+ name +' file found');
 		return;		
 	}
 	var filename = path.join(dir, dirFile);	
@@ -31,12 +33,11 @@ function TestAndReadFile(dataObject, files, dir, dirFile, key, name, ext, valida
 		var fileContent = fs.readFileSync(filename, 'utf8');
 		if(validate)
 		{
-			var result = jsonHelper.testJSON(fileContent);
-			if(!result.valid) {
-				dataObject.error = 'Cannot parse file : '+ dirFile +' in '+ dir;	
+			var data = jsonHelper.testJSON(fileContent, errors);
+			if(errors.length > 0) {
+				errorSvc.AddError(errors, errorSource, 'Cannot parse file : '+ dirFile);	
 				return;
 			}
-			var data = result.data;
 			if(data.properties && data.type == "object") {
 				data.properties['_modifiers'] = { "type": "string" };
 			}
