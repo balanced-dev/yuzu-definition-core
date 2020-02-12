@@ -3,13 +3,15 @@ var highlightService = require('./blockHighlightService');
 var fs = require('fs');
 var path = require('path');
 
-var setPartials = function(partialsDir)
+var setPartials = function(partialsDirs)
 {
 	filenames = [];
 	
-	fileService.getFilesInDir(partialsDir, function(dir, filename) { 
-		if(path.extname(filename) == ".hbs") 
-			filenames.push(dir + filename); 
+	partialsDirs.forEach(function(partialsDir) {
+		fileService.getFilesInDir(partialsDir, function(dir, filename) { 
+			if(path.extname(filename) == ".hbs") 
+				filenames.push(dir + filename); 
+		});
 	});
 	
 	filenames.forEach(function(filename) {

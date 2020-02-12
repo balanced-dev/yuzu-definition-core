@@ -2,34 +2,36 @@ var fs = require('fs');
 var path = require('path');
 var _ = require("lodash");
 
-var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
+var getDataAndSchema = function (partialsDirs, rootSchemaProperties) {
 	externalSchemas = {}, externalDatas = {};
 
-	getFilesInDir(partialsDir, function (dir, filename) {
-		var dirFilename = path.join(dir, filename);
-		if (path.extname(filename) == ".schema")
-			try {
-				var schema = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
-				if(schema.type === undefined) {
-					console.warn("Schema "+ schema.id +" must have a schema type");
-				} 
-				if(rootSchemaProperties && schema.properties && schema.type == "object") {
-					rootSchemaProperties.forEach(function(item) {
-						schema.properties[item.name] = item.schema;
-					});
+	partialsDirs.forEach(function(partialsDir){
+		getFilesInDir(partialsDir, function (dir, filename) {
+			var dirFilename = path.join(dir, filename);
+			if (path.extname(filename) == ".schema")
+				try {
+					var schema = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
+					if(schema.type === undefined) {
+						console.warn("Schema "+ schema.id +" must have a schema type");
+					} 
+					if(rootSchemaProperties && schema.properties && schema.type == "object") {
+						rootSchemaProperties.forEach(function(item) {
+							schema.properties[item.name] = item.schema;
+						});
+					}
+					externalSchemas[getFilename(filename)] = schema;
 				}
-				externalSchemas[getFilename(filename)] = schema;
-			}
-			catch (e) {
-				//console.log("File not parsed :" + filename)
-			}
-		if (path.extname(filename) == ".json")
-			try {
-				externalDatas[getFilename(filename)] = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
-			}
-			catch (e) {
-				//console.log("File not parsed " + filename)
-			}
+				catch (e) {
+					//console.log("File not parsed :" + filename)
+				}
+			if (path.extname(filename) == ".json")
+				try {
+					externalDatas[getFilename(filename)] = JSON.parse(fs.readFileSync(dirFilename, 'utf8'));
+				}
+				catch (e) {
+					//console.log("File not parsed " + filename)
+				}
+		});
 	});
 
 	var output = {};
@@ -38,12 +40,12 @@ var getDataAndSchema = function (partialsDir, rootSchemaProperties) {
 	return output;
 }
 
-var getPreviews = function (partialsDir) {
+var getPreviews = function (previewsDir) {
 	var output = {}
 
 	try {
-		getFilesInDir(partialsDir, function (dir, filename) {
-			dir = dir.replace(partialsDir, ""); 
+		getFilesInDir(previewsDir, function (dir, filename) {
+			dir = dir.replace(previewsDir, ""); 
 			var filePath = path.join(dir, filename);
 			var objPath = path.join(dir, path.basename(filename, '.html'));
 	
@@ -56,7 +58,7 @@ var getPreviews = function (partialsDir) {
 			_.set(output, objPath, filePath);
 			
 		}, function(dir) {
-			dir = dir.replace(partialsDir, ""); 
+			dir = dir.replace(previewsDir, ""); 
 			dir = dir.substring(0, dir.length - 1).replace(new RegExp("/", 'g'), ".");
 			if(dir && !_.has(output, dir)) {
 				_.set(output, dir, {});
@@ -68,18 +70,20 @@ var getPreviews = function (partialsDir) {
 	return output;
 }
 
-var getDataPaths = function (partialsDir) {
+var getDataPaths = function (partialsDirs) {
 	output = {};
 
-	getFilesInDir(partialsDir, function (dir, filename) {
-		var dirFilename = path.join(dir, filename);
-		if (path.extname(filename) == ".json")
-			try {
-				output[getFilename(filename)] = dirFilename;
-			}
-			catch (e) {
-				console.log("File not parsed " + filename)
-			}
+	partialsDirs.forEach(function(partialsDir){
+		getFilesInDir(partialsDir, function (dir, filename) {
+			var dirFilename = path.join(dir, filename);
+			if (path.extname(filename) == ".json")
+				try {
+					output[getFilename(filename)] = dirFilename;
+				}
+				catch (e) {
+					console.log("File not parsed " + filename)
+				}
+		});
 	});
 
 	return output;
