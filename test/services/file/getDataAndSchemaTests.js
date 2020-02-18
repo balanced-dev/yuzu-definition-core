@@ -23,7 +23,7 @@ describe('file service', function () {
 
 		beforeEach(function () {
 			fileList = [];
-			dir = 'dir/';
+			dir = ['dir/'];
 		});
 
 		it('should add schema file', function () {
