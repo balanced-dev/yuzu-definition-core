@@ -28,7 +28,7 @@ const setup = function (partialsRootDir, layoutDir, rootSchemaProperties) {
 
 const resolveDataString = function (data, path, externals, errors) {
 
-	var blockData = build.getBlockData(path);
+	var blockData = build.getBlockData(path, errors);
 
 	data = build.parseJson(data, errors);
 	data = build.resolveJson(data, externals, blockData, errors);
