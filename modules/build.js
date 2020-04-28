@@ -185,6 +185,10 @@ const getEmpty = function (partialsRootDir, blockName, path) {
 	return jsonService.getEmpty(blockName, externals, path);
 }
 
+const getFilePaths = function (dir, fileTypes = []) {
+	return fileService.getFilePaths(dir, fileTypes);
+}
+
 
 module.exports = {
 	register,
@@ -201,5 +205,6 @@ module.exports = {
 	getChildStates,
 	getRefPaths,
 	getEmpty,
-	getPreviews
+	getPreviews,
+	getFilePaths
 };

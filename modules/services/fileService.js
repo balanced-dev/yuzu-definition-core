@@ -89,6 +89,21 @@ var getDataPaths = function (partialsDirs) {
 	return output;
 }
 
+const getFilePaths = function (dir, fileTypes) {
+	var output = [];
+	getFilesInDir(dir, function (dir, filename) {
+		var dirFilename = path.join(dir, filename);
+		if(fileTypes.length < 1 || fileTypes.indexOf(path.extname(filename)) > -1)
+			try {
+				output.push(dirFilename);
+			}
+			catch (e) {
+				console.log("File not parsed " + filename)
+			}
+	});
+	return output;
+}
+
 function getFilename(filename) {
 	return '/' + filename.replace(path.extname(filename), "")
 }
@@ -112,5 +127,6 @@ module.exports = {
 	getDataAndSchema,
 	getPreviews,
 	getDataPaths,
+	getFilePaths,
 	getFilesInDir
 };
