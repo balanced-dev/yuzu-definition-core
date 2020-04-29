@@ -77,7 +77,7 @@ const renderState = function (partialsRootDir, state, errors) {
 		var paths = fileService.getDataPaths(partialsRootDir);
 		var path = paths[state];
 
-		var blockData = build.getBlockData(path);
+		var blockData = build.getBlockData(path, errors);
 		data = build.resolveJson(data, externals, blockData, errors);
 	
 		return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
@@ -139,7 +139,7 @@ const getData = function (partialsRootDir, state, resolve, errors) {
 			var paths = fileService.getDataPaths(partialsRootDir);
 			var path = paths[state];
 	
-			var blockData = build.getBlockData(path);
+			var blockData = build.getBlockData(path, errors);
 			data = build.resolveJson(data, externals, blockData, errors);
 		}
 		return (data);
