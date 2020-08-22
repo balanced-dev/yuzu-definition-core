@@ -9,16 +9,21 @@ var setPartials = function(partialsDirs)
 	
 	partialsDirs.forEach(function(partialsDir) {
 		fileService.getFilesInDir(partialsDir, function(dir, filename) { 
-			if(path.extname(filename) == ".hbs") 
+			var ext = path.extname(filename);
+			if(ext == ".hbs" || ext == ".html") 
 				filenames.push(dir + filename); 
 		});
 	});
 	
 	filenames.forEach(function(filename) {
 
-		var templateName = path.basename(filename, '.hbs');
+		var ext = path.extname(filename);
+
+		var templateName = path.basename(filename, ext);
 		var template = fs.readFileSync(filename, 'utf8');
-		template = highlightService.addYuzuMarker(template);
+
+		if(ext == '.hbs')
+			template = highlightService.addYuzuMarker(template);
 
 		handlebars.registerPartial(templateName, template);
 	});	

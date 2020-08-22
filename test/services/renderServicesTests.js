@@ -23,7 +23,7 @@ describe('render service', function () {
         });
 
 
-        it('should register partial', function () {
+        it('should render with a registered partial', function () {
 
             var partial = '<h1>{{title}}</h1>';
 
@@ -40,7 +40,7 @@ describe('render service', function () {
             output.should.equal('<h1>title</h1>')
         });
 
-        it('should register helper', function () {
+        it('should render with a registered helper', function () {
 
             var helper = function (name) {
                 return name.first + " " + name.last;
@@ -83,25 +83,22 @@ describe('render service', function () {
 
         it('should render all wrapped', function () {
 
-            var datas = [
+            var allBlockData = [
                 {
-                    title: 'contentTitle'
+                    template: "<h3>{{title}}</h3>",
+                    data: { title: 'contentTitle' }
                 },
                 {
-                    title: 'subLayoutTitle'
+                    template: "<h2>{{title}}</h2>{{{ contents }}}",
+                    data: { title: 'subLayoutTitle' }
                 },
                 {
-                    title: 'layoutTitle'
+                    template: "<h1>{{title}}</h1>{{{ contents }}}",
+                    data: { title: 'layoutTitle' }
                 }
-            ];
+            ]
 
-            var hbses = [
-                "<h3>{{title}}</h3>",
-                "<h2>{{title}}</h2>{{{ contents }}}",
-                "<h1>{{title}}</h1>{{{ contents }}}"
-            ];
-
-            var output = svc.wrapMultiple(hbses, datas, []);
+            var output = svc.wrapMultiple(allBlockData, []);
 
             output.should.equal('<h1>layoutTitle</h1><h2>subLayoutTitle</h2><h3>contentTitle</h3>')
         });
@@ -110,10 +107,12 @@ describe('render service', function () {
 
     describe('from template', function () {
 
-        it('should render from a default layout', function () {
+        it('should render template with a default layout', function () {
 
             var path = 'parHeader';
-            var template = "<h3>{{title}}</h3>";
+            var blockData = {
+                template: "<h3>{{title}}</h3>"
+            };
             var data = {
                 title: 'contentTitle'
             };
@@ -131,15 +130,17 @@ describe('render service', function () {
                 }
             ]
 
-            var output = svc.fromTemplate(path, template, data, layouts, []);
+            var output = svc.fromTemplate(path, blockData, data, layouts, []);
 
             output.should.equal('<h1>layoutTitle</h1><h3>contentTitle</h3>')
         });
 
-        it('should render from a bespoke layout', function () {
+        it('should render template with a bespoke layout', function () {
 
             var path = 'parHeader';
-            var template = "<h3>{{title}}</h3>";
+            var blockData = {
+                template: "<h3>{{title}}</h3>"
+            };
             var data = {
                 title: 'contentTitle',
                 _layout: {
@@ -161,9 +162,41 @@ describe('render service', function () {
                 }
             ]
 
-            var output = svc.fromTemplate(path, template, data, layouts, []);
+            var output = svc.fromTemplate(path, blockData, data, layouts, []);
 
             output.should.equal('<h1>layoutTitle</h1><h3>contentTitle</h3>')
+        });
+
+    });
+
+    describe('from markup', function () {
+
+        it('should insert markup to a default layout', function () {
+
+            var path = 'parHeader';
+            var blockData = {
+                markup: "<h3>{{title}}</h3>",
+            };
+            var data = {
+                title: 'contentTitle'
+            }
+
+            var layouts = [
+                {
+                    name: '_page',
+                    template: "<h1>{{title}}</h1>{{{ contents }}}",
+                    data: [{
+                        name: '_page',
+                        value: {
+                            title: "layoutTitle"
+                        }
+                    }]
+                }
+            ]
+
+            var output = svc.fromTemplate(path, blockData, data, layouts, []);
+
+            output.should.equal('<h1>layoutTitle</h1><h3>{{title}}</h3>')
         });
 
     });

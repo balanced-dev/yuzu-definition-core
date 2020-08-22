@@ -24,6 +24,23 @@ describe('block files service', function () {
 			output.template.should.equal('file');
 		})
 
+		it('should get markup file and add to output', function () {
+
+			base.file.path = 'c:/templates/parHeader/data/markup_data.json';
+
+			var readdirSync = function (dir) {
+				return ['markup.html']
+			}
+			var readfileSync = function (file) {
+				return 'file';
+			}
+
+			base.createFsMock(readdirSync, readfileSync);
+
+			var output = base.svc.Get('', errors);
+			output.markup.should.equal('file');
+		})
+
 		it('should get block layout file and add to output', function () {
 
 			base.file.path = 'c:/templates/parHeader/data/template_data.json';

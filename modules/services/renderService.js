@@ -24,42 +24,44 @@ const wrapSingle = (hbs, data, contents, errors) => {
     return render(hbs, newData, errors);
 }
 
-const wrapMultiple = function(hbses, datas, errors) {
+const wrapMultiple = function(allBlockData, errors) {
 
     var prevTemplate;
-    for(var index in hbses) {
-        var hbs = hbses[index];
-        var data = datas[index];
+    for(var blockData of allBlockData) {
 
-        if(prevTemplate) {
-            prevTemplate = wrapSingle(hbs, data, prevTemplate, errors);
+        if(blockData.template) {
+            if(prevTemplate) {
+                prevTemplate = wrapSingle(blockData.template, blockData.data, prevTemplate, errors);
+            }
+            else {
+                prevTemplate = render(blockData.template, blockData.data, errors);
+            }
         }
         else {
-            prevTemplate = render(hbs, data, errors);
+            prevTemplate = blockData.markup;
+            if(blockData.data._endpoint) {
+                prevTemplate = prevTemplate.replace(/<\w*\s/, '$&data-endpoint=\''+ blockData.data._endpoint +'\' ');
+            }
         }
     }
 
     return prevTemplate
 }
 
-const fromTemplate = function(path, template, data, layouts, errors, blockLayout) {
+const fromTemplate = function(path, blockData, data, layouts, errors) {
 
-    //build hbs wrapping
-    var templates = [
-        template
+    blockData.data = data;
+    var allBlockData = [
+        blockData
     ];
-    var datas = [
-        data
-    ]
 
     //add selected layout
     var layout = layoutHelper.GetLayout(path, layouts, data);
     if(layout) {
-        templates.push(layout.template);
-        datas.push(layout.data);
+        allBlockData.push(layout);
     }
 
-    return wrapMultiple(templates, datas, errors);
+    return wrapMultiple(allBlockData, errors);
 
 }
 

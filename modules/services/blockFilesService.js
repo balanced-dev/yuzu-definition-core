@@ -14,6 +14,7 @@ function Get(blockPath, errors)
 	dataObject.path = dir;
 	
 	files.forEach(function(dirFile) {
+		TestAndReadFile(dataObject, files, dir, dirFile, errors, 'markup', 'StaticContent', '.html');
 		TestAndReadFile(dataObject, files, dir, dirFile, errors, 'template', 'Handlebars', '.hbs');
         TestAndReadFile(dataObject, files, dir, dirFile, errors, 'blockLayout', 'Block Layout', '.layout');
 		TestAndReadFile(dataObject, files, dir, dirFile, errors, 'schema', 'Json Schema', '.schema', true);

@@ -64,7 +64,7 @@ const render = function (data, path, externals, errors) {
 
 	if(_.some(errors)) return '';
 
-	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
+	return renderService.fromTemplate(path, blockData, data, externals.layouts, errors);
 }
 
 const renderState = function (partialsRootDir, state, errors) {
@@ -80,7 +80,7 @@ const renderState = function (partialsRootDir, state, errors) {
 		var blockData = build.getBlockData(path, errors);
 		data = build.resolveJson(data, externals, blockData, errors);
 	
-		return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
+		return renderService.fromTemplate(path, blockData, data, externals.layouts, errors);
 	}
 	else {
 		throw state + " block state not found"
@@ -98,7 +98,7 @@ const renderPreview = function (data, refs, path, externals, errors) {
 	data = build.parseJson(data, errors);
 	data = build.resolveJson(data, externals, blockData, errors);
 
-	return renderService.fromTemplate(path, blockData.template, data, externals.layouts, errors, blockData.blockLayout);
+	return renderService.fromTemplate(path, blockData, data, externals.layouts, errors);
 }
 
 const save = function (partialsRootDir, data, path, refs) {
