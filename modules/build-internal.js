@@ -53,6 +53,13 @@ const resolveSchemaRemoveAnyOf = function(schema, externals) {
 	return schema;
 }
 
+const getBlockFiles = function(path) {
+
+	var blockData = blockFilesService.GetFiles(path);
+
+	return blockData;
+}
+
 const getBlockData = function(path, errors) {
 
 	var blockData = blockFilesService.Get(path, errors);
@@ -72,5 +79,6 @@ module.exports = {
 	resolveSchemaAsPathsRefMap,
 	resolveSchemaRemoveAnyOf,
 	getBlockData,
+	getBlockFiles,
 	validateSchema
 };

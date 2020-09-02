@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require("lodash");
+const { ENGINE_METHOD_PKEY_ASN1_METHS } = require('constants');
 
 var getDataAndSchema = function (partialsDirs, rootSchemaProperties) {
 	externalSchemas = {}, externalDatas = {};
@@ -70,6 +71,57 @@ var getPreviews = function (previewsDir) {
 	return output;
 }
 
+var getPreviewsFileList = function (files) {
+	var output = {}
+
+	files.forEach((item) => {
+
+		let arr = item.split(path.sep);
+		let indexAtRoot = _.indexOf(arr, '_templates') + 1;
+		arr = arr.slice(indexAtRoot);
+		arr = arr.filter(item => item !== 'data');
+
+		let index = 1;
+		let type = arr[0];
+		let area = arr.length > 3 ? arr.slice(1, arr.length -2).join('/') : '';
+
+		arr.forEach((item) => {
+
+			let currentPath = arr.slice(0, index);
+
+			let exists = _.has(output, currentPath);
+			let isFile = item.includes('.');
+
+			if(!isFile && !exists) {
+				_.set(output, currentPath, {})
+			}
+			else if (isFile) {
+				let fileName = path.basename(item, '.json');
+
+				let fileSplit = fileName.startsWith('_') ? [fileName] : fileName.split('_');
+				
+				let name = fileSplit[0].replace('par', '');
+				let state = fileSplit.length > 1 ? fileSplit[1] : '';
+
+				currentPath[currentPath.length-1] = `/${fileName}`;
+
+				let qs = `?type=${type}`;
+				if(area) qs = qs + `&area=${area}`;
+				if(name) qs = qs + `&name=${name}`;
+				if(state) qs = qs + `&state=${state}`;
+
+				_.set(output, currentPath, qs);
+			}
+
+			index ++;
+
+		});
+
+	});
+
+	return output;
+}
+
 var getDataPaths = function (partialsDirs) {
 	output = {};
 
@@ -126,6 +178,7 @@ function getFilesInDir(dir, fileAction, dirAction) {
 module.exports = {
 	getDataAndSchema,
 	getPreviews,
+	getPreviewsFileList,
 	getDataPaths,
 	getFilePaths,
 	getFilesInDir

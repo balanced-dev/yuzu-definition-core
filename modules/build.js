@@ -26,6 +26,11 @@ const setup = function (partialsRootDir, layoutDir, rootSchemaProperties) {
 	return externals;
 }
 
+const getBlockFiles = function(path) {
+
+	return build.getBlockFiles(path);
+}
+
 const resolveDataString = function (data, path, externals, errors) {
 
 	var blockData = build.getBlockData(path, errors);
@@ -124,9 +129,9 @@ const savePreview = function (path, template) {
 	fs.writeFileSync(path, template);
 }
 
-const getPreviews = function(partialsRootDir) {
+const getPreviews = function(files) {
 
-	return fileService.getPreviews(partialsRootDir);
+	return fileService.getPreviewsFileList(files);
 }
 
 const getData = function (partialsRootDir, state, resolve, errors) {
@@ -201,6 +206,7 @@ module.exports = {
 	resolveDataString,
 	resolvePaths,
 	resolveSchema,
+	getBlockFiles,
 	getData,
 	getChildStates,
 	getRefPaths,

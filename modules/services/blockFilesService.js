@@ -23,6 +23,24 @@ function Get(blockPath, errors)
 	return dataObject;
 }
 
+function GetFiles(blockPath)
+{
+	var dir = path.join(path.dirname(blockPath), '/..');
+	
+	var files = fs.readdirSync(dir);
+	var dataObject = [];
+	
+	files.forEach(function(dirFile) {
+		var ext = path.extname(dirFile);
+
+		if(ext === '.hbs' || ext === '.layout' || ext === '.schema') {
+			dataObject.push(path.join(dir, dirFile));
+		}
+	});
+	
+	return dataObject;
+}
+
 function TestAndReadFile(dataObject, files, dir, dirFile, errors, key, name, ext, validate)
 {
 	if(_.filter(files, function(i) { return path.extname(i) == ext }).length > 1){
@@ -50,3 +68,4 @@ function TestAndReadFile(dataObject, files, dir, dirFile, errors, key, name, ext
 }
 
 module.exports.Get = Get;
+module.exports.GetFiles = GetFiles;

@@ -302,7 +302,7 @@ describe('file service', function () {
 
 	})
 
-	describe('get previews', function () {
+	describe('get previews filesystem', function () {
 
 		it('should return single state without parent directory', function () {
 
@@ -413,7 +413,7 @@ describe('file service', function () {
 
 		})
 
-		it('should return subdirectories', function () {
+		it('should return areas', function () {
 
 			var dirs = {
 				'_templates/': ['blocks'],
@@ -433,6 +433,152 @@ describe('file service', function () {
 						"pageHeader": {
 							"/parPageHeader": "blocks\\_gridItems\\pageHeader\\parPageHeader.html"
 						}
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+
+		})
+
+	})
+
+	describe('get previews file list', function () {
+
+		it('should return single state without parent directory', function () {
+
+			var files = [
+				'c:\\websites\\_dev\\_templates\\blocks\\pageHeader\\data\\parPageHeader.json'
+			]
+
+			var output = fileService.getPreviewsFileList(files);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"blocks": {
+					"pageHeader": {
+						"/parPageHeader": "?type=blocks&name=PageHeader"
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+
+		})
+
+		it('should return multiple states', function () {
+
+			var files = [
+				'c:\\websites\\_dev\\_templates\\blocks\\pageHeader\\data\\parPageHeader.json',
+				'c:\\websites\\_dev\\_templates\\blocks\\pageHeader\\data\\parPageHeader_state.json'
+			]
+
+			var output = fileService.getPreviewsFileList(files);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"blocks": {
+					"pageHeader": {
+						"/parPageHeader": "?type=blocks&name=PageHeader",
+						"/parPageHeader_state": "?type=blocks&name=PageHeader&state=state"
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+
+		})
+
+		it('should return multiple blocks', function () {
+
+			var files = [
+				'c:\\websites\\_dev\\_templates\\blocks\\pageHeader\\data\\parPageHeader.json',
+				'c:\\websites\\_dev\\_templates\\blocks\\team\\data\\parTeam.json'
+			]
+
+			var output = fileService.getPreviewsFileList(files);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"blocks": {
+					"pageHeader": {
+						"/parPageHeader": "?type=blocks&name=PageHeader"
+					},
+					"team": {
+						"/parTeam": "?type=blocks&name=Team"
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+
+		})
+
+		it('should return multiple blocks and states', function () {
+
+			var files = [
+				'c:\\websites\\_dev\\_templates\\blocks\\pageHeader\\data\\parPageHeader.json',
+				'c:\\websites\\_dev\\_templates\\blocks\\pageHeader\\data\\parPageHeader_state.json',
+				'c:\\websites\\_dev\\_templates\\blocks\\team\\data\\parTeam.json',
+				'c:\\websites\\_dev\\_templates\\blocks\\team\\data\\parTeam_state.json'
+			]
+
+			var output = fileService.getPreviewsFileList(files);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"blocks": {
+					"pageHeader": {
+						"/parPageHeader": "?type=blocks&name=PageHeader",
+						"/parPageHeader_state": "?type=blocks&name=PageHeader&state=state"
+					},
+					"team": {
+						"/parTeam": "?type=blocks&name=Team",
+						"/parTeam_state": "?type=blocks&name=Team&state=state"
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+
+		})
+
+		it('should return areas', function () {
+
+			var files = [
+				'c:\\websites\\_dev\\_templates\\blocks\\_gridItems\\pageHeader\\data\\parPageHeader.json'
+			]
+
+			var output = fileService.getPreviewsFileList(files);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"blocks": {
+					"_gridItems": {
+						"pageHeader": {
+							"/parPageHeader": "?type=blocks&area=_gridItems&name=PageHeader"
+						}
+					}
+				}
+			};
+
+			expect(output).to.be.deep.equal(expected);
+
+		})
+
+		it('should handle layots', function () {
+
+			var files = [
+				'c:\\websites\\_dev\\_templates\\_layouts\\_block\\data\\_block.json'
+			]
+
+			var output = fileService.getPreviewsFileList(files);
+			var debug = JSON.stringify(output, null, 4);
+
+			var expected = {
+				"_layouts": {
+					"_block": {
+						"/_block": "?type=_layouts&name=_block"
 					}
 				}
 			};

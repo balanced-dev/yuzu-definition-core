@@ -1,6 +1,6 @@
 {
   "name": "yuzu-definition-core",
-  "version": "1.3.3",
+  "version": "2.0.0-beta.0",
   "description": "Core tools for running the pattern library and state manager for Yuzu Definition",
   "main": "index.js",
   "directories": {
@@ -31,7 +31,7 @@
     "lodash": "^4.17.11",
     "plugin-error": "^1.0.1",
     "through2": "^3.0.1",
-    "util-extend": "^1.0.1"
+    "util-extend": "^1.0.1",
   },
   "files": [
     "index.js",
