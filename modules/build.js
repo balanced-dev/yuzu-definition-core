@@ -31,6 +31,11 @@ const getBlockFiles = function(path) {
 	return build.getBlockFiles(path);
 }
 
+const getLayoutFiles = function(dirs) {
+
+	return layoutService.GetLayoutFile(dirs);
+}
+
 const resolveDataString = function (data, path, externals, errors) {
 
 	var blockData = build.getBlockData(path, errors);
@@ -207,6 +212,7 @@ module.exports = {
 	resolvePaths,
 	resolveSchema,
 	getBlockFiles,
+	getLayoutFiles,
 	getData,
 	getChildStates,
 	getRefPaths,

@@ -19,6 +19,19 @@ const property = {
 	}
 };
 
+function GetLayoutFiles(dirs) 
+{
+	var files = []
+
+	dirs.forEach(d => {
+		fileService.getFilesInDir(d, function (dir, filename) {
+			files.push(path.resolve(path.join(dir, filename)));
+		}, function(dir) {});
+	});
+
+	return files;
+}
+
 function GetLayouts(partialsDir, externals, errors)
 {
 	var layouts = [];
@@ -103,4 +116,5 @@ function GetLayout(path, layouts, data) {
 module.exports.GetSelectedLayout = GetSelectedLayout;
 module.exports.GetLayouts = GetLayouts;
 module.exports.GetLayout = GetLayout;
+module.exports.GetLayoutFiles = GetLayoutFiles;
 module.exports.property = property;
