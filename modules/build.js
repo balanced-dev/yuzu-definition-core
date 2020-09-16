@@ -33,7 +33,7 @@ const getBlockFiles = function(path) {
 
 const getLayoutFiles = function(dirs) {
 
-	return layoutService.GetLayoutFile(dirs);
+	return layoutService.GetLayoutFiles(dirs);
 }
 
 const resolveDataString = function (data, path, externals, errors) {
