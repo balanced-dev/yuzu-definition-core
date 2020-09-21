@@ -141,6 +141,19 @@ var getDataPaths = function (partialsDirs) {
 	return output;
 }
 
+function getFilenamesInDirs(dirs) 
+{
+	var files = []
+
+	dirs.forEach(d => {
+		getFilesInDir(d, function (dir, filename) {
+			files.push(path.resolve(path.join(dir, filename)));
+		}, function(dir) {});
+	});
+
+	return files;
+}
+
 const getFilePaths = function (dir, fileTypes) {
 	var output = [];
 	getFilesInDir(dir, function (dir, filename) {
@@ -179,6 +192,7 @@ module.exports = {
 	getDataAndSchema,
 	getPreviews,
 	getPreviewsFileList,
+	getFilenamesInDirs,
 	getDataPaths,
 	getFilePaths,
 	getFilesInDir
