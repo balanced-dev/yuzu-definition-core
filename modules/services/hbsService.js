@@ -30,8 +30,6 @@ var setPartials = function(partialsDirs)
 		else if(ext == '.html') {
 			handlebars.markup[templateName] = template;
 		}
-
-		handlebars.registerPartial(templateName, template);
 	});	
 }
 
