@@ -6,6 +6,7 @@ var path = require('path');
 var setPartials = function(partialsDirs)
 {
 	filenames = [];
+	handlebars.markup = {};
 	
 	partialsDirs.forEach(function(partialsDir) {
 		fileService.getFilesInDir(partialsDir, function(dir, filename) { 
@@ -22,8 +23,13 @@ var setPartials = function(partialsDirs)
 		var templateName = path.basename(filename, ext);
 		var template = fs.readFileSync(filename, 'utf8');
 
-		if(ext == '.hbs')
+		if(ext == '.hbs') {
 			template = highlightService.addYuzuMarker(template);
+			handlebars.registerPartial(templateName, template);
+		}
+		else if(ext == '.html') {
+			handlebars.markup[templateName] = template;
+		}
 
 		handlebars.registerPartial(templateName, template);
 	});	
