@@ -134,9 +134,9 @@ const savePreview = function (path, template) {
 	fs.writeFileSync(path, template);
 }
 
-const getPreviews = function(files) {
+const getPreviews = function(files, path) {
 
-	return fileService.getPreviewsFileList(files);
+	return fileService.getPreviewsFileList(files, path);
 }
 
 const getData = function (partialsRootDir, state, resolve, errors) {

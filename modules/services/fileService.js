@@ -71,7 +71,7 @@ var getPreviews = function (previewsDir) {
 	return output;
 }
 
-var getPreviewsFileList = function (files) {
+var getPreviewsFileList = function (files, rootPath) {
 	var output = {}
 
 	files.forEach((item) => {
@@ -105,7 +105,7 @@ var getPreviewsFileList = function (files) {
 
 				currentPath[currentPath.length-1] = `/${fileName}`;
 
-				let qs = `?type=${type}`;
+				let qs = `${rootPath ? rootPath : ''}?type=${type}`;
 				if(area) qs = qs + `&area=${area}`;
 				if(name) qs = qs + `&name=${name}`;
 				if(state) qs = qs + `&state=${state}`;
