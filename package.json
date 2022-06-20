@@ -1,6 +1,6 @@
 {
   "name": "yuzu-definition-core",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0",
   "description": "Core tools for running the pattern library and state manager for Yuzu Definition",
   "main": "index.js",
   "directories": {
@@ -15,7 +15,6 @@
     "assert": "^2.0.0",
     "browser-sync": "^2.5.2",
     "chai": "^4.2.0",
-    "extend": "^3.0.2",
     "mocha": "^2.3.3",
     "nyc": "^14.1.1",
     "rewire": "^2.3.4",
@@ -26,6 +25,7 @@
     "chalk": "^1.0.0",
     "dateformat": "^1.0.11",
     "gulp-match": "^1.0.3",
+    "extend": "^3.0.2",
     "handlebars": "^4.1.2",
     "jsonschema": "^1.2.4",
     "lodash": "^4.17.11",
