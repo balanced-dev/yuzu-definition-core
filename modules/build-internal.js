@@ -6,6 +6,7 @@ var refMapperObject = require('./json/refMappers/json/refsAsObject');
 
 var propertyMappers = [];
 propertyMappers.push(require('./json/propertyMappers/schema/propertyEnum'));
+propertyMappers.push(require('./json/propertyMappers/schema/propertyTextType'));
 propertyMappers.push(require('./json/propertyMappers/schema/propertyNumeric'));
 var refMapperPaths = require('./json/refMappers/schema/refsAsTree');
 var postProcessor = require('./json/postProcessors/schema/anyOfTypes');
