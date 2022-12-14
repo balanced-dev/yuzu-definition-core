@@ -37,13 +37,14 @@ const resolveDataAsListRefMap = function(data, externals) {
 	return results.refMap;
 }
 
-const resolveSchemaAsPathsRefMap = function(schema, externals) {
+const resolveSchemaAsPathsRefMap = function(schema, externals, filePath) {
 
 	var results = jsonSchemaService.Resolve_ComponentJsonSchema(schema, { 
 		external: externals.schema,
 		postProcessor: postProcessor,
 		refMapper: refMapperPaths, 
-		propertyMappers: propertyMappers
+		propertyMappers: propertyMappers,
+		filePath: filePath
 	});
 	return results.output;
 }

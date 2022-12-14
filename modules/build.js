@@ -51,9 +51,9 @@ const resolveSchema = function (schema, externals) {
 	return build.resolveSchemaRemoveAnyOf(JSON.parse(schema), externals);
 }
 
-const resolvePaths = function (schema, externals) {
+const resolvePaths = function (schema, externals, filePath) {
 
-	return build.resolveSchemaAsPathsRefMap(JSON.parse(schema), externals);
+	return build.resolveSchemaAsPathsRefMap(JSON.parse(schema), externals, filePath);
 }
 
 const render = function (data, path, externals, errors) {

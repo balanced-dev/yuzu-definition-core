@@ -20,6 +20,10 @@ function Resolve_ComponentJsonSchema(data, config)
 		results = config.postProcessor.apply(results, data, config);
 	}
 
+	if(config.filePath) {
+		results.output.path = config.filePath;
+	}
+
 	return results;
 }
 

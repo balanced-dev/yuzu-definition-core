@@ -154,5 +154,17 @@ describe('json schema service', function () {
 			done();
 		})
 
+		it('should add file path to schema meta when present', function (done) {
+
+			var config = {};
+			config.filePath = 'filePath';
+
+			var results = schemeService.Resolve_ComponentJsonSchema({}, config);
+
+			results.output.path.should.equal(config.filePath);
+
+			done();
+		})
+
 	});
 });
