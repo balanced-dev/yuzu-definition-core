@@ -78,6 +78,12 @@ var getPreviewsFileList = function (files, rootPath) {
 
 		let arr = item.split(path.sep);
 		let indexAtRoot = _.indexOf(arr, '_templates') + 1;
+
+		let plugin = '';
+		if(arr[indexAtRoot-2] != '_dev') {
+			plugin = arr[indexAtRoot-2];
+		}
+
 		arr = arr.slice(indexAtRoot);
 		arr = arr.filter(item => item !== 'data');
 
