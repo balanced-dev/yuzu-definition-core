@@ -81,7 +81,7 @@ var getPreviewsFileList = function (files, rootPath) {
 
 		let plugin = '';
 		if(arr[indexAtRoot-2] != '_dev') {
-			plugin = arr[indexAtRoot-2];
+			plugin = arr[indexAtRoot-2].replace('yuzu-plugin-', '');
 		}
 
 		arr = arr.slice(indexAtRoot);
@@ -115,6 +115,7 @@ var getPreviewsFileList = function (files, rootPath) {
 				if(area) qs = qs + `&area=${area}`;
 				if(name) qs = qs + `&name=${name}`;
 				if(state) qs = qs + `&state=${state}`;
+				if(plugin) qs = qs + `&plugin=${plugin}`;
 
 				_.set(output, currentPath, qs);
 			}
