@@ -65,6 +65,11 @@ const render = function (data, path, externals, errors) {
 		blockData.schema.properties[layoutProperty.name] = layoutProperty.schema;
 	}
 
+	//if the schema is missing try and find from externals
+	if(!blockData.schema) {
+		blockData.schema = externals.schema[`/${blockData.name}`];
+	}
+
 	data = build.parseJson(data, errors);
 	data = build.resolveJson(data, externals, blockData, errors);
 

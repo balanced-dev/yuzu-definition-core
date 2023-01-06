@@ -7,6 +7,32 @@ var should = require('should'),
 describe('block files service', function () {
 	describe('get', function () {
 
+		it('should return base block directory path', function () {
+
+			var readdirSync = function (dir) {
+				return []
+			}
+			var readfileSync = function (file) {}
+
+			base.createFsMock(readdirSync, readfileSync);
+
+			var output = base.svc.Get('c:/templates/parHeader/data/parHeader.json', errors);
+			output.path.should.equal('c:\\templates\\parHeader');
+		})
+
+		it('should return suspected base block name from directory', function () {
+
+			var readdirSync = function (dir) {
+				return []
+			}
+			var readfileSync = function (file) {}
+
+			base.createFsMock(readdirSync, readfileSync);
+
+			var output = base.svc.Get('c:/templates/parHeader/data/parHeader.json', errors);
+			output.name.should.equal('parHeader');
+		})
+
 		it('should get template file and add to output', function () {
 
 			base.file.path = 'c:/templates/parHeader/data/template_data.json';

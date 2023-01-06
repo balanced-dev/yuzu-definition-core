@@ -12,6 +12,7 @@ function Get(blockPath, errors)
 	var files = fs.readdirSync(dir);
 	var dataObject = {};
 	dataObject.path = dir;
+	dataObject.name = dir.split(path.sep).pop();
 	
 	files.forEach(function(dirFile) {
 		TestAndReadFile(dataObject, files, dir, dirFile, errors, 'markup', 'StaticContent', '.html');

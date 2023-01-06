@@ -1,7 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require("lodash");
-const { ENGINE_METHOD_PKEY_ASN1_METHS } = require('constants');
 
 var getDataAndSchema = function (partialsDirs, rootSchemaProperties) {
 	externalSchemas = {}, externalDatas = {};
@@ -80,8 +79,15 @@ var getPreviewsFileList = function (files, rootPath) {
 		let indexAtRoot = _.indexOf(arr, '_templates') + 1;
 
 		let plugin = '';
-		if(arr[indexAtRoot-2] != '_dev') {
-			plugin = arr[indexAtRoot-2].replace('yuzu-plugin-', '');
+		let isScoped = false;
+		let suspectPlugin = arr.find((item) => 
+			{ 
+				return item.startsWith('yuzu-plugin-'); 
+			});
+		if(suspectPlugin) {
+			plugin = suspectPlugin.replace('yuzu-plugin-', '');
+			let pluginIndex = _.indexOf(arr, suspectPlugin);
+			if(arr[pluginIndex-1] == "@yuzu") isScoped = true;
 		}
 
 		arr = arr.slice(indexAtRoot);
@@ -98,7 +104,12 @@ var getPreviewsFileList = function (files, rootPath) {
 			let exists = _.has(output, currentPath);
 			let isFile = item.includes('.');
 
-			if(!isFile && !exists) {
+			if(index == 1 && plugin != '') {
+				currentPath = `Plugin - ${plugin}`;
+				arr[index] = `Plugin - ${plugin}`;
+			}
+
+			if(!isFile && !exists && Array.isArray(currentPath)) {
 				_.set(output, currentPath, {})
 			}
 			else if (isFile) {
@@ -116,6 +127,7 @@ var getPreviewsFileList = function (files, rootPath) {
 				if(name) qs = qs + `&name=${name}`;
 				if(state) qs = qs + `&state=${state}`;
 				if(plugin) qs = qs + `&plugin=${plugin}`;
+				if(isScoped) qs = qs + '&scoped=true';
 
 				_.set(output, currentPath, qs);
 			}
