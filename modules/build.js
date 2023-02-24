@@ -67,7 +67,12 @@ const render = function (data, path, externals, errors) {
 
 	//if the schema is missing try and find from externals
 	if(!blockData.schema) {
-		blockData.schema = externals.schema[`/${blockData.name}`];
+		if(Object.keys(externals.schema).includes(`/par${capitalize(blockData.name)}`)) {
+			blockData.schema = externals.schema[`/par${capitalize(blockData.name)}`];
+		}
+		else if(Object.keys(externals.schema).includes(`/${blockData.name}`)) {
+			blockData.schema = externals.schema[`/${blockData.name}`];
+		}
 	}
 
 	data = build.parseJson(data, errors);
@@ -204,6 +209,10 @@ const getFilePaths = function (dir, fileTypes = []) {
 	return fileService.getFilePaths(dir, fileTypes);
 }
 
+function capitalize(s)
+{
+    return s[0].toUpperCase() + s.slice(1);
+}
 
 module.exports = {
 	register,
